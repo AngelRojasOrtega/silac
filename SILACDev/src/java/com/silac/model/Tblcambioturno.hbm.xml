@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblcambioturno" table="tblcambioturno" catalog="dbsilac">
+        <id name="idCambioTurno" type="java.lang.Long">
+            <column name="idCambioTurno" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblplanificaciontrabajo" class="com.silac.model.Tblplanificaciontrabajo" fetch="select">
+            <column name="idPlanificacionTrabajo" not-null="true">
+                <comment>Identificador del plan de trabajo.</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="tblsolicitudcambioturno" class="com.silac.model.Tblsolicitudcambioturno" fetch="select">
+            <column name="idSolicitud" not-null="true" />
+        </many-to-one>
+        <property name="solicitante" type="boolean">
+            <column name="solicitante" not-null="true">
+                <comment>Indica si el empledo es el solicitante del cambio o no.</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

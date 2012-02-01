@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.TblantecedentesDonante" table="tblantecedentes_donante" catalog="dbsilac">
+        <id name="idAntecedentesDonantes" type="java.lang.Long">
+            <column name="idAntecedentesDonantes" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblevaluaciondonante" class="com.silac.model.Tblevaluaciondonante" fetch="select">
+            <column name="idEvaluacionDonantes" not-null="true" unique="true">
+                <comment>Identificador de la evaluaci&#243;n del donante.</comment>
+            </column>
+        </many-to-one>
+        <property name="totalDonaciones" type="int">
+            <column name="totalDonaciones" not-null="true">
+                <comment>Total de donaciones realizadas por el donante con anterioridad.</comment>
+            </column>
+        </property>
+        <property name="donacionesAnuales" type="int">
+            <column name="donacionesAnuales" not-null="true">
+                <comment>N&#250;mero de veces que el donante realiza donaciones en el a&#241;o.</comment>
+            </column>
+        </property>
+        <property name="donantePrimerizo" type="java.lang.Boolean">
+            <column name="donantePrimerizo">
+                <comment>Indica si el donante se somete por primera vez al proceso.</comment>
+            </column>
+        </property>
+        <property name="donanteVoluntario" type="java.lang.Boolean">
+            <column name="donanteVoluntario">
+                <comment>Indica si el donante es voluntario o realiza la donaci&#243;n a solicitud de otra persona.</comment>
+            </column>
+        </property>
+        <property name="donanteHabitual" type="java.lang.Boolean">
+            <column name="donanteHabitual">
+                <comment>Indica si el donante realiza donaciones con regularidad, de forma altruista.</comment>
+            </column>
+        </property>
+        <property name="lugarDonacion" type="string">
+            <column name="lugarDonacion" length="254" not-null="true">
+                <comment>Lugar donde se realizar&#225; la donaci&#243;n.</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

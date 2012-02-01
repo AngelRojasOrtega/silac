@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <body>
+        <ui:composition template="./../templates/template.xhtml">
+            <ui:define name="titulo">
+                Generar tabuladores
+            </ui:define>
+            <ui:define name="content">
+                <p:panel header="Generar tabuladores">
+                    <h:panelGrid columns="2">  
+                        <h:outputText value="Servicio:" />
+                        <h:selectOneMenu style="width: 200px" id="cboServicio">
+                            <f:selectItem itemLabel="-Seleccione un servicio-" itemValue="1"></f:selectItem>
+                        </h:selectOneMenu>
+                        <h:outputText value="Sección:" />
+                        <h:selectOneMenu style="width: 200px" id="cboSeccion">
+                            <f:selectItem itemLabel="-Seleccione una sección-" itemValue="1"></f:selectItem>
+                        </h:selectOneMenu>
+                        <h:outputText value="Mes:" />
+                        <h:selectOneMenu style="width: 200px" id="cboMes">
+                            <f:selectItem itemLabel="-Seleccione un mes-" itemValue="1"></f:selectItem>
+                        </h:selectOneMenu>
+                        <h:outputText value="Año:" />
+                        <p:spinner id="txtAnio" value=""/>  
+                    </h:panelGrid>
+                    <h:panelGrid style="width: 100%">
+                        <p:toolbar>  
+                            <p:toolbarGroup align="left">  
+                                <p:commandButton type="push" value="Vista Preliminar" title="Vista Preliminar" image="ui-icon-search" />    
+                                <p:commandButton type="push" value="Imprimir" title="Imprimir" image="ui-icon-print"/> 
+                            </p:toolbarGroup>  
+                        </p:toolbar> 
+                    </h:panelGrid>
+                </p:panel>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

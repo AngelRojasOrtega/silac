@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tbljefe" table="tbljefe" catalog="dbsilac">
+        <id name="idJefe" type="java.lang.Integer">
+            <column name="idJefe" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblempleado" class="com.silac.model.Tblempleado" fetch="select">
+            <column name="idEmpleado" not-null="true" />
+        </many-to-one>
+        <many-to-one name="tblestablecimiento" class="com.silac.model.Tblestablecimiento" fetch="select">
+            <column name="idEstablecimiento" not-null="true" />
+        </many-to-one>
+        <property name="fechaInicio" type="timestamp">
+            <column name="fechaInicio" length="19" not-null="true" />
+        </property>
+        <property name="fechaFinal" type="timestamp">
+            <column name="fechaFinal" length="19" not-null="true" />
+        </property>
+        <property name="estado" type="boolean">
+            <column name="estado" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

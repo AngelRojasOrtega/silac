@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblservicio" table="tblservicio" catalog="dbsilac">
+        <id name="idServicio" type="java.lang.Short">
+            <column name="idServicio" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tbltiposervicio" class="com.silac.model.Tbltiposervicio" fetch="select">
+            <column name="idTipoServicio" not-null="true">
+                <comment>Identificador del tipo de servicio.</comment>
+            </column>
+        </many-to-one>
+        <property name="codigoServicio" type="string">
+            <column name="codigoServicio" length="3" not-null="true" unique="true">
+                <comment>C&#243;digo del servicio</comment>
+            </column>
+        </property>
+        <property name="nombreServicio" type="string">
+            <column name="nombreServicio" length="60" not-null="true">
+                <comment>Nombre del servicio.</comment>
+            </column>
+        </property>
+        <set name="tblordens" inverse="true">
+            <key>
+                <column name="idServicio" not-null="true">
+                    <comment>Identificador del servicio</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblorden" />
+        </set>
+        <set name="tblclinicaexternas" inverse="true">
+            <key>
+                <column name="idServicio" not-null="true">
+                    <comment>Identificador del servicio</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblclinicaexterna" />
+        </set>
+    </class>
+</hibernate-mapping>

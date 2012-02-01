@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblcatalogo" table="tblcatalogo" catalog="dbsilac">
+        <id name="idCatalogo" type="java.lang.Short">
+            <column name="idCatalogo" />
+            <generator class="identity" />
+        </id>
+        <property name="categoria" type="string">
+            <column name="categoria" length="254" not-null="true" unique="true">
+                <comment>Nombre de la categor&#237;a.</comment>
+            </column>
+        </property>
+        <set name="tblarticulos" inverse="true">
+            <key>
+                <column name="idCatalogo" not-null="true">
+                    <comment>Identificador de cat&#225;logo.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblarticulo" />
+        </set>
+    </class>
+</hibernate-mapping>

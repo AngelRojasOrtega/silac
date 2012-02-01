@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblunidadmedida" table="tblunidadmedida" catalog="dbsilac">
+        <id name="idUnidadMedida" type="java.lang.Short">
+            <column name="idUnidadMedida" />
+            <generator class="identity" />
+        </id>
+        <property name="unidadMedida" type="string">
+            <column name="unidadMedida" length="25" not-null="true" unique="true">
+                <comment>Nombre de la unidad de medida usada.</comment>
+            </column>
+        </property>
+        <property name="abreviatura" type="string">
+            <column name="abreviatura" length="5" unique="true">
+                <comment>Abreviatura que representa la unidad de medida.</comment>
+            </column>
+        </property>
+        <set name="tblparametros" inverse="true">
+            <key>
+                <column name="idUnidadMedida">
+                    <comment>Identificador de la unidad de medida.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblparametro" />
+        </set>
+        <set name="tblarticulosForUnidadMinimoCompra" inverse="true">
+            <key>
+                <column name="unidadMinimoCompra" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.Tblarticulo" />
+        </set>
+        <set name="tblarticulosForUnidadMinimoUso" inverse="true">
+            <key>
+                <column name="unidadMinimoUso" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.Tblarticulo" />
+        </set>
+    </class>
+</hibernate-mapping>

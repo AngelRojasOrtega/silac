@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="informeMensualLaboratorio" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<parameter name="idModalidad" class="java.lang.String"/>
+	<parameter name="mes" class="java.lang.String"/>
+	<parameter name="anio" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     tblmodalidad.`nombreModalidad` AS tblmodalidad_nombreModalidad,
+     tblseccion.`nombreSeccion` AS tblseccion_nombreSeccion,
+     tblexamen.`codigoExamen` AS tblexamen_codigoExamen,
+     tblexamen.`nombreExamen` AS tblexamen_nombreExamen,
+     tblexamen_orden.`fechaRegistro` AS tblexamen_orden_fechaRegistro,
+     tblexamen_orden.`estado` AS tblexamen_orden_estado,
+     tblmodalidad.`idModalidad` AS tblmodalidad_idModalidad,
+     COUNT(tblexamen_orden.`idExamenOrden`)AS produccion_COUNT
+FROM
+     `tblseccion` tblseccion INNER JOIN `tblexamen` tblexamen ON tblseccion.`idSeccionLaboratorio` = tblexamen.`idSeccionLaboratorio`
+     INNER JOIN `tblexamen_orden` tblexamen_orden ON tblexamen.`idExamen` = tblexamen_orden.`idExamen`
+     INNER JOIN `tblorden` tblorden ON tblexamen_orden.`idOrden` = tblorden.`idOrden`
+     INNER JOIN `tblservicio` tblservicio ON tblorden.`idServicio` = tblservicio.`idServicio`
+     INNER JOIN `tbltiposervicio` tbltiposervicio ON tblservicio.`idTipoServicio` = tbltiposervicio.`idTipoServicio`
+     INNER JOIN `tblmodalidad` tblmodalidad ON tbltiposervicio.`idModalidad` = tblmodalidad.`idModalidad`
+WHERE (tblexamen_orden.`estado` LIKE 'Finalizado' OR tblexamen_orden.`estado` LIKE 'Entregado') 
+AND YEAR(tblexamen_orden.`fechaRegistro`) = $P{anio}
+AND MONTH(tblexamen_orden.`fechaRegistro`) = $P{mes}
+AND tblmodalidad.`idModalidad` = $P{idModalidad} 
+GROUP BY
+     tblmodalidad.`nombreModalidad`,
+     tblseccion.`nombreSeccion`,
+     tblexamen.`codigoExamen`
+ORDER BY
+     tblmodalidad.`nombreModalidad` ASC,
+     tblseccion.`nombreSeccion` ASC,
+     tblexamen.`codigoExamen` ASC]]>
+	</queryString>
+	<field name="tblmodalidad_nombreModalidad" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblseccion_nombreSeccion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblexamen_codigoExamen" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblexamen_nombreExamen" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblexamen_orden_fechaRegistro" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="produccion_COUNT" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="totalRealizado" class="java.lang.Long" resetType="Group" resetGroup="tblmodalidad_nombreModalidad" calculation="Sum">
+		<variableExpression><![CDATA[$F{produccion_COUNT}]]></variableExpression>
+	</variable>
+	<variable name="produccion_COUNT_1" class="java.lang.Integer" resetType="Group" resetGroup="tblexamen_codigoExamen" calculation="Count">
+		<variableExpression><![CDATA[$F{produccion_COUNT}]]></variableExpression>
+	</variable>
+	<group name="tblmodalidad_nombreModalidad">
+		<groupExpression><![CDATA[$F{tblmodalidad_nombreModalidad}]]></groupExpression>
+		<groupHeader>
+			<band height="27" splitType="Stretch">
+				<textField>
+					<reportElement mode="Opaque" x="0" y="0" width="555" height="27" forecolor="#FFFFFF" backcolor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="18" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{tblmodalidad_nombreModalidad}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="33" splitType="Stretch">
+				<textField evaluationTime="Group" evaluationGroup="tblmodalidad_nombreModalidad" pattern="" isBlankWhenNull="true">
+					<reportElement mode="Transparent" x="65" y="0" width="36" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{totalRealizado}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Transparent" x="1" y="0" width="64" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[TOTAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="101" y="0" width="100" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[Examenes]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="tblseccion_nombreSeccion">
+		<groupExpression><![CDATA[$F{tblseccion_nombreSeccion}]]></groupExpression>
+		<groupHeader>
+			<band height="21" splitType="Stretch">
+				<rectangle>
+					<reportElement mode="Opaque" x="0" y="0" width="555" height="20" forecolor="#CCCCFF" backcolor="#CCCCFF"/>
+				</rectangle>
+				<line>
+					<reportElement positionType="FixRelativeToBottom" x="0" y="20" width="555" height="1"/>
+				</line>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement mode="Transparent" x="11" y="0" width="347" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{tblseccion_nombreSeccion}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="2" splitType="Stretch">
+				<line direction="BottomUp">
+					<reportElement key="line" x="1" y="1" width="554" height="1"/>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="tblexamen_codigoExamen">
+		<groupExpression><![CDATA[$F{tblexamen_codigoExamen}]]></groupExpression>
+		<groupHeader>
+			<band height="22" splitType="Stretch">
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement mode="Transparent" x="1" y="2" width="64" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{tblexamen_codigoExamen}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement mode="Transparent" x="65" y="2" width="90" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$F{produccion_COUNT}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band splitType="Stretch"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement x="65" y="23" width="424" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Hospital Nacional Santa Teresa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="65" y="39" width="424" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Departamento de Laboratorio  y Banco de Sangre]]></text>
+			</staticText>
+			<elementGroup>
+				<elementGroup>
+					<image hAlign="Left" vAlign="Middle">
+						<reportElement x="0" y="1" width="101" height="58"/>
+						<imageExpression class="java.lang.String"><![CDATA["/images/minsal.jpg"]]></imageExpression>
+					</image>
+					<image hAlign="Right" vAlign="Middle">
+						<reportElement x="489" y="1" width="66" height="59"/>
+						<imageExpression class="java.lang.String"><![CDATA["/images/elSalvador.jpg"]]></imageExpression>
+					</image>
+				</elementGroup>
+			</elementGroup>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="65" y="7" width="424" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Informe Mensual del Laboratorio]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="18" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="65" height="18" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Codigo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="65" y="0" width="490" height="18" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Cantidad examenes realizados]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="36" splitType="Stretch">
+			<textField pattern="EEEE dd MMMMM yyyy - hh:mm aaa" isBlankWhenNull="true">
+				<reportElement x="337" y="0" width="218" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<elementGroup>
+				<textField>
+					<reportElement x="205" y="0" width="80" height="20"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Report">
+					<reportElement x="285" y="0" width="40" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+			</elementGroup>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1"/>
+			</line>
+			<image>
+				<reportElement x="0" y="2" width="101" height="32"/>
+				<imageExpression class="java.lang.String"><![CDATA["/images/logoSilac.png"]]></imageExpression>
+			</image>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

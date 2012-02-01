@@ -1,0 +1,113 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Unidad de Medida
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfirm.jq.click();
+}
+        </script>
+        <p:panel header="Unidad de Medida">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/> 
+            <h:panelGrid style="width:100%">
+                <h:panelGrid id="campos" columns="3">
+                    <h:outputText value="Unidad de Medida:"/> 
+                    <p:inputText id="txtUnidadMedida" value="#{unidadMedidaBean.unidad.unidadMedida}" size="25" required="true" requiredMessage="Requerido"/>
+                    <p:message for="txtUnidadMedida"/>        
+                    <h:outputText value="Abreviatura:"/> 
+                    <p:inputText id="txtabreviatura" value="#{unidadMedidaBean.unidad.abreviatura}" size="25"/>
+                </h:panelGrid>   
+                <h:panelGrid style="width: 100%">
+                    <p:toolbar>  
+                        <p:toolbarGroup align="left">  
+                            <p:commandButton value="Nuevo"
+                                             immediate="true"
+                                             title="Nuevo"
+                                             process="@this"
+                                             action="#{unidadMedidaBean.nuevo}"   
+                                             update="dtUnidad campos"
+                                             image="ui-icon-document"/>                                  
+                            <p:commandButton value="Guardar" 
+                                             process="@this campos" 
+                                             action="#{unidadMedidaBean.crear}" 
+                                             oncomplete="confirmFunction()" 
+                                             update="dtUnidad campos msg" 
+                                             title="Guardar" 
+                                             image="ui-icon-disk">                                                                                       
+                            </p:commandButton>   
+                        </p:toolbarGroup>  
+                    </p:toolbar> 
+                </h:panelGrid>
+                <p:dataTable id="dtUnidad" 
+                             widgetVar="dtUnidad" 
+                             var="varUnidad" 
+                             rows="10" paginator="true" 
+                             value="#{unidadMedidaBean.unidades}">
+                    <f:facet name="header">  
+                        <h:panelGrid style="width: 200px;" columns="3">
+                            <h:outputText value="Buscar: " />  
+                            <p:inputText  id="globalFilter" onkeyup="dtUnidad.filter()" style="width:150px" />  
+                        </h:panelGrid> 
+                    </f:facet>  
+                    <p:column filterBy="#{varUnidad.idUnidadMedida}" style="text-align: center; width: 32px">
+                        <f:facet name="header"><h:outputText value="Código"/></f:facet>
+                        <h:outputText value="#{varUnidad.idUnidadMedida}"/>
+                    </p:column>
+                    <p:column filterBy="#{varUnidad.unidadMedida}">
+                        <f:facet name="header"><h:outputText value="Unidad de Medida"/></f:facet>
+                        <h:outputText value="#{varUnidad.unidadMedida}"/>
+                    </p:column>
+                    <p:column filterBy="#{varUnidad.abreviatura}">
+                        <f:facet name="header"><h:outputText value="Abreviatura"/></f:facet>
+                        <h:outputText value="#{varUnidad.abreviatura}"/>
+                    </p:column>
+                    <p:column style="width: 64px">
+                        <p:commandButton  image="ui-icon ui-icon-pencil"/>
+                        <p:commandButton  image="ui-icon-trash" 
+                                          oncomplete="confirmation.show()" 
+                                          update="confirm" 
+                                          process="@this">  
+                            <f:setPropertyActionListener value="#{varUnidad}" target="#{unidadMedidaBean.selectedUnidad}" />
+                        </p:commandButton> 
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+        </p:panel>               
+        <p:confirmDialog message="Desea eliminar el registro?" 
+                         width="400"   
+                         header="Confirm" 
+                         severity="alert" 
+                         widgetVar="confirmation" 
+                         modal="true">  
+            <p:outputPanel id="confirm">
+                <h:panelGrid>
+                    <h:outputText  value="#{unidadMedidaBean.selectedUnidad.idUnidadMedida} #{unidadMedidaBean.selectedUnidad.unidadMedida}"/>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Si" 
+                                         update="dtUnidad msg"
+                                         action="#{unidadMedidaBean.eliminar}" 
+                                         oncomplete="confirmation.hide(); confirmFunction()" 
+                                         process="@this">
+                            <f:param name="idUnidadMedida" 
+                                     value="#{unidadMedidaBean.selectedUnidad.idUnidadMedida}"/>
+                        </p:commandButton>
+                        <p:commandButton value="No" 
+                                         onclick="confirmation.hide()" 
+                                         type="button" />    
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:confirmDialog> 
+
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfirm" 
+                         oncomplete="dtUnidad.filter()" 
+                         update="dtUnidad msg"/>
+    </ui:define>
+</ui:composition>

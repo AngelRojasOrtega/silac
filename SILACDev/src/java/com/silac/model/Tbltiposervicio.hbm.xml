@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tbltiposervicio" table="tbltiposervicio" catalog="dbsilac">
+        <id name="idTipoServicio" type="java.lang.Short">
+            <column name="idTipoServicio" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblmodalidad" class="com.silac.model.Tblmodalidad" fetch="select">
+            <column name="idModalidad" not-null="true">
+                <comment>Identificador de la modalidad.</comment>
+            </column>
+        </many-to-one>
+        <property name="codigoTipoServicio" type="string">
+            <column name="codigoTipoServicio" length="3" not-null="true" unique="true">
+                <comment>C&#243;digo del tipo de servicio.</comment>
+            </column>
+        </property>
+        <property name="nombreTipoServicio" type="string">
+            <column name="nombreTipoServicio" length="60" not-null="true">
+                <comment>Nombre del tipo de servicio.</comment>
+            </column>
+        </property>
+        <set name="tblservicios" inverse="true">
+            <key>
+                <column name="idTipoServicio" not-null="true">
+                    <comment>Identificador del tipo de servicio.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblservicio" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,112 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Laboratorios
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfirm.jq.click();
+}
+        </script>
+        <p:panel header="Laboratorios">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/> 
+            <h:panelGrid style="width:100%">
+                <h:panelGrid id="campos" columns="3">
+                    <h:outputText value="Nombre del laboratorio:"/> 
+                    <p:inputText id="txtNomLaboratorio" value="#{laboratoriosBean.lab.nombreLaboratorio}" size="25" required="true" requiredMessage="Requerido"/>
+                    <p:message for="txtNomLaboratorio"/>        
+                    <h:outputText value="Teléfono:"/> 
+                    <p:inputMask mask="9999-9999" id="txtTelefono" value="#{laboratoriosBean.lab.telefono}" size="25"/>
+                </h:panelGrid>   
+                <h:panelGrid style="width: 100%">
+                    <p:toolbar>  
+                        <p:toolbarGroup align="left">  
+                            <p:commandButton value="Nuevo"
+                                             immediate="true"
+                                             title="Nuevo"
+                                             process="@this"
+                                             action="#{laboratoriosBean.nuevo}"                                                  
+                                             update="campos dtLab"
+                                             image="ui-icon-document"/>                                  
+                            <p:commandButton value="Guardar" 
+                                             process="@this campos" 
+                                             action="#{laboratoriosBean.crear}" 
+                                             oncomplete="confirmFunction()" 
+                                             update="dtLab campos msg" 
+                                             title="Guardar" 
+                                             image="ui-icon-disk">                                                                                       
+                            </p:commandButton>   
+                        </p:toolbarGroup>  
+                    </p:toolbar> 
+                </h:panelGrid>
+                <p:dataTable id="dtLab" 
+                             widgetVar="dtLab" 
+                             var="varLab"
+                             rows="10" paginator="true" 
+                             value="#{laboratoriosBean.labs}">
+                    <f:facet name="header">  
+                        <h:panelGrid style="width: 200px;" columns="3">
+                            <h:outputText value="Buscar: " />  
+                            <p:inputText  id="globalFilter" onkeyup="dtLab.filter()" style="width:150px" />  
+                        </h:panelGrid> 
+                    </f:facet>  
+                    <p:column filterBy="#{varLab.idLaboratorio}" style="text-align: center; width: 32px">
+                        <f:facet name="header"><h:outputText value="Código"/></f:facet>
+                        <h:outputText value="#{varLab.idLaboratorio}"/>
+                    </p:column>
+                    <p:column filterBy="#{varLab.nombreLaboratorio}">
+                        <f:facet name="header"><h:outputText value="Laboratorio"/></f:facet>
+                        <h:outputText value="#{varLab.nombreLaboratorio}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Telefono"/></f:facet>
+                        <h:outputText value="#{varLab.telefono}"/>
+                    </p:column>
+                    <p:column style="width: 64px;">
+                        <p:commandButton  image="ui-icon ui-icon-pencil"/>
+                        <p:commandButton  image="ui-icon-trash" 
+                                          oncomplete="confirmation.show()" 
+                                          update="confirm" 
+                                          process="@this">  
+                            <f:setPropertyActionListener value="#{varLab}" target="#{laboratoriosBean.selectedLab}" />
+                        </p:commandButton> 
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+        </p:panel>
+        <p:confirmDialog message="Desea eliminar el registro?" 
+                         width="400"   
+                         header="Confirm" 
+                         severity="alert" 
+                         widgetVar="confirmation" 
+                         modal="true">  
+            <p:outputPanel id="confirm">
+                <h:panelGrid>
+                    <h:outputText  value="#{laboratoriosBean.selectedLab.idLaboratorio} #{laboratoriosBean.selectedLab.nombreLaboratorio}"/>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Si" 
+                                         update="dtLab msg"
+                                         action="#{laboratoriosBean.eliminar}" 
+                                         oncomplete="confirmation.hide(); confirmFunction(); dtLab.filter()" 
+                                         process="@this">
+                            <f:param name="idLab" value="#{laboratoriosBean.selectedLab.idLaboratorio}"/>
+                        </p:commandButton>
+                        <p:commandButton value="No" 
+                                         onclick="confirmation.hide()" 
+                                         type="button" />    
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:confirmDialog> 
+
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfirm" 
+                         oncomplete="dtLab.filter()" 
+                         update="dtLab msg"/>
+    </ui:define>
+</ui:composition>

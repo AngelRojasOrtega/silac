@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.TblexamenOrden" table="tblexamen_orden" catalog="dbsilac">
+        <id name="idExamenOrden" type="java.lang.Long">
+            <column name="idExamenOrden" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblexamen" class="com.silac.model.Tblexamen" fetch="select">
+            <column name="idExamen" not-null="true">
+                <comment>Identificador del examen.</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="tblorden" class="com.silac.model.Tblorden" fetch="select">
+            <column name="idOrden" not-null="true">
+                <comment>Identificador de la orden.</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="tblempleado" class="com.silac.model.Tblempleado" fetch="select">
+            <column name="codigoMarcacion" />
+        </many-to-one>
+        <property name="numeroControl" type="long">
+            <column name="numeroControl" not-null="true" />
+        </property>
+        <property name="estado" type="string">
+            <column name="estado" length="20" />
+        </property>
+        <property name="fechaRegistro" type="timestamp">
+            <column name="fechaRegistro" length="19" />
+        </property>
+        <set name="tblincidencias" inverse="true" table="tblorden_incidencia">
+            <key>
+                <column name="idExamenOrden" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.silac.model.Tblincidencia">
+                <column name="idIncidencia" not-null="true">
+                    <comment>Identificador de la incidencia.</comment>
+                </column>
+            </many-to-many>
+        </set>
+        <set name="tblentregaresultados" inverse="true">
+            <key>
+                <column name="idExamenOrden" not-null="true">
+                    <comment>Identificador de la orden.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblentregaresultado" />
+        </set>
+        <set name="tblresultados" inverse="true">
+            <key>
+                <column name="idExamenOrden" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.Tblresultado" />
+        </set>
+        <set name="tblproduccions" inverse="true">
+            <key>
+                <column name="idExamenOrden" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.Tblproduccion" />
+        </set>
+    </class>
+</hibernate-mapping>

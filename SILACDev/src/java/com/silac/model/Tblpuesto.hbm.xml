@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblpuesto" table="tblpuesto" catalog="dbsilac">
+        <id name="idPuesto" type="java.lang.Short">
+            <column name="idPuesto" />
+            <generator class="identity" />
+        </id>
+        <property name="nombrePuesto" type="string">
+            <column name="nombrePuesto" length="50" not-null="true">
+                <comment>Nombre del puesto.</comment>
+            </column>
+        </property>
+        <property name="sueldoBase" type="double">
+            <column name="sueldoBase" precision="22" scale="0" not-null="true">
+                <comment>Sueldo base asignado al puesto.</comment>
+            </column>
+        </property>
+        <set name="tblpuestoempleados" inverse="true">
+            <key>
+                <column name="idPuesto" not-null="true">
+                    <comment>Identificador del puesto.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblpuestoempleado" />
+        </set>
+    </class>
+</hibernate-mapping>

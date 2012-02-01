@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <h:outputStylesheet library="css" name="style.css" />
+    </h:head> 
+    <body>
+        <ui:composition template="./../templates/template.xhtml">
+            <ui:define name="titulo">
+                Restaurar copias de respaldo
+            </ui:define>
+            <ui:define name="content">
+                <p:panel header="Restaurar copias de respaldo">
+                    <h:panelGrid style="width:100%">
+                        <p:fieldset legend="Origen del respaldo">
+                            <h:panelGrid columns="3">
+                                <h:outputText value="Restaurar desde:"/>
+                                <h:selectOneRadio  id="optOrigen">
+                                    <f:selectItem id="optOrigen1" itemValue="archivo" itemLabel="Archivo"/>
+                                    <f:selectItem id="optOrigen2" itemValue="servidor" itemLabel="Servidor"/>
+                                </h:selectOneRadio>
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <p:fieldset legend="Restaurar desde archivo">
+                            <h:outputText value="Copida de respaldo:"/>
+                            <input type="file" name="fileUpload" value="" />
+                        </p:fieldset>
+                        <p:fieldset legend="Restaurar desde servidor">
+                            <p:dataTable var="respaldos" rows="10" paginator="true" value="">
+                                <p:column style="text-align: center; width: 32px">
+                                    <f:facet name="header"><h:outputText value="Fecha"/></f:facet>
+                                    <h:outputText value="dd/mm/aaaa"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header"><h:outputText value="Archivo"/></f:facet>
+                                    <h:outputText value="Nombre del archivo"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header"><h:outputText value="Peso"/></f:facet>
+                                    <h:outputText value="999 Kb/Mb"/>
+                                </p:column>
+                                <p:column style="width: 32px">
+                                    <f:facet name="header" id=""><h:outputText value=""/></f:facet>
+                                    <h:selectOneRadio id="optSeleccionar">
+                                        <f:selectItem id="optSeleccionar1" itemValue="Seleccionar" />
+                                    </h:selectOneRadio>
+                                </p:column>
+                            </p:dataTable>
+                        </p:fieldset>
+                        <h:panelGrid style="width: 100%">
+                            <p:toolbar>  
+                                <p:toolbarGroup align="left">  
+                                    <p:commandButton type="push" value="Restaurar" title="Restaurar" image="ui-icon ui-icon-transferthick-e-w" />                                  
+                                </p:toolbarGroup>  
+                            </p:toolbar> 
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </p:panel>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

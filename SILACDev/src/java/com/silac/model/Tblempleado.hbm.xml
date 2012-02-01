@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblempleado" table="tblempleado" catalog="dbsilac">
+        <id name="codigoMarcacion" type="short">
+            <column name="codigoMarcacion" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="tblpersona" class="com.silac.model.Tblpersona" fetch="select">
+            <column name="idPersona" not-null="true" unique="true">
+                <comment>Identificador de la persona.</comment>
+            </column>
+        </many-to-one>
+        <property name="fechaIngreso" type="timestamp">
+            <column name="fechaIngreso" length="19" not-null="true">
+                <comment>Fecha en que el empleado empezo a laborar en el hospital.</comment>
+            </column>
+        </property>
+        <property name="nombreAfp" type="string">
+            <column name="nombreAfp" length="50">
+                <comment>Nombre de la AFP a la que se encuentra afiliado el empleado en la actualidad.</comment>
+            </column>
+        </property>
+        <property name="nup" type="java.lang.Long">
+            <column name="nup">
+                <comment>N&#250;mero &#250;nico previsional del empleado</comment>
+            </column>
+        </property>
+        <property name="isss" type="java.lang.Long">
+            <column name="isss">
+                <comment>N&#250;mero de Seguro Social del empleado.</comment>
+            </column>
+        </property>
+        <property name="codigoProfesional" type="string">
+            <column name="codigoProfesional" length="10" />
+        </property>
+        <set name="tbljefes" inverse="true">
+            <key>
+                <column name="idEmpleado" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.Tbljefe" />
+        </set>
+        <set name="tblpermisos" inverse="true">
+            <key>
+                <column name="codigoMarcacion" not-null="true">
+                    <comment>C&#243;digo asignado por el departamento de recursos humanos para identificar a los empleados.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblpermiso" />
+        </set>
+        <set name="tblresultados" inverse="true">
+            <key>
+                <column name="codigoMarcacion" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.Tblresultado" />
+        </set>
+        <set name="tblpuestoempleados" inverse="true">
+            <key>
+                <column name="codigoMarcacion" not-null="true">
+                    <comment>C&#243;digo asignado por el departamento de recursos humanos para identificar a los empleados.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblpuestoempleado" />
+        </set>
+        <set name="tblexamenOrdens" inverse="true">
+            <key>
+                <column name="codigoMarcacion" />
+            </key>
+            <one-to-many class="com.silac.model.TblexamenOrden" />
+        </set>
+        <set name="tblusuarios" inverse="true">
+            <key>
+                <column name="codigoMarcacion" not-null="true" unique="true">
+                    <comment>C&#243;digo asignado por el departamento de recursos humanos para identificar a los empleados.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblusuario" />
+        </set>
+        <set name="tblplanificaciontrabajos" inverse="true">
+            <key>
+                <column name="codigoMarcacion" not-null="true">
+                    <comment>C&#243;digo asignado por el departamento de recursos humanos para identificar a los empleados.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblplanificaciontrabajo" />
+        </set>
+        <set name="tblempleadoCapacitacions" inverse="true">
+            <key>
+                <column name="codigoMarcacion" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.TblempleadoCapacitacion" />
+        </set>
+        <set name="tblevaluaciondonantes" inverse="true">
+            <key>
+                <column name="codigoMarcacion" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.Tblevaluaciondonante" />
+        </set>
+        <set name="tbltransfusions" inverse="true">
+            <key>
+                <column name="codigoMarcacion" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.Tbltransfusion" />
+        </set>
+        <set name="tblordens" inverse="true">
+            <key>
+                <column name="codigoMarcacion" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.Tblorden" />
+        </set>
+    </class>
+</hibernate-mapping>

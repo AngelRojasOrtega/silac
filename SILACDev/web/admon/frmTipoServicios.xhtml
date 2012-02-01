@@ -1,0 +1,130 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Tipo de Servicio
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfirm.jq.click();
+}
+        </script>
+        <p:panel header="Tipo de Servicio">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/> 
+            <h:panelGrid style="width:100%">
+                <h:panelGrid id="campos" columns="3">
+                    <h:outputText value="Modalidad:"/>
+                    <h:selectOneMenu id="cboModalidad" value="#{tiposervicioBean.selectedModalidad}" 
+                                     style="width: 200px" 
+                                     required="#{param['requireGroup1'] == '1'}" 
+                                     requiredMessage="requerido">
+                        <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                        <f:selectItems value="#{modalidadesBean.cargarListaModalidades()}" />  
+                    </h:selectOneMenu> 
+                    <p:message for="cboModalidad"/>
+                    <h:outputText value="Nombre Codigo:"/> 
+                    <p:spinner id="txtCodigo" 
+                               value="#{tiposervicioBean.servicio.codigoTipoServicio}" 
+                               min="0" 
+                               maxlength="3" size="30" 
+                               stepFactor="1" 
+                               required="#{param['requireGroup1'] == '1'}" 
+                               requiredMessage="requerido"/>
+                    <p:message for="txtCodigo"/>     
+                    <h:outputText value="Nombre de Tipo de Servicio:"/> 
+                    <p:inputText id="txtNomServicio" 
+                                 value="#{tiposervicioBean.servicio.nombreTipoServicio}" 
+                                 size="30" 
+                                 required="#{param['requireGroup1'] == '1'}" 
+                                 requiredMessage="Requerido"/>
+                    <p:message for="txtNomServicio"/> 
+                </h:panelGrid>
+                <h:panelGrid style="width: 100%">
+                    <p:toolbar>  
+                        <p:toolbarGroup align="left">  
+                            <p:commandButton value="Nuevo"
+                                             immediate="true"
+                                             title="Nuevo"
+                                             process="@this"
+                                             action="#{tiposervicioBean.nuevo}"                                                  
+                                             update="dtServicio campos"
+                                             image="ui-icon-document"/>                                    
+                            <p:commandButton value="Guardar" 
+                                             process="@this campos" 
+                                             action="#{tiposervicioBean.crear}" 
+                                             oncomplete="confirmFunction()" 
+                                             update="campos dtServicio msg" 
+                                             title="Guardar" 
+                                             image="ui-icon-disk">     
+                                <f:param name="requireGroup1" value="1"/>
+                            </p:commandButton>   
+                        </p:toolbarGroup>  
+                    </p:toolbar> 
+                </h:panelGrid>
+                <p:dataTable id="dtServicio" 
+                             widgetVar="dtServicio" 
+                             var="varServicio" 
+                             rows="10" paginator="true" 
+                             value="#{tiposervicioBean.servicios}">
+                    <f:facet name="header">  
+                        <h:panelGrid style="width: 200px;" columns="3">
+                            <h:outputText value="Buscar: " />  
+                            <p:inputText  id="globalFilter" onkeyup="dtServicio.filter()" style="width:150px" />  
+                        </h:panelGrid> 
+                    </f:facet>  
+                    <p:column filterBy="#{varServicio[1].codigoTipoServicio}" style="text-align: center; width: 32px">
+                        <f:facet name="header"><h:outputText value="Código"/></f:facet>
+                        <h:outputText value="#{varServicio[1].codigoTipoServicio}"/>
+                    </p:column>
+                    <p:column filterBy="#{varServicio[1].nombreTipoServicio}">
+                        <f:facet name="header"><h:outputText value="Tipo de Servicio"/></f:facet>
+                        <h:outputText value="#{varServicio[1].nombreTipoServicio}"/>
+                    </p:column>                            
+                    <p:column style="width: 64px;">
+                        <p:commandButton  image="ui-icon ui-icon-pencil"/>
+                        <p:commandButton  image="ui-icon-trash" 
+                                          oncomplete="confirmation.show()" 
+                                          update="confirm" 
+                                          process="@this">  
+                            <f:setPropertyActionListener value="#{varServicio}" target="#{tiposervicioBean.selectedServicio}" />
+                        </p:commandButton> 
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+        </p:panel>
+
+        <p:confirmDialog message="Desea eliminar el registro?" 
+                         width="400"   
+                         header="Confirm" 
+                         severity="alert" 
+                         widgetVar="confirmation" 
+                         modal="true">  
+            <p:outputPanel id="confirm">
+                <h:panelGrid>
+                    <h:outputText  value="#{tiposervicioBean.selectedServicio[1].idTipoServicio} #{tiposervicioBean.selectedServicio[1].nombreTipoServicio}"/>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Si" 
+                                         update="dtServicio msg"
+                                         action="#{tiposervicioBean.eliminar}" 
+                                         oncomplete="confirmation.hide(); confirmFunction()" 
+                                         process="@this">
+                            <f:param name="idTipoServicio" 
+                                     value="#{tiposervicioBean.selectedServicio[1].idTipoServicio}"/>
+                        </p:commandButton>
+                        <p:commandButton value="No" 
+                                         onclick="confirmation.hide()" 
+                                         type="button" />    
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:confirmDialog> 
+        <p:commandButton style="visibility: hidden" 
+                         oncomplete="dtServicio.filter()" 
+                         widgetVar="updateConfirm" 
+                         update="dtServicio msg"/>
+    </ui:define>
+</ui:composition>

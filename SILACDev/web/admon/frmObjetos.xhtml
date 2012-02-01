@@ -1,0 +1,137 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Objetos
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfim.jq.click();
+}
+        </script>
+        <p:panel header="Objetos">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/> 
+            <h:panelGrid columns="2" columnClasses="alignTop,alignTop" id="campos" style="width:100%">
+                <h:panelGrid style="width: 100%">
+                    <p:fieldset id="objetoForm" legend="Datos del objeto">
+                        <h:panelGrid columns="3" columnClasses="alignTop,alignTop,alignTop">
+                            <h:outputText value="Tipo objeto:"/> 
+                            <h:selectOneMenu style="width: 200px" value="#{objetosBean.selectedTipo}" required="true" id="cboTipo" requiredMessage="requerido">
+                                <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="Menu" itemValue="menu"/>
+                                <f:selectItem itemLabel="SubMenu" itemValue="submenu"/>
+                                <f:selectItem itemLabel="Acción" itemValue="accion"/>
+                                <f:ajax execute="@this" listener="#{objetosBean.loadForm}"
+                                        render="objetoForm paginaForm" />
+                            </h:selectOneMenu>                               
+                            <p:message for="cboTipo"/>                           
+                            <h:outputText rendered="#{objetosBean.renderGrupoForm}"  value="Menu padre:"/>
+                            <h:selectOneMenu id="cboPadre" value="#{objetosBean.selectedObjeto}" 
+                                             rendered="#{objetosBean.renderGrupoForm}"  style="width: 200px" 
+                                             required="true" requiredMessage="requerido">
+                                <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                                <f:selectItems value="#{objetosBean.listaObjetos}" />  
+                            </h:selectOneMenu> 
+                            <p:message rendered="#{objetosBean.renderGrupoForm}" for="cboPadre"/>
+                            <h:outputText rendered="#{objetosBean.renderGrupoForm}"  value="Grupo:"/>
+                            <h:selectOneMenu id="cboGrupo" value="#{objetosBean.selectedGrupo}" 
+                                             rendered="#{objetosBean.renderGrupoForm}"  style="width: 200px" 
+                                             required="true" requiredMessage="requerido">
+                                <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="Tareas" itemValue="tarea"/>
+                                <f:selectItem itemLabel="Consulta" itemValue="consulta"/>
+                                <f:selectItem itemLabel="Reporte" itemValue="reporte"/>
+                            </h:selectOneMenu> 
+                            <p:message rendered="#{objetosBean.renderGrupoForm}" for="cboGrupo"/>
+                            <h:outputText value="Nombre Objeto:"/> 
+                            <p:inputText id="txtNomObjeto" value="#{objetosBean.objeto.nombreObjeto}" size="30" required="true" requiredMessage="requerido"/>
+                            <p:message for="txtNomObjeto"/>       
+                        </h:panelGrid>  
+                    </p:fieldset>
+                    <p:outputPanel id="paginaForm">                           
+                        <p:fieldset rendered="#{objetosBean.renderPaginaForm}" legend="Datos Página Web">
+                            <h:panelGrid columns="3">
+                                <h:outputText value="URL:"/> 
+                                <p:inputText id="txtUrl" value="#{objetosBean.pagina.url}" size="30" required="true" requiredMessage="requerido"/>
+                                <p:message for="txtUrl"/>
+                                <h:outputText value="Descripción:"/> 
+                                <p:inputTextarea id="txtDescripcion" value="#{objetosBean.pagina.descripcion}" cols="30"/>
+                            </h:panelGrid>
+                        </p:fieldset>
+                    </p:outputPanel>
+                </h:panelGrid>
+                <h:panelGrid style="width: 100%">
+                    <p:treeTable id="dtObjetos" value="#{objetosBean.root}" var="varObjeto">  
+                        <p:column>  
+                            <f:facet name="header">  
+                                Objeto 
+                            </f:facet> 
+                            <h:outputText value="#{varObjeto.nombreObjeto}" />  
+                        </p:column> 
+                        <p:column style="width: 64px">  
+                            <p:commandButton  image="ui-icon ui-icon-pencil"
+                                              title="Editar"/>
+                            <p:commandButton  image="ui-icon-trash" 
+                                              title="Eliminar"
+                                              oncomplete="confirmation.show()" 
+                                              update="confirm" 
+                                              process="@this">  
+                                <f:setPropertyActionListener value="#{varObjeto}" target="#{objetosBean.selectedObj}" />
+                            </p:commandButton> 
+                        </p:column>
+                    </p:treeTable> 
+                </h:panelGrid>
+            </h:panelGrid>
+            <h:panelGrid style="width: 100%">
+                <p:toolbar>  
+                    <p:toolbarGroup align="left">                                  
+                        <p:commandButton value="Nuevo"
+                                         type="reset"
+                                         title="Nuevo" 
+                                         onclick="window.location.href=window.location.href"                                                  
+                                         image="ui-icon-document"/>  
+                        <p:commandButton value="Guardar" 
+                                         action="#{objetosBean.crear}" 
+                                         oncomplete="confirmFunction()" 
+                                         update="dtObjetos campos msg" 
+                                         title="Guardar" 
+                                         image="ui-icon-disk">                                                                                       
+                        </p:commandButton>     
+                    </p:toolbarGroup>  
+                </p:toolbar> 
+            </h:panelGrid>
+        </p:panel>
+        <p:confirmDialog message="Desea eliminar el registro?" 
+                         width="400"   
+                         header="Confirm" 
+                         severity="alert" 
+                         widgetVar="confirmation" 
+                         modal="true">  
+            <p:outputPanel id="confirm">
+                <h:panelGrid>
+                    <h:outputText  value="#{objetosBean.selectedObj.idObjeto} #{objetosBean.selectedObj.nombreObjeto}"/>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Si" 
+                                         update="msg"
+                                         action="#{objetosBean.eliminar}" 
+                                         oncomplete="confirmation.hide(); confirmFunction()" 
+                                         process="@this">
+                            <f:param name="idObj" 
+                                     value="#{objetosBean.selectedObj.idObjeto}"/>
+                        </p:commandButton>
+                        <p:commandButton value="No" 
+                                         onclick="confirmation.hide()" 
+                                         type="button" />    
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:confirmDialog> 
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfim" 
+                         update="dtObjetos msg"/>
+    </ui:define>
+</ui:composition>

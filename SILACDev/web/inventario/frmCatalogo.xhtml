@@ -1,0 +1,108 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Catálogo
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfirm.jq.click();
+}
+        </script>
+        <p:panel header="Catálogo">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/> 
+            <h:panelGrid style="width:100%">
+                <h:panelGrid id="campos" columns="3">
+                    <h:outputText value="Nombre de Categoria:"/> 
+                    <p:inputText id="txtNomCategoria" value="#{catalogoBean.cat.categoria}" size="25" required="true" requiredMessage="Requerido"/>
+                    <p:message for="txtNomCategoria"/>        
+
+                </h:panelGrid>   
+                <h:panelGrid style="width: 100%">
+                    <p:toolbar>  
+                        <p:toolbarGroup align="left">  
+                            <p:commandButton value="Nuevo"
+                                             immediate="true"
+                                             title="Nuevo"
+                                             process="@this"
+                                             action="#{catalogoBean.nuevo}"
+                                             update="dtCat campos"
+                                             image="ui-icon-document"/>                                  
+                            <p:commandButton value="Guardar" 
+                                             process="@this campos" 
+                                             action="#{catalogoBean.crear}" 
+                                             oncomplete="confirmFunction()" 
+                                             update="dtCat campos msg" 
+                                             title="Guardar" 
+                                             image="ui-icon-disk">                                                                                       
+                            </p:commandButton>   
+                        </p:toolbarGroup>  
+                    </p:toolbar> 
+                </h:panelGrid>
+                <p:dataTable id="dtCat" 
+                             widgetVar="dtCat" 
+                             var="varCat" 
+                             rows="10" paginator="true" 
+                             value="#{catalogoBean.cats}">
+                    <f:facet name="header">  
+                        <h:panelGrid style="width: 200px;" columns="3">
+                            <h:outputText value="Buscar: " />  
+                            <p:inputText  id="globalFilter" onkeyup="dtCat.filter()" style="width:150px" />  
+                        </h:panelGrid> 
+                    </f:facet>  
+                    <p:column filterBy="#{varCat.idCatalogo}" style="text-align: center; width: 32px">
+                        <f:facet name="header"><h:outputText value="Código"/></f:facet>
+                        <h:outputText value="#{varCat.idCatalogo}"/>
+                    </p:column>
+                    <p:column filterBy="#{varCat.categoria}">
+                        <f:facet name="header"><h:outputText value="Categoria"/></f:facet>
+                        <h:outputText value="#{varCat.categoria}"/>
+                    </p:column>
+
+                    <p:column style="width: 64px">
+                        <p:commandButton  image="ui-icon ui-icon-pencil"/>
+                        <p:commandButton  image="ui-icon-trash" 
+                                          oncomplete="confirmation.show()" 
+                                          update="confirm" 
+                                          process="@this">  
+                            <f:setPropertyActionListener value="#{varCat}" target="#{catalogoBean.selectedCat}" />
+                        </p:commandButton> 
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+        </p:panel>
+        <p:confirmDialog message="Desea eliminar el registro?" 
+                         width="400"   
+                         header="Confirm" 
+                         severity="alert" 
+                         widgetVar="confirmation" 
+                         modal="true">  
+            <p:outputPanel id="confirm">
+                <h:panelGrid>
+                    <h:outputText  value="#{catalogoBean.selectedCat.idCatalogo} #{catalogoBean.selectedCat.categoria}"/>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Si" 
+                                         update="dtCat msg"
+                                         action="#{catalogoBean.eliminar}" 
+                                         oncomplete="confirmation.hide(); confirmFunction()" 
+                                         process="@this">
+                            <f:param name="idCat" 
+                                     value="#{catalogoBean.selectedCat.idCatalogo}"/>
+                        </p:commandButton>
+                        <p:commandButton value="No" 
+                                         onclick="confirmation.hide()" 
+                                         type="button" />    
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:confirmDialog> 
+        <p:commandButton style="visibility: hidden" 
+                         oncomplete="dtCat.filter()" 
+                         widgetVar="updateConfirm" 
+                         update="dtCat msg"/>
+    </ui:define>
+</ui:composition>

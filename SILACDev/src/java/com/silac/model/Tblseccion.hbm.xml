@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblseccion" table="tblseccion" catalog="dbsilac">
+        <id name="idSeccionLaboratorio" type="java.lang.Short">
+            <column name="idSeccionLaboratorio" />
+            <generator class="identity" />
+        </id>
+        <property name="nombreSeccion" type="string">
+            <column name="nombreSeccion" length="50" not-null="true" unique="true">
+                <comment>Nombre de la secci&#243;n de laboratorio.</comment>
+            </column>
+        </property>
+        <property name="codigoSeccion" type="string">
+            <column name="codigoSeccion" length="5" not-null="true" unique="true" />
+        </property>
+        <property name="reinicioNumeroControl" type="string">
+            <column name="reinicioNumeroControl" length="25" not-null="true" />
+        </property>
+        <set name="tblplanificaciontrabajos" inverse="true" table="tblasignarseccion">
+            <key>
+                <column name="idSeccionLaboratorio" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.silac.model.Tblplanificaciontrabajo">
+                <column name="idPlanificacionTrabajo" not-null="true" />
+            </many-to-many>
+        </set>
+        <set name="tblexamens" inverse="true">
+            <key>
+                <column name="idSeccionLaboratorio" not-null="true">
+                    <comment>Identificador de la secci&#243;n.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblexamen" />
+        </set>
+    </class>
+</hibernate-mapping>

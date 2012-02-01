@@ -1,0 +1,168 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="./../templates/templateError.xhtml">
+    <ui:define name="titulo">
+        Bienvenido a la Instalación  SILAC Version 1.0
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript">
+function confirmFunction() {
+updateConfirm.jq.click();
+}
+
+function start() {  
+        this.progressInterval = setInterval(function(){  
+            pbClient.setValue(pbClient.getValue() + 10);  
+        }, 2000);  
+    }  
+  
+    function cancel() {  
+        clearInterval(this.progressInterval);  
+        pbClient.setValue(0);  
+    }  
+        </script>
+
+        <p:panel header="Configuración del sitio">
+            <p:growl  life="6000" id="msg" globalOnly="true" showDetail="true"/>
+            <h:panelGrid border="0" cellpadding="0" cellspacing="0" styleClass="dashboard">
+                <p:wizard style="width: 1024px; max-width: 1024px" widgetVar="wiz"  
+                          flowListener="#{preferenciaBean.onFlowProcess}">  
+                    <p:tab  title="Usuario">  
+                        <p:panel header="Cuenta de Usuario Administrador">  
+                            <h:panelGrid style="width: 100%">
+                                <h:panelGrid style="text-align: left" columns="3" columnClasses="label, value" styleClass="grid" id="database">  
+                                    <h:outputText value="Nombre de Usuario: *" />  
+                                    <p:inputText id="txtusuario" required="true" requiredMessage="Requerido" label="Firstname"  
+                                                 value="#{preferenciaBean.nameuser}" 
+
+                                                 />  
+                                    <p:message for="txtusuario"/>
+                                    <h:outputText value="Cotraseña: *" />  
+                                    <p:inputText label="Firstname"  
+                                                 value="#{preferenciaBean.password}" />  
+
+                                    <p:commandButton oncomplete="confirmFunction()" value="cargar"                                               
+                                                     title="Cargar Base de datos"
+                                                     process="@this database"
+                                                     action="#{preferenciaBean.resetDatabase}"                                                  
+                                                     update="database consulta"
+                                                     image="ui-icon-document"/>               
+                                </h:panelGrid> 
+                                <div style="min-height: 100px; max-height: 100px; overflow:auto" >
+                                    <p:messages   id="consulta"  globalOnly="true" showDetail="true" />   
+                                </div>
+                            </h:panelGrid>
+                        </p:panel>  
+                    </p:tab>  
+                    <p:tab id="address" title="Valores Por Defecto">  
+                        <p:panel header="Adress Details">  
+                            <h:messages errorClass="error"/>  
+                            <h:panelGrid columns="2" columnClasses="label, value">  
+                                <h:outputText value="Nombre de Usuario: *" />  
+                                <p:inputText required="true" label="Firstname"  
+                                             value="#{preferenciaBean.user.login}" />  
+                                <h:outputText value="Cotraseña: *" />  
+                                <p:password id="txtPass" binding="#{txtpass}" 
+                                            value="#{preferenciaBean.user.pass}" 
+                                            required="true" requiredMessage="Requerido"
+                                            minLength="8" feedback="true" 
+                                            promptLabel="Por favor escriba una contraseña" 
+                                            weakLabel="Débil" goodLabel="Buena" 
+                                            strongLabel="Fuerte">
+                                    <f:validateLength for="txtPass" minimum="8"/>  
+                                </p:password>
+                                <h:outputText value="Repetir Conttaseña: *" />  
+                                <p:password  id="txtVerificar" value="#{cuentaUsuarioBean.verificar}"
+                                             promptLabel="Por favor repita la contraseña"
+                                             weakLabel="Débil" goodLabel="Buena" strongLabel="Fuerte"
+                                             feedback="true" minLength="8" size="20" 
+                                             required="true" requiredMessage="requerido">
+                                    <f:validator  validatorId="passwordValidator"/>
+                                    <f:attribute name="pass" value="#{txtpass.value}"/>
+                                </p:password>   
+                                <h:outputText value="Skip to last: " />  
+                                <h:selectBooleanCheckbox value="#{preferenciaBean.skip}" />  
+                            </h:panelGrid>  
+                        </p:panel>  
+                    </p:tab>  
+                    <p:tab id="contact" title="Datos De La Institución">  
+                        <p:panel header="Contact Information">  
+                            <h:messages errorClass="error"/>  
+                            <h:panelGrid columns="2" columnClasses="label, value">  
+                                <h:outputText value="Email: *" />  
+                                <p:inputText required="true" label="Email"  
+                                             value="#{preferenciaBean.user.primerNombre}" />  
+                                <h:outputText value="Phone: " />  
+                                <p:inputText value="#{preferenciaBean.user.primerNombre}"/>  
+                                <h:outputText value="Additional Info: " />  
+                                <p:inputText value="#{preferenciaBean.user.primerNombre}"/>  
+                            </h:panelGrid>  
+                        </p:panel>  
+                    </p:tab>  
+                    <p:tab id="confirm" title="Confirmación">  
+                        <p:panel header="Confirmation">  
+                            <p:growl id="growl" sticky="true" showDetail="true"/>  
+                            <h:panelGrid id="confirmation" columns="6">  
+                                <h:outputText value="Firstname: " />  
+                                <h:outputText styleClass="outputLabel"  
+                                              value="#{preferenciaBean.user.primerNombre}" />  
+                                <h:outputText value="Lastname: " />  
+                                <h:outputText  styleClass="outputLabel"  
+                                               value="#{preferenciaBean.user.primerNombre}"/>  
+                                <h:outputText value="Age: " />  
+                                <h:outputText styleClass="outputLabel"  
+                                              value="#{preferenciaBean.user.primerNombre}" />>  
+                                <h:outputText value="Street: " />  
+                                <h:outputText styleClass="outputLabel"  
+                                              value="#{preferenciaBean.user.primerNombre}" />  
+                                <h:outputText value="Postal Code: " />  
+                                <h:outputText styleClass="outputLabel"  
+                                              value="#{preferenciaBean.user.primerNombre}" />  
+                                <h:outputText value="City: " />  
+                                <h:outputText styleClass="outputLabel"  
+                                              value="#{preferenciaBean.user.primerNombre}" />  
+                                <h:outputText value="Email: " />  
+                                <h:outputText styleClass="outputLabel"  
+                                              value="#{preferenciaBean.user.primerNombre}" />  
+                                <h:outputText value="Phone " />  
+                                <h:outputText styleClass="outputLabel"  
+                                              value="#{preferenciaBean.user.primerNombre}"/>  
+                                <h:outputText value="Info: " />  
+                                <h:outputText styleClass="outputLabel"  
+                                              value="#{preferenciaBean.user.primerNombre}" />  
+                                <h:outputText />  
+                                <h:outputText />  
+                            </h:panelGrid>  
+
+                            <p:commandButton value="Submit" update="growl"   
+                                             actionListener="#{preferenciaBean.save}"/>  
+
+                        </p:panel>  
+                    </p:tab>  
+
+                </p:wizard>  
+
+                <p:ajaxStatus>  
+                    <f:facet name="start">  
+                        <h:graphicImage value="#{resource['images:ajax-loader.gif']}" />  
+                    </f:facet>  
+
+                    <f:facet name="complete">  
+                        <h:outputText value="" />  
+                    </f:facet>  
+                </p:ajaxStatus>  
+
+
+            </h:panelGrid>
+        </p:panel>
+        <p:commandButton id="updateConfirm" 
+                         style="visibility: hidden" 
+                         widgetVar="updateConfirm"  
+                         update="msg">
+        </p:commandButton>
+    </ui:define>
+</ui:composition>

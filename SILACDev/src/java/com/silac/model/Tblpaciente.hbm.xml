@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblpaciente" table="tblpaciente" catalog="dbsilac">
+        <id name="idPaciente" type="java.lang.Long">
+            <column name="idPaciente" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblpersona" class="com.silac.model.Tblpersona" fetch="select">
+            <column name="idPersona" not-null="true">
+                <comment>Identificador de la persona.</comment>
+            </column>
+        </many-to-one>
+        <property name="numExpediente" type="string">
+            <column name="numExpediente" length="15" not-null="true">
+                <comment>Numero de expediente del paciente. Se usar&#225; el n&#250;mero de expediente del lugar de donde proceda el paciente.</comment>
+            </column>
+        </property>
+        <set name="tblevaluaciondonantes" inverse="true">
+            <key>
+                <column name="idPaciente" not-null="true">
+                    <comment>Identificador del paciente.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblevaluaciondonante" />
+        </set>
+        <set name="tblordens" inverse="true">
+            <key>
+                <column name="idPaciente" not-null="true">
+                    <comment>Identificador del paciente.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblorden" />
+        </set>
+        <set name="tbltransfusions" inverse="true">
+            <key>
+                <column name="idPaciente" not-null="true">
+                    <comment>Identificador del paciente.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tbltransfusion" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,225 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Registro de resultados
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript">
+function confirmFunction() {
+updateConfirm.jq.click();
+}
+function showDialog(args){
+if(args == 7){
+rechazarMuestra.show();
+}
+}
+        </script>
+        <p:panel id="pnlResultado" header="Registro de resultados">   
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+            <h:panelGrid id="campos" style="width: 100%">
+                <p:fieldset legend="Datos del paciente">
+                    <h:panelGrid columns="2">
+                        <h:outputText value="No. Expediente:"/>
+                        <h:outputText style="font-weight: bold;" value="#{resultadoBean.paciente.numExpediente}"/>                                  
+                        <h:outputText value="Paciente:"/>       
+                        <h:outputText style="font-weight: bold;" value="#{resultadoBean.usuario.selectedOrdenPendiente.paciente}"/>
+                        <h:outputText value="Fecha Nacimiento:"/>
+                        <h:outputText style="font-weight: bold;" value="#{resultadoBean.persona.fechaNacimiento}"/>
+                        <h:outputText value="Sexo:"/>     
+                        <h:outputText style="font-weight: bold;" value="#{resultadoBean.persona.sexo}"/>
+                        <h:outputText value="Departamento:"/>
+                        <h:outputText style="font-weight: bold;" value="#{resultadoBean.departamento.nomDepartamento}"/>  
+                        <h:outputText value="Municipio:"/>
+                        <h:outputText style="font-weight: bold;" value="#{resultadoBean.municipio.nomMunicipio}"/>  
+                        <h:outputText value="domicilio:"/>
+                        <h:outputText style="font-weight: bold;" value="#{resultadoBean.domicilio.direccion}"/>  
+                    </h:panelGrid>
+                </p:fieldset> 
+                <p:fieldset legend="Datos del examen">
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Modalidad:"/>    
+                        <h:outputText style="font-weight: bold;" value="#{resultadoBean.modalidad.nombreModalidad}"/>   
+                        <h:outputText value="Servicio:"/>    
+                        <h:outputText style="font-weight: bold;" value="#{resultadoBean.tiposervicio.nombreTipoServicio}"/>   
+                        <h:outputText value="Servicio:"/>    
+                        <h:outputText style="font-weight: bold;" value="#{resultadoBean.servicio.nombreServicio}"/>     
+                        <h:outputText value="Especialidad:"/>
+                        <h:outputText style="font-weight: bold;" value="#{resultadoBean.especialidad.nombreEspecialidad}"/>  
+                        <h:outputText value="Médico:"/> 
+                        <h:outputText style="font-weight: bold;" value="#{resultadoBean.medico}"/>  
+                        <h:outputText value="Sección:"/>
+                        <h:outputText style="font-weight: bold;" value="#{resultadoBean.seccion.nombreSeccion}"/>  
+                        <h:outputText value="Examen:"/> 
+                        <h:outputText style="font-weight: bold;" value="#{resultadoBean.examen.codigoExamen} #{resultadoBean.examen.nombreExamen}"/>  
+                    </h:panelGrid>
+                </p:fieldset> 
+
+                <style type="text/css">
+                    .ui-datatable-data table td{
+                        border : 0px !important;
+                    }
+                </style>               
+                <p:dataTable id="dtResultado"
+                             rows="7"  
+                             emptyMessage="No hay pruebas asignadas al examen"
+                             value="#{resultadoBean.listaResultado}" 
+                             var="varResultado">  
+                    <f:facet name="header">
+                        <h:panelGrid style="width: 200px;" columnClasses="alignLeft,alignLeft,alignLeft" columns="3">
+                            <p:commandButton value="Agregar prueba" 
+                                             image="ui-icon-circle-plus"/>
+                            <h:outputText value=""/>
+                            <h:outputText value=""/>
+                        </h:panelGrid> 
+                    </f:facet>
+                    <p:column style="width:400px" headerText="Prueba">
+                        <h:outputText value="#{varResultado.parametro}"/>
+                    </p:column>
+                    <p:column headerText="Valor">
+                        <p:outputPanel rendered="#{varResultado.tipo == 'Logico'}">
+                            <h:panelGrid style="width:200px" columns="2">
+                                <h:selectOneRadio id="optLogico" value="#{varResultado.logico}" 
+                                                  style=" width: 200px; border: none 0px !important;" 
+                                                  border="0"  
+                                                  required="#{param['requireGroup1'] == '1'}" 
+                                                  requiredMessage="Requerido"> 
+                                    <f:selectItem itemLabel="Positivo" itemValue="Positivo"/>
+                                    <f:selectItem itemLabel="Negativo" itemValue="Negativo"/>
+                                </h:selectOneRadio>
+                                <p:message for="optLogico" display="icon"/>  
+                            </h:panelGrid>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{varResultado.tipo == 'Texto'}">
+                            <h:panelGrid style="width:200px" columns="2">
+                                <p:inputText id="txtDescripcion" 
+                                             required="#{param['requireGroup1'] == '1'}"
+                                             value="#{varResultado.descripcion}" 
+                                             requiredMessage="Requerido" size="30" />
+                                <p:message for="txtDescripcion" display="icon"/>
+                            </h:panelGrid>     
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{varResultado.tipo == 'Valor'}">
+                            <h:panelGrid  style="width:200px" columns="2">
+                                <p:spinner id="txtValor" value="#{varResultado.valor}" 
+                                           stepFactor="0.000001" 
+                                           required="#{param['requireGroup1'] == '1'}" 
+                                           min="0"  
+                                           requiredMessage="Requerido"  size="30"/>
+                                <p:message for="txtValor" display="icon"/>    
+                            </h:panelGrid>
+                        </p:outputPanel>
+                    </p:column>
+                    <p:column style="width:32px" headerText="Medida">
+                        <h:outputText value=""/>
+                    </p:column>                   
+                </p:dataTable>   
+                <h:panelGrid columns="3">
+                    <h:outputText value="Tecnico que realiza la prueba:"/>
+                    <h:selectOneMenu id="cboTecnico" 
+                                     onchange="onSelectResultado(); showDialog(this.value);"
+                                     required="#{param['requireGroup1'] == '1'}"  
+                                     requiredMessage="Requerido"
+                                     value="#{resultadoBean.selectedTecnico}" style="width: 200px">
+                        <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                        <f:selectItems value="#{empleadosBean.cargarlistaTecnicos()}" />
+                    </h:selectOneMenu>
+                    <p:message for="cboTecnico"/>
+                    <h:outputText value="Resultado general:"/>
+                    <h:selectOneMenu id="cboResultado" 
+                                     onchange="onSelectResultado(); showDialog(this.value);"
+                                     required="#{param['requireGroup1'] == '1'}"  
+                                     requiredMessage="Requerido"
+                                     value="#{resultadoBean.selectedTipoResultado}" style="width: 200px">
+                        <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                        <f:selectItems value="#{resultadoBean.cargarListaTipoResultado()}" />
+                    </h:selectOneMenu>
+                    <p:message for="cboResultado"/>
+                </h:panelGrid>
+            </h:panelGrid>
+            <h:panelGrid style="width: 100%">
+                <p:toolbar>  
+                    <p:toolbarGroup align="left">  
+                        <p:commandButton value="Nuevo" 
+                                         process="@this" 
+                                         title="Nuevo" 
+                                         update="pnlResultado" 
+                                         image="ui-icon-document"/>  
+                        <p:commandButton value="Guardar" 
+                                         process="@this campos" 
+                                         action="#{resultadoBean.crear}" 
+                                         update="campos msg pnlOrdenPendiente"
+                                         oncomplete="confirmFunction();" 
+                                         title="Guardar" 
+                                         image="ui-icon-disk">
+                            <f:param name="requireGroup1" value="1"/>
+                        </p:commandButton>   
+                    </p:toolbarGroup>  
+                </p:toolbar>
+            </h:panelGrid> 
+        </p:panel>      
+        <p:outputPanel id="rechazoDialog">
+            <p:dialog modal="true" 
+                      draggable="false" 
+                      header="Motivo por el que no se realizó el examen" 
+                      width="450" 
+                      height="150"
+                      resizable="false" 
+                      widgetVar="rechazarMuestra"
+                      visible="#{not empty facesContext.maximumSeverity}">  
+                <p:messages globalOnly="true" id="msgReactivo"/>
+                <h:panelGrid id="detalleRechazo" columns="3" styleClass="alignTop,alignTop,alignTop" >
+                    <h:outputText value="Categoria:"/>
+                    <h:selectOneMenu style="width: 200px"  
+                                     id="cboMotivo" 
+                                     value="#{resultadoBean.incidencia.motivo}" 
+                                     onchange="onSelectMotivo()" 
+                                     required="#{param['requireGroup3'] == '3'}" 
+                                     requiredMessage="Requerido">
+                        <f:selectItem itemLabel="Seleccione una opcion" itemValue="#{null}"/>
+                        <f:selectItem itemLabel="Muestra incompleta" itemValue="Muestra incompleta"/>
+                        <f:selectItem itemLabel="Muestra descompuesta" itemValue="Muestra descompuesta"/>
+                        <f:selectItem itemLabel="Muestra coagulada" itemValue="Muestra coagulada"/>
+                        <f:selectItem itemLabel="Muestra equivocada" itemValue="Muestra equivocada"/>
+                        <f:selectItem itemLabel="Otro" itemValue="Otro"/>
+                    </h:selectOneMenu>   
+                    <p:message for="cboMotivo"/>        
+                    <h:outputText value="Otro, Especifique:"
+                                  rendered="#{resultadoBean.renderMotivo}"/>
+                    <p:inputTextarea id="txtMotivoRechazo" 
+                                     rows="2" 
+                                     autoResize="false"
+                                     value="#{resultadoBean.incidencia.descripcion}"
+                                     required="#{param['requireGroup3'] == '3'}"
+                                     requiredMessage="Requerido"
+                                     rendered="#{resultadoBean.renderMotivo}" 
+                                     cols="30"/>
+                    <p:message for="txtMotivoRechazo"
+                               rendered="#{resultadoBean.renderMotivo}" /> 
+                    <h:outputText value=""/> 
+                    <p:commandButton value="Aceptar"
+                                     title="Aceptar"
+                                     image="ui-icon ui-icon-check" 
+                                     process="@this detalleRechazo"                                    
+                                     oncomplete="confirmFunction();"
+                                     update="dtExamen detalleRechazo rechazoDialog">
+                        <f:param name="requireGroup3" value="3"/>
+                    </p:commandButton>
+                </h:panelGrid>
+            </p:dialog>  
+        </p:outputPanel>
+        <p:remoteCommand name="onSelectMotivo" process="@this cboMotivo" 
+                         update="detalleRechazo" action="#{resultadoBean.onSelectMotivo}"/>  
+        <p:remoteCommand name="onSelectResultado" process="@this cboResultado" 
+                         update="detalleRechazo" action="#{resultadoBean.onSelectResultado}"/>  
+        <p:commandButton id="updateConfirm" 
+                         style="visibility: hidden" 
+                         widgetVar="updateConfirm" actionListener="#{ordenBean.cargarOrdenesPendientes()}"   
+                         update="msg pnlOrdenPendiente">
+        </p:commandButton>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,143 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Configuración del sitio
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript">
+function confirmFunction() {
+updateConfirm.jq.click();
+}
+        </script>
+        <p:panel header="Configuración del sitio">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+
+            <h:panelGrid style="width: 100%">
+                <p:fieldset id="camposEstablecimientos" legend="Datos del establecimiento" >
+                    <h:panelGrid columns="3" columnClasses="alignTop,alignTop,alignTop">
+                        <h:outputText value="Nombre:"/> 
+                        <p:inputText id="txtNombre" value="#{configBean.establecimiento.nombre}" size="30" required="true" requiredMessage="requerido"/>
+                        <p:message for="txtNombre"/>                               
+                        <h:outputText value="Código:"/> 
+                        <p:inputText id="txtCodigo" value="#{configBean.establecimiento.codigo}" size="30" required="true" requiredMessage="requerido"/>
+                        <p:message for="txtCodigo"/>
+
+                        <h:outputText value="Departamento:"/>
+                        <h:selectOneMenu id="cboDepto" onchange="onSelectDepto()" 
+                                         required="true"  
+                                         requiredMessage="Requerido" 
+                                         value="#{configBean.selectedDepto}" 
+                                         style="width: 200px">
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                            <f:selectItems value="#{domicilioBean.cargarListaDeptos()}" />
+                        </h:selectOneMenu>
+                        <p:message for="cboDepto"/>
+                        <h:outputText value="Municipio:"/>
+                        <h:selectOneMenu id="cboMunicipio" 
+                                         required="true"
+                                         requiredMessage="Requerido" 
+                                         value="#{configBean.selectedMunicipio}" 
+                                         style="width: 200px">
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                            <f:selectItems value="#{configBean.listaMunicipios}" /> 
+                        </h:selectOneMenu>
+                        <p:message for="cboMunicipio"/>
+                        <h:outputText value="Dirección:"/> 
+                        <p:inputTextarea id="txtDireccion" value="#{configBean.establecimiento.direccion}" cols="30" rows="3" required="true" requiredMessage="requerido"/>
+                        <p:message for="txtDireccion"/>    
+                        <h:outputText value="Teléfono particular:"/>
+                        <p:inputMask id="txtTelefono" value="#{configBean.establecimiento.telefono}"  mask="9999-9999" size="30" required="true" requiredMessage="requerido"/>
+                        <p:message for="txtTelefono"/>
+                        <h:outputText value="Logo:"/>
+                        <input type="file" name="fileUpload" value="" />
+                    </h:panelGrid>
+                    <h:panelGrid style="width: 100%">
+                        <p:toolbar>  
+                            <p:toolbarGroup align="left">  
+                                <p:commandButton value="Guardar" 
+                                                 process="@this camposEstablecimientos" 
+                                                 action="#{configBean.crear}" 
+                                                 update="camposEstablecimientos msg"
+                                                 oncomplete="confirmFunction();" 
+                                                 title="Guardar" 
+                                                 image="ui-icon-disk">
+                                    <f:param name="requireGroup1" value="1"/>
+                                </p:commandButton>   
+                            </p:toolbarGroup>  
+                        </p:toolbar> 
+                    </h:panelGrid>
+                </p:fieldset>
+                <p:fieldset legend="Contraseña de administrador">
+                    <h:panelGrid columns="3" columnClasses="alignTop,alignTop,alignTop">
+                        <h:outputText value="Contraseña actual:"/> 
+                        <p:inputText id="txtPassActual" size="30" required="true" requiredMessage="requerido"/>
+                        <p:message for="txtPassActual"/>   
+                        <h:outputText value="Nueva contraseña:"/> 
+                        <p:inputText id="txtPassNueva" size="30" required="true" requiredMessage="requerido"/>
+                        <p:message for="txtPassNueva"/>   
+                        <h:outputText value="Verificar contraseña:"/> 
+                        <p:inputText id="txtPassVerificar" size="30" required="true" requiredMessage="requerido"/>
+                        <p:message for="txtPassVerificar"/>   
+                    </h:panelGrid>
+                    <h:panelGrid style="width: 100%">
+                        <p:toolbar>  
+                            <p:toolbarGroup align="left">  
+                                <p:commandButton type="push" value="Guardar" title="Guardar" image="ui-icon-disk"/>  
+                            </p:toolbarGroup>  
+                        </p:toolbar> 
+                    </h:panelGrid>
+                </p:fieldset>
+                <p:fieldset legend="Tema principal">
+                    <h:panelGrid columns="2" columnClasses="alignTop,alignTop">
+                        <h:outputText value="Seleccione un tema:"/> 
+
+
+                        <p:carousel id="camposTema" 
+                                    style="width:100%"  
+                                    value="#{configBean.temas}" 
+                                    var="tema">  
+                            <p:column>  
+                                <h:panelGrid style="background-color:#{tema==configBean.selectedTema ? 'gray':'none'}; width:100% " columns="1"  cellpadding="5">  
+                                    <p:graphicImage value="/resources/images/temas/#{tema}.png"/>   
+
+                                    <h:outputText value="Tema: #{tema}" />  
+
+                                    <p:commandButton id="cmdAceptar"
+                                                     title="Aceptar Muestra"
+                                                     process="@this camposTema camposEstablecimientos"
+                                                     update="camposTema camposEstablecimientos msg" 
+                                                     action="#{configBean.crear}"
+                                                     oncomplete="confirmFunction()"                                            
+                                                     image="#{tema==configBean.selectedTema ? 'ui-icon ui-icon-check':'ui-icon ui-icon-cancel'}">
+                                        <f:setPropertyActionListener value="#{tema}" target="#{configBean.selectedTema}" />
+                                    </p:commandButton>
+
+                                </h:panelGrid>  
+                            </p:column>  
+                        </p:carousel>      
+
+
+                    </h:panelGrid>
+                    <h:panelGrid style="width: 100%">
+                        <p:toolbar>  
+                            <p:toolbarGroup align="left">  
+                                <p:commandButton type="push" value="Guardar" title="Guardar" image="ui-icon-disk"/>  
+                            </p:toolbarGroup>  
+                        </p:toolbar> 
+                    </h:panelGrid>
+                </p:fieldset>
+            </h:panelGrid>
+        </p:panel>
+        <p:remoteCommand name="onSelectDepto" process="@this cboDepto" 
+                         update="cboMunicipio" action="#{configBean.onSelectDepto}"/>
+        <p:commandButton id="updateConfirm" 
+                         style="visibility: hidden" 
+                         widgetVar="updateConfirm"  
+                         update="camposTema msg">
+        </p:commandButton>
+    </ui:define>
+</ui:composition>

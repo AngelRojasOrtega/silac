@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Cambio de turno
+    </ui:define>
+    <ui:define name="content">
+        <p:panel header="Cambio de turno">
+            <h:panelGrid style="width: 100%">
+                <p:fieldset legend="Datos del cambio">
+                    <h:panelGrid columns="3" columnClasses="alignTop,alignTop,alignTop">
+                        <h:outputText value="Empleado que solicita el cambio:"/>
+                        <h:selectOneMenu style="width: 200px"  id="cboSolicitante">
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="1"></f:selectItem>
+                        </h:selectOneMenu>  
+                        <p:message for="cboSolicitante"/>
+                        <h:outputText value="Empleado que cede el turno:"/>
+                        <h:selectOneMenu style="width: 200px"  id="cboEmpleado">
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="1"></f:selectItem>
+                        </h:selectOneMenu>  
+                        <p:message for="cboEmpleado"/>
+                        <h:outputText value="Fecha de solicitud:"/>
+                        <p:calendar id="txtFecSolicitud" locale="es" navigator="true" showOn="button" />
+                        <p:message for="txtFecSolicitud"/> 
+                        <h:outputText value="Motivo:"/>
+                        <p:inputTextarea rows="2" cols="30" id="txtMotivo"/>
+                        <p:message for="txtMotivo"/> 
+                        <h:outputText value="Tipo de cambio:"/>
+                        <h:selectOneRadio required="true" id="optTipo">
+                            <f:selectItem id="optTipo1" itemLabel="Parcial" itemValue="1" />
+                            <f:selectItem id="optTipo2" itemLabel="Completo" itemValue="2" />
+                        </h:selectOneRadio>
+                        <p:message  for="optTipo"/> 
+                        <h:outputText value="Hora inicio:"/>
+                        <p:inputText id="txtHoraInicio" size="30"/>
+                        <p:message for="txtHoraInicio"/>  
+                        <h:outputText value="Hora Finalización:"/>
+                        <p:inputText id="txtHoraFin" size="30"/>
+                        <p:message for="txtHoraFin"/>  
+                    </h:panelGrid>
+                </p:fieldset>
+                <p:fieldset legend="Jornada laboral">
+                    <h:panelGrid columns="3">
+                        <h:panelGrid>
+                            <h:outputText value="Solicitante:"/> 
+                            <h:selectManyListbox id="cboJornadaSolicitante" size="10" style="width:150px" value="">
+
+                            </h:selectManyListbox>  
+                        </h:panelGrid> 
+                        <h:panelGrid>
+                            <p:commandButton value="Intercambiar" style="width:150px" image="ui-icon ui-icon-transferthick-e-w"/>
+                            <p:commandButton value="Reestablecer" style="width:150px"   image="ui-icon ui-icon-arrowreturnthick-1-w"/>
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:outputText value="Empleado que cede:"/> 
+                            <h:selectManyListbox  id="cboJornadaReceptor" size="10" style="width:150px"  value="">
+
+                            </h:selectManyListbox>  
+                        </h:panelGrid> 
+                    </h:panelGrid>                                                       
+                </p:fieldset>                   
+            </h:panelGrid>
+            <h:panelGrid style="width: 100%">
+                <p:toolbar>  
+                    <p:toolbarGroup align="left">  
+                        <p:commandButton type="push" value="Nuevo" title="Guardar" image="ui-icon-document"/>  
+                        <p:commandButton type="push" value="Buscar" title="Buscar" image="ui-icon-search"/>    
+                        <p:commandButton type="push" value="Modificar" title="Modificar" image="ui-icon-pencil"/>   
+                        <p:commandButton type="push" value="Cancelar" title="Cancelar" image="ui-icon-cancel"/> 
+                        <p:commandButton type="push" value="Guardar" title="Guardar" image="ui-icon-disk"/>    
+                    </p:toolbarGroup>  
+                </p:toolbar> 
+            </h:panelGrid>  
+        </p:panel>
+    </ui:define>
+</ui:composition>

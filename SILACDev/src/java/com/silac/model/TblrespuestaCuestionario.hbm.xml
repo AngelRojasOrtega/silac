@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.TblrespuestaCuestionario" table="tblrespuesta_cuestionario" catalog="dbsilac">
+        <id name="idRespuesta" type="java.lang.Long">
+            <column name="idRespuesta" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblcuestionarioEvaluacion" class="com.silac.model.TblcuestionarioEvaluacion" fetch="select">
+            <column name="idCuestionario" not-null="true">
+                <comment>Identificador del cuestionario.</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="tblevaluaciondonante" class="com.silac.model.Tblevaluaciondonante" fetch="select">
+            <column name="idEvaluacionDonante" not-null="true">
+                <comment>Identificador de la evaluaci&#243;n del donante.</comment>
+            </column>
+        </many-to-one>
+        <property name="respuesta" type="java.lang.Boolean">
+            <column name="respuesta">
+                <comment>Respuesta dada por el donante a la pregunta realizada. Las respuestas son cerradas (Si o No)</comment>
+            </column>
+        </property>
+        <set name="tblrespuestaCriterios" inverse="true">
+            <key>
+                <column name="idRespuesta" not-null="true">
+                    <comment>Identificador de la respuesta.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.TblrespuestaCriterio" />
+        </set>
+    </class>
+</hibernate-mapping>

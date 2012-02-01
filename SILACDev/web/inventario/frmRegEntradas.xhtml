@@ -1,0 +1,224 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Registro de entradas al inventario
+    </ui:define>    ^
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfim.jq.click();
+}
+        </script>
+        <p:panel header="Registro de entradas al inventario">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+            <h:panelGrid style="width: 100%">
+                <p:fieldset id="formEntradas" legend="Datos del artículo">
+                    <h:panelGrid id="campos" columns="3">
+                        <h:outputText value="Categoria:"/>
+                        <h:selectOneMenu style="width: 200px"  
+                                         id="cboCategoria" 
+                                         onchange="onSelectCategoria()" 
+                                         value="#{entradaBean.selectedCategoria}" 
+                                         required="#{param['requireGroup1'] == '1'}" requiredMessage="requerido">
+                            <f:selectItem itemLabel="Seleccione una categoria" itemValue="#{null}"></f:selectItem>
+                            <f:selectItems value="#{catalogoBean.cargarCategorias()}" />
+                        </h:selectOneMenu>   
+                        <p:message for="cboCategoria"/>
+                        <h:outputText value="Articulo:"/>
+                        <p:outputPanel id="articulo">
+                            <h:selectOneMenu style="width: 200px"  
+                                             id="cboArticulo" 
+                                             onchange="onSelectArticulo()" 
+                                             value="#{entradaBean.selectedArticulo}" 
+                                             required="#{param['requireGroup1'] == '1'}" requiredMessage="requerido">
+                                <f:selectItem itemLabel="Seleccione el articulo" itemValue="#{null}"></f:selectItem>
+                                <f:selectItems value="#{entradaBean.listaArticulos}" />
+                            </h:selectOneMenu>  
+                        </p:outputPanel>
+                        <p:message for="cboArticulo"/>
+                        <h:outputText value="Procedencia:"/>
+                        <h:selectOneMenu style="width: 200px"  
+                                         id="cboProcedencia" 
+                                         value="#{entradaBean.selectedProcedencia}" 
+                                         required="#{param['requireGroup1'] == '1'}" requiredMessage="requerido">
+                            <f:selectItem itemLabel="Seleccione procedencia" itemValue="#{null}"></f:selectItem>
+                            <f:selectItems value="#{entradaBean.listaProcedencias}" />
+                        </h:selectOneMenu>   
+                        <p:message for="cboProcedencia"/>
+                        <h:outputText value="Numero de Vale:"/>
+                        <p:inputText id="txtNumVale"  
+                                     value="#{entradaBean.entrada.numeroVale}" 
+                                     required="#{param['requireGroup1'] == '1'}" requiredMessage="requerido"/>                                
+                        <p:message for="txtNumVale"/>
+                        <h:outputText value="Numero de Lote:"/>
+                        <p:inputText id="txtNumLote" 
+                                     value="#{entradaBean.entrada.numeroLote}" 
+                                     required="false"/>                                
+                        <p:message for="txtNumLote"/>
+                        <p:outputPanel id="lblFecVencimiento">
+                            <h:outputText value="Fecha Vencimiento:" rendered="#{entradaBean.renderVencimiento}"/>
+                        </p:outputPanel>
+                        <p:outputPanel id="fecVencimiento">
+                            <p:calendar id="txtFecVencimiento"
+                                        locale="es"
+                                        binding="#{txtFecVencimiento}" 
+                                        onSelectUpdate="opFecha msg" 
+                                        selectListener="#{entradaBean.handleDateSelect}"  
+                                        onSelectProcess="@this txtVencMaximo" readOnlyInputText="true" 
+                                        mindate="#{entradaBean.hoy}" 
+                                        navigator="true" showOn="button" 
+                                        required="#{param['requireGroup1'] == '1'}" 
+                                        requiredMessage="requerido" 
+                                        value="#{entradaBean.entrada.fechaVencimiento}"
+                                        rendered="#{entradaBean.renderVencimiento}"/> 
+                        </p:outputPanel>
+                        <p:outputPanel id="msgFecVencimiento">
+                            <p:message for="txtFecVencimiento" rendered="#{entradaBean.renderVencimiento}"/>
+                        </p:outputPanel>
+                        <p:outputPanel id="lblVencMaximo">
+                            <h:outputText value="fecha Adicional de Vencimiento:"
+                                          rendered="#{entradaBean.renderVencimiento}"/>
+                        </p:outputPanel>
+                        <p:outputPanel id="opFecha">
+                            <p:calendar id="txtVencMaximo"
+                                        locale="es"
+                                        readOnlyInputText="true" 
+                                        mindate="#{entradaBean.minDate}" 
+                                        navigator="true" 
+                                        showOn="button" 
+                                        required="#{param['requireGroup1'] == '1'}" 
+                                        requiredMessage="requerido" 
+                                        value="#{entradaBean.entrada.vencimientoMaximo}"
+                                        rendered="#{entradaBean.renderVencimiento}">
+                                <f:attribute name="fechaInicio" value="#{txtFecVencimiento.value}"/>
+                                <f:validator validatorId="fechaValidator"/> 
+                            </p:calendar>                                       
+                        </p:outputPanel>
+                        <p:outputPanel id="msgVencMaximo">
+                            <p:message for="txtVencMaximo"
+                                       rendered="#{entradaBean.renderVencimiento}"/>
+                        </p:outputPanel>
+                        <h:outputText value="Cantidad:"/>
+                        <p:inputText id="txtCantidad" 
+                                     value="#{entradaBean.entrada.cantidad}" 
+                                     required="#{param['requireGroup1'] == '1'}" requiredMessage="requerido"/>                                
+                        <p:message for="txtCantidad"/>
+                        <h:outputText value="Precio:"/>
+                        <p:inputText id="txtPrecio" 
+                                     value="#{entradaBean.entrada.precio}" 
+                                     required="#{param['requireGroup1'] == '1'}" requiredMessage="requerido"/>                                
+                        <p:message for="txtPrecio"/>
+                        <h:outputText value="Fecha de Recepción:"/>
+                        <p:calendar id="txtFecRecepcion"
+                                    locale="es"
+                                    readOnlyInputText="true" 
+                                    maxdate="#{entradaBean.hoy}" navigator="true" 
+                                    showOn="button" required="#{param['requireGroup1'] == '1'}" 
+                                    value="#{entradaBean.entrada.fechaRecepcion}" requiredMessage="requerido"/>                                
+                        <p:message for="txtFecRecepcion"/>
+                        <h:outputText value="Concepto:"/>
+                        <p:inputTextarea id="txtConcepto"
+                                         value="#{entradaBean.movimiento.concepto}" 
+                                         required="false"/>                                
+                        <p:message for="txtConcepto"/>
+                    </h:panelGrid>
+                </p:fieldset>
+                <h:panelGrid style="width: 100%">
+                    <p:toolbar>  
+                        <p:toolbarGroup align="left">  
+
+                            <p:commandButton value="Nuevo"
+                                             type="reset"
+                                             title="Nuevo" 
+                                             onclick="window.location.href=window.location.href"                                                  
+                                             image="ui-icon-document"/> 
+                            <p:commandButton value="Guardar" 
+                                             action="#{entradaBean.crear}" 
+                                             oncomplete="confirmFunction()" 
+                                             update="dtEntrada campos msg" 
+                                             title="Guardar" 
+                                             image="ui-icon-disk">
+                                <f:param name="requireGroup1" value="1"/>
+                            </p:commandButton>
+                        </p:toolbarGroup>  
+                    </p:toolbar>
+                </h:panelGrid>
+                <p:dataTable id="dtEntrada" 
+                             widgetVar="dtEntrada"
+                             rows="10"
+                             paginator="true" 
+                             value="#{entradaBean.entradas}" 
+                             var="varEnt">
+                    <f:facet name="header">  
+                        Entradas
+                        <h:panelGrid style="width: 200px;" columns="3">
+                            <h:outputText value="Buscar: " />  
+                            <p:inputText  id="globalFilter" onkeyup="dtEntrada.filter()" style="width:150px" />  
+                        </h:panelGrid> 
+                    </f:facet> 
+                    <p:column filterBy="#{varEnt[3].fechaRecepcion}" style="text-align:center">  
+                        <f:facet name="header">  
+                            <h:outputText value="Fecha de recepción" />  
+                        </f:facet>  
+                        <h:outputText value="#{varEnt[3].fechaRecepcion}" />  
+                    </p:column>
+                    <p:column filterBy="#{varEnt[0]}" style="text-align:center">  
+                        <f:facet name="header">  
+                            <h:outputText value="Categoría" />  
+                        </f:facet>  
+                        <h:outputText value="#{varEnt[0]}" />  
+                    </p:column>
+                    <p:column filterBy="#{varEnt[1]}" style="text-align:center">  
+                        <f:facet name="header">  
+                            <h:outputText value="Nombre" />  
+                        </f:facet>  
+                        <h:outputText value="#{varEnt[1]}" />  
+                    </p:column>
+                    <p:column style="text-align:center">  
+                        <f:facet name="header">  
+                            <h:outputText value="Concepto" />  
+                        </f:facet>  
+                        <h:outputText value="#{varEnt[2]}" />  
+                    </p:column>
+                    <p:column filterBy="#{varEnt[3].fechaVencimiento}" style="text-align:center">  
+                        <f:facet name="header">  
+                            <h:outputText value="Fecha de vencimiento" />  
+                        </f:facet>  
+                        <h:outputText value="#{varEnt[3].fechaVencimiento}" />  
+                    </p:column>
+                    <p:column style="text-align:center">  
+                        <f:facet name="header">  
+                            <h:outputText value="Cantidad" />  
+                        </f:facet>  
+                        <h:outputText value="#{varEnt[3].cantidad}" />  
+                    </p:column>
+                    <p:column style="text-align:center">  
+                        <f:facet name="header">  
+                            <h:outputText value="Precio" />  
+                        </f:facet>  
+                        <h:outputText value="#{varEnt[3].precio}" />  
+                    </p:column>
+                    <p:column style="width:64px">  
+                        <p:commandButton image="ui-icon ui-icon-pencil"/>   
+                        <p:commandButton image="ui-icon ui-icon-trash"/> 
+                    </p:column> 
+                </p:dataTable>
+            </h:panelGrid>
+        </p:panel>
+        <p:remoteCommand name="onSelectArticulo" 
+                         action="#{entradaBean.actualizarVencimiento}" 
+                         process="@this cboArticulo cboCategoria" 
+                         update="lblFecVencimiento fecVencimiento msgFecVencimiento lblVencMaximo opFecha msgVencMaximo"/>
+        <p:remoteCommand name="onSelectCategoria" 
+                         action="#{entradaBean.renderCboArticulo}" 
+                         process="@this cboArticulo cboCategoria" 
+                         update="articulo lblFecVencimiento fecVencimiento msgFecVencimiento lblVencMaximo opFecha msgVencMaximo"/>                
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfim" 
+                         update="dtEntrada msg"/>
+    </ui:define>
+</ui:composition>

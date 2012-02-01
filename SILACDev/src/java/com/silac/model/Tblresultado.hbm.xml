@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblresultado" table="tblresultado" catalog="dbsilac">
+        <id name="idResultado" type="java.lang.Long">
+            <column name="idResultado" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tbltiporesultado" class="com.silac.model.Tbltiporesultado" fetch="select">
+            <column name="idTipoResultadoExamen" not-null="true">
+                <comment>Identificador del tipo de resultado.</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="tblempleado" class="com.silac.model.Tblempleado" fetch="select">
+            <column name="codigoMarcacion" not-null="true" />
+        </many-to-one>
+        <many-to-one name="tblexamenOrden" class="com.silac.model.TblexamenOrden" fetch="select">
+            <column name="idExamenOrden" not-null="true" />
+        </many-to-one>
+        <property name="fechaResultado" type="timestamp">
+            <column name="fechaResultado" length="19" not-null="true">
+                <comment>Fecha en la que se obtuvo el resultado.</comment>
+            </column>
+        </property>
+        <set name="tblincidencias" inverse="false" table="tblresultado_incidencia">
+            <key>
+                <column name="idResultado" not-null="true">
+                    <comment>Identificador del resultado.</comment>
+                </column>
+            </key>
+            <many-to-many entity-name="com.silac.model.Tblincidencia">
+                <column name="idIncidencia" not-null="true">
+                    <comment>Identificador de la incidencia.</comment>
+                </column>
+            </many-to-many>
+        </set>
+    </class>
+</hibernate-mapping>

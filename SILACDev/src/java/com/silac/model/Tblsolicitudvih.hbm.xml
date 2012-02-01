@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblsolicitudvih" table="tblsolicitudvih" catalog="dbsilac">
+        <id name="idSolicitudVih" type="java.lang.Long">
+            <column name="idSolicitudVIH" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblorden" class="com.silac.model.Tblorden" fetch="select">
+            <column name="idOrden" not-null="true">
+                <comment>Identificador de la orden.</comment>
+            </column>
+        </many-to-one>
+        <property name="motivo" type="string">
+            <column name="motivo" length="65535" not-null="true">
+                <comment>Motivo por el cual se realiza la prueba.</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tbllugtrabajo" table="tbllugtrabajo" catalog="dbsilac">
+        <id name="idLugarTrabajo" type="java.lang.Long">
+            <column name="idLugarTrabajo" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblpersona" class="com.silac.model.Tblpersona" fetch="select">
+            <column name="idPersona" not-null="true">
+                <comment>Identificador de la persona.</comment>
+            </column>
+        </many-to-one>
+        <property name="lugarTrabajo" type="string">
+            <column name="lugarTrabajo" length="254" not-null="true">
+                <comment>Lugar de trabajo.</comment>
+            </column>
+        </property>
+        <property name="direccionTrabajo" type="string">
+            <column name="direccionTrabajo" length="65535">
+                <comment>Direcci&#243;n del lugar de trabajo.</comment>
+            </column>
+        </property>
+        <property name="telefonoTrabajo" type="string">
+            <column name="telefonoTrabajo" length="9">
+                <comment>Telefono de lugar de trabajo.</comment>
+            </column>
+        </property>
+        <set name="tblordens" inverse="true" table="tblorden_lugtrabajo">
+            <key>
+                <column name="idLugarTrabajo" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.silac.model.Tblorden">
+                <column name="idOrden" not-null="true" />
+            </many-to-many>
+        </set>
+        <set name="tbltransfusions" inverse="false" table="tbltransfusion_lugtrabajo">
+            <key>
+                <column name="idLugarTrabajo" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.silac.model.Tbltransfusion">
+                <column name="idTransfusion" not-null="true" />
+            </many-to-many>
+        </set>
+    </class>
+</hibernate-mapping>

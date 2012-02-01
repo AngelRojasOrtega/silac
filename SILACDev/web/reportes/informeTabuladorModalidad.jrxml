@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<style name="Crosstab Data Text" isDefault="false" hAlign="Center"/>
+	<parameter name="modalidad" class="java.lang.String"/>
+	<parameter name="mes" class="java.lang.String"/>
+	<parameter name="anio" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT eo.`numeroControl` AS NUMEROORDEN,  
+CONCAT_WS(' ', IFNULL(pe.`primerNombre`,''), IFNULL(pe.`segundoNombre`,''), IFNULL(pe.`primerApellido`,''), IFNULL(pe.`segundoApellido`,'')) AS NOMBRE,
+YEAR(CURDATE())-YEAR(pe.`fechaNacimiento`) + IF(DATE_FORMAT(CURDATE(),'%m-%d') > DATE_FORMAT(pe.`fechaNacimiento`,'%m-%d'), 0, -1) AS EDAD,
+pe.sexo AS SEXO, 
+p.`numExpediente` AS EXPEDIENTE, DATE(eo.`fechaRegistro`) AS FECHA,
+ts.`nombreTipoServicio` AS PROCEDENCIA,
+e.`nombreExamen` AS PROCEDIMIENTO, e.`codigoExamen` AS CODIGO,
+tr.`nombreResultado` AS RESULTADO, tr.`tipoResultado` AS CODIGORES,
+CONCAT WS(' ', IFNULL(per.`primerNombre`,''), IFNULL(per.`segundoNombre`,''), IFNULL(per.`primerApellido`,''), IFNULL(per.`segundoApellido`,'')) AS RESPONSABLE, m.`nombreModalidad` AS MODALIDAD, sec.`nombreSeccion` AS SECCION,
+IFNULL(o.`observaiconesResultados`,'') AS COMENTARIO
+FROM tblpaciente p
+INNER JOIN tblpersona pe ON pe.`idPersona`=p.`idPersona`
+INNER JOIN tblorden o ON o.`idPaciente`= p.`idPaciente`
+INNER JOIN tblexamen_orden eo ON eo.`idOrden` = o.`idOrden`
+INNER JOIN tblservicio s ON s.`idServicio` = o.`idServicio`
+INNER JOIN tbltiposervicio ts ON ts.`idTipoServicio` = s.`idTipoServicio`
+INNER JOIN tblexamen e ON e.`idExamen` = eo.`idExamen`
+INNER JOIN tblresultado r ON r.`idExamenOrden` = eo.`idExamenOrden`
+INNER JOIN tbltiporesultado tr ON tr.`idTipoResultado` = r.`idTipoResultadoExamen`
+INNER JOIN tblempleado em ON em.`codigoMarcacion` = r.`codigoMarcacion`
+INNER JOIN tblpersona per ON per.`idPersona` = em.`idPersona`
+INNER JOIN tblmodalidad m ON m.`idModalidad` = ts.`idModalidad`
+INNER JOIN tblseccion sec ON sec.`idSeccionLaboratorio` = e.`idSeccionLaboratorio`
+WHERE m.`idModalidad` = $P{modalidad} AND MONTH(eo.`fechaRegistro`) = $P{mes} AND YEAR(eo.`fechaRegistro`) = $P{anio}]]>
+	</queryString>
+	<field name="NUMEROORDEN" class="java.math.BigInteger">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="NOMBRE" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="EDAD" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="SEXO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="EXPEDIENTE" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="FECHA" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="PROCEDENCIA" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="PROCEDIMIENTO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="CODIGO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="RESULTADO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="CODIGORES" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="RESPONSABLE" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="MODALIDAD" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="SECCION" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="COMENTARIO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<summary>
+		<band height="115" splitType="Stretch">
+			<crosstab>
+				<reportElement x="0" y="0" width="555" height="115"/>
+				<rowGroup name="FECHA" width="70" totalPosition="End">
+					<bucket>
+						<bucketExpression class="java.sql.Date"><![CDATA[$F{FECHA}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="25" y="0" width="45" height="25"/>
+								<textElement/>
+								<textFieldExpression class="java.util.Date"><![CDATA[$V{FECHA}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="70" height="25"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[TOTAL]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="SECCION" height="30" totalPosition="End">
+					<bucket>
+						<bucketExpression class="java.lang.String"><![CDATA[$F{SECCION}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="30"/>
+								<textElement/>
+								<textFieldExpression class="java.lang.String"><![CDATA[$V{SECCION}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents backcolor="#005FB3" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="50" height="60" forecolor="#FFFFFF"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[TOTAL EX. ]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<columnGroup name="PROCEDENCIA" height="30" totalPosition="End">
+					<bucket>
+						<bucketExpression class="java.lang.String"><![CDATA[$F{PROCEDENCIA}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="30"/>
+								<textElement/>
+								<textFieldExpression class="java.lang.String"><![CDATA[$V{PROCEDENCIA}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="CODIGORESMeasure" class="java.lang.Integer" calculation="Count">
+					<measureExpression><![CDATA[$F{CODIGORES}]]></measureExpression>
+				</measure>
+				<crosstabCell width="50" height="25">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression class="java.lang.Integer"><![CDATA[$V{CODIGORESMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="FECHA">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression class="java.lang.Integer"><![CDATA[$V{CODIGORESMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="SECCION">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF"/>
+							<textElement/>
+							<textFieldExpression class="java.lang.Integer"><![CDATA[$V{CODIGORESMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="FECHA" columnTotalGroup="SECCION">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF"/>
+							<textElement/>
+							<textFieldExpression class="java.lang.Integer"><![CDATA[$V{CODIGORESMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="0" columnTotalGroup="PROCEDENCIA">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="0" rowTotalGroup="FECHA" columnTotalGroup="PROCEDENCIA">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

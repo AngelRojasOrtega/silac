@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblespecialidad" table="tblespecialidad" catalog="dbsilac">
+        <id name="idEspecialidad" type="java.lang.Short">
+            <column name="idEspecialidad" />
+            <generator class="identity" />
+        </id>
+        <property name="codigoEspecialidad" type="string">
+            <column name="codigoEspecialidad" length="3" not-null="true" unique="true">
+                <comment>C&#243;digo de la especialidad.</comment>
+            </column>
+        </property>
+        <property name="nombreEspecialidad" type="string">
+            <column name="nombreEspecialidad" length="60" not-null="true" unique="true">
+                <comment>Nombre de la especialidad.</comment>
+            </column>
+        </property>
+        <set name="tblordens" inverse="true">
+            <key>
+                <column name="idEspecialidad" not-null="true">
+                    <comment>Identificador de la especialidad.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblorden" />
+        </set>
+    </class>
+</hibernate-mapping>

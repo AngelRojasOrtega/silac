@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <body>
+        <ui:composition template="./../templates/template.xhtml">
+            <ui:define name="titulo">
+                Historial
+            </ui:define>
+            <ui:define name="content">
+                <p:panel header="Historial">
+                    <h:panelGrid style="width: 100%">
+                        <p:fieldset legend="Filtrar">
+                            <h:panelGrid columns="4">
+                                <h:outputText value="Empleado:"/>
+                                <h:outputText value="Desde:"/>
+                                <h:outputText value="Hasta:"/>
+                                <h:outputText value=""/>
+                                <h:selectOneMenu style="width: 250px" id="cboEmpleado" requiredMessage="requerido">
+                                    <f:selectItem itemLabel="-Seleccione una opción-" itemValue="1"></f:selectItem>
+                                </h:selectOneMenu>                                
+                                <p:calendar showOn="button" locale="es" navigator="true" id="txtDesde"/>                                
+                                <p:calendar showOn="button" locale="es" navigator="true" id="txtHasta"/>
+                                <p:commandButton type="button" value="Consultar" image="ui-icon ui-icon-search" />
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <p:dataTable  var="historial" value="#{tableBean.carsSmall}" rows="10" paginator="true" emptyMessage="No se encontró información con el criterio seleccionado">
+                            <p:column filterBy="#{historial.year}" 
+                                      sortBy="#{historial.year}"  
+                                      filterOptions="#{tableBean.manufacturerOptions}"  
+                                      filterMatchMode="exact"
+                                      headerText="Fecha">  
+                                <h:outputText value="#{historial.year}" />  
+                            </p:column>  
+                            <p:column headerText="Hora">  
+                                <h:outputText value="HH:mm:ss AM/PM" />  
+                            </p:column>  
+                            <p:column filterBy=""  
+                                      headerText="Usuario"
+                                      filterMatchMode="exact">  
+                                <h:outputText value="Nombre del Usuario" />  
+                            </p:column>  
+                            <p:column filterBy=""   
+                                      headerText="Nombre"  
+                                      filterOptions=""  
+                                      filterMatchMode="exact">  
+                                <h:outputText value="Nombre del empleado" />  
+                            </p:column>  
+                            <p:column headerText="Operación">  
+                                <h:outputText value="Operación realizada" />  
+                            </p:column>  
+                        </p:dataTable>  
+                    </h:panelGrid>
+                    <h:panelGrid style="width: 100%">
+                        <p:toolbar>  
+                            <p:toolbarGroup align="left">  
+                                <p:commandButton type="push" value="Vista Preliminar" title="Vista Preliminar" image="ui-icon-search" />    
+                                <p:commandButton type="push" value="Imprimir" title="Imprimir" image="ui-icon-print"/> 
+                            </p:toolbarGroup>  
+                        </p:toolbar> 
+                    </h:panelGrid>
+                </p:panel>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

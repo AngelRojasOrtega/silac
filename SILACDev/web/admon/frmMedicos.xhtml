@@ -1,0 +1,122 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Médicos
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfirm.jq.click();
+}
+        </script>
+        <p:panel header="Médicos">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/> 
+            <h:panelGrid style="width:100%">
+                <h:panelGrid id="campos" columns="3">
+                    <h:outputText value="JVPM:"/> 
+                    <p:spinner id="txtcodigoMedico" value="#{medicosBean.medico.codMedico}" size="25" required="true" requiredMessage="requerido"/>
+                    <p:message for="txtcodigoMedico"/> 
+                    <h:outputText value="Primer nombre:"/> 
+                    <p:inputText id="txtPriNombre" value="#{medicosBean.persona.primerNombre}" size="25" required="true" requiredMessage="requerido"/>
+                    <p:message for="txtPriNombre"/>   
+                    <h:outputText value="Segundo nombre:"/> 
+                    <p:inputText id="txtSegNombre" value="#{medicosBean.persona.segundoNombre}" size="25"/>
+                    <p:message for="txtSegNombre"/>   
+                    <h:outputText value="Primer apellido:"/> 
+                    <p:inputText id="txtPriApellido" value="#{medicosBean.persona.primerApellido}" size="25" required="true" requiredMessage="requerido"/>
+                    <p:message for="txtPriApellido"/>  
+                    <h:outputText value="Segundo apellido:"/> 
+                    <p:inputText id="txtSegApellido" value="#{medicosBean.persona.segundoApellido}" size="25"/>
+                    <p:message for="txtSegApellido"/>  
+                </h:panelGrid>   
+                <h:panelGrid style="width: 100%">
+                    <p:toolbar>  
+                        <p:toolbarGroup align="left">  
+                            <p:commandButton value="Nuevo"
+                                             immediate="true"
+                                             title="Nuevo"
+                                             process="@this"
+                                             action="#{medicosBean.nuevo}"                                                  
+                                             update="dtMedico campos"
+                                             image="ui-icon-document"/>                                  
+                            <p:commandButton value="Guardar" 
+                                             process="@this campos" 
+                                             action="#{medicosBean.crear}" 
+                                             oncomplete="confirmFunction()" 
+                                             update="campos dtMedico msg" 
+                                             title="Guardar" 
+                                             image="ui-icon-disk">                                                                                       
+                            </p:commandButton>  
+                        </p:toolbarGroup>  
+                    </p:toolbar> 
+                </h:panelGrid>
+                <p:dataTable id="dtMedico" 
+                             widgetVar="dtMedico" 
+                             rows="10" 
+                             paginator="true" 
+                             var="varMedico" 
+                             value="#{medicosBean.medicos}">
+                    <f:facet name="header">  
+                        <h:panelGrid style="width: 200px;" columns="3">
+                            <h:outputText value="Buscar: " />  
+                            <p:inputText  id="globalFilter" onkeyup="dtMedico.filter()" style="width:150px" />  
+                        </h:panelGrid> 
+                    </f:facet>  
+                    <p:column filterBy="#{varMedico.medico.codMedico}" style="text-align: center; width: 32px">
+                        <f:facet name="header"><h:outputText value="JVPM"/></f:facet>
+                        <h:outputText value="#{varMedico.medico.codMedico}"/>
+                    </p:column>
+                    <p:column filterBy="#{varMedico.nombre}" >
+                        <f:facet name="header"><h:outputText value="Nombre médico"/></f:facet>
+                        <h:outputText value="#{varMedico.nombre}"/>
+                    </p:column>
+                    <p:column style="width: 64px;">
+                        <f:facet name="header"/>    
+                        <p:commandButton  image="ui-icon ui-icon-pencil"/>
+                        <p:commandButton  image="ui-icon-trash" 
+                                          oncomplete="confirmation.show()" 
+                                          update="confirm" 
+                                          process="@this">  
+                            <f:setPropertyActionListener value="#{varMedico}" target="#{medicosBean.selectedMedico}" />
+                        </p:commandButton> 
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+        </p:panel>
+
+        <p:confirmDialog message="Desea eliminar el registro?" 
+                         width="400"   
+                         header="Confirm" 
+                         severity="alert" 
+                         widgetVar="confirmation" 
+                         modal="true">  
+            <p:outputPanel id="confirm">
+                <h:panelGrid>
+                    <h:outputText  value="#{medicosBean.selectedMedico.medico.codMedico} #{medicosBean.selectedMedico.nombre}"/>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Si" 
+                                         update="dtMedico msg"
+                                         action="#{medicosBean.eliminar}" 
+                                         oncomplete="confirmation.hide(); confirmFunction();" 
+                                         process="@this">
+                            <f:param name="idMedico" 
+                                     value="#{medicosBean.selectedMedico.medico.idMedico}"/>
+                        </p:commandButton>
+                        <p:commandButton value="No" 
+                                         onclick="confirmation.hide()" 
+                                         type="button" />    
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:confirmDialog>  
+
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfirm" 
+                         oncomplete="dtMedico.filter()" 
+                         update="dtMedico msg"/>
+    </ui:define>
+</ui:composition>

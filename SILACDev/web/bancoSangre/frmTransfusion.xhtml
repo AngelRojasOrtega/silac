@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <body>
+        <ui:composition template="./../templates/template.xhtml">
+            <ui:define name="titulo">
+                Transfusiones
+            </ui:define>
+            <ui:define name="content">
+                <p:panel header="Transfusiones">
+                    <h:panelGrid style="width: 100%">
+                        <p:fieldset legend="Datos del paciente">
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Numero de expediente:"/>
+                                <h:panelGrid columns="2">
+                                    <p:inputText id="txtNumExpediente" required="true"/>  
+                                    <p:commandButton type="push" value="Buscar" title="Nuevo" image="ui-icon-search" /> 
+                                </h:panelGrid>
+                                <h:outputText value="Nombre Paciente:"/>
+                                <p:inputText id="txtNombre" required="true"/>
+                                <h:outputText value="Apellido Paciente:"/>
+                                <p:inputText id="txtApellido" required="true"/>
+                                <h:outputText value="Tipo de sangre:"/>
+                                <p:inputText id="txtTipoSangre" required="true"/>
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <p:fieldset legend="Datos de la transfusión">
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Fecha de realización:"/>
+                                <p:calendar id="txtFecTransfusion" 
+                                            locale="es"
+                                            navigator="true" 
+                                            showOn="button" />
+                                <h:outputText value="Servicio:"/>
+                                <h:selectOneMenu style="width: 200px"  id="cboServicio">
+                                    <f:selectItem itemLabel="-Seleccione un servicio-" itemValue="1"></f:selectItem>
+                                </h:selectOneMenu> 
+                                <h:outputText value="Tipo componente:"/>
+                                <h:selectOneMenu style="width: 200px"  id="cboComponente">
+                                    <f:selectItem itemLabel="-Seleccione un componente-" itemValue="1"></f:selectItem>
+                                </h:selectOneMenu> 
+                                <h:outputText value="Responsable preparación:"/>
+                                <h:selectOneMenu style="width: 200px"  id="cboPreparacion">
+                                    <f:selectItem itemLabel="-Seleccione una opción-" itemValue="1"></f:selectItem>
+                                </h:selectOneMenu> 
+                                <h:outputText value="Responsable transfusión:"/>
+                                <h:selectOneMenu style="width: 200px"  id="cboResponsable">
+                                    <f:selectItem itemLabel="-Seleccione una opción-" itemValue="1"></f:selectItem>
+                                </h:selectOneMenu> 
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <p:fieldset legend="Donantes">
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Donantes disponibles:"/>
+                                <h:selectOneMenu style="width: 200px"  id="cboDonante">
+                                    <f:selectItem itemLabel="-Seleccione una opción-" itemValue="1"></f:selectItem>
+                                </h:selectOneMenu> 
+                                <p:commandButton type="push" value="Agregar" title="Nuevo" image="ui-icon-circle-plus" /> 
+                            </h:panelGrid>
+                            <p:dataTable rows="10" paginator="true" value="" var="articulo">
+                                <f:facet name="header">  
+                                    Donantes
+                                </f:facet> 
+                                <p:column style="text-align:center">  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Nombre" />  
+                                    </f:facet>  
+                                    <h:outputText value="Nombre del donante" />  
+                                </p:column>
+                                <p:column style="text-align:center">  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Tipo de sangre" />  
+                                    </f:facet>  
+                                    <h:outputText value="AAAA" />  
+                                </p:column>
+                                <p:column style="text-align:center">  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Tipo de donante" />  
+                                    </f:facet>  
+                                    <h:outputText value="Tipo de donante" />  
+                                </p:column>                                
+                                <p:column style="width:32px">   
+                                    <p:commandButton image="ui-icon ui-icon-trash"/> 
+                                </p:column> 
+                            </p:dataTable>
+                        </p:fieldset>
+                    </h:panelGrid>
+                    <h:panelGrid style="width: 100%">
+                        <p:toolbar>  
+                            <p:toolbarGroup align="left">  
+                                <p:commandButton type="push" value="Nuevo" title="Nuevo" image="ui-icon-document" /> 
+                                <p:commandButton type="push" value="Buscar" title="Guardar" image="ui-icon-search"/>  
+                                <p:commandButton type="push" value="Modificar" title="Guardar" image="ui-icon-pencil"/>  
+                                <p:commandButton type="push" value="Guardar" title="Guardar" image="ui-icon-disk"/>  
+                            </p:toolbarGroup>  
+                        </p:toolbar>  
+                    </h:panelGrid>
+                </p:panel> 
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

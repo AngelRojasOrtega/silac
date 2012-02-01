@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Copias de respaldo
+    </ui:define>
+    <ui:define name="content">
+        <p:panel header="Copias de respaldo">
+            <h:panelGrid style="width:100%">
+                <p:dataTable var="respaldos" rows="10" paginator="true" value="">
+                    <p:column style="text-align: center; width: 32px">
+                        <f:facet name="header"><h:outputText value="Fecha"/></f:facet>
+                        <h:outputText value="dd/mm/aaaa"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Archivo"/></f:facet>
+                        <h:outputText value="Nombre del archivo"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Peso"/></f:facet>
+                        <h:outputText value="999 Kb/Mb"/>
+                    </p:column>
+                    <p:column style="width: 64px">
+                        <f:facet name="header" id=""><h:outputText value=""/></f:facet>
+                        <p:commandButton id="cmdDescargar"  image="ui-icon ui-icon-link" title="Descargar"/>
+                        <p:commandButton id="cmdEliminar"  image="ui-icon ui-icon-trash" title="Eliminar"/>
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+            <h:panelGrid style="width: 100%">
+                <p:toolbar>  
+                    <p:toolbarGroup align="left">  
+                        <p:commandButton type="push" value="Nuevo" title="Nuevo" image="ui-icon-document" />                                  
+                    </p:toolbarGroup>  
+                </p:toolbar> 
+            </h:panelGrid>
+        </p:panel>
+    </ui:define>
+</ui:composition>

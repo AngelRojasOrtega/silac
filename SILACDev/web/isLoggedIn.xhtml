@@ -1,0 +1,27 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="templates/templateError.xhtml">
+    <ui:define name="titulo">
+        SILAC - Sistema Informático para la Planificación y Gestión Administrativa del Laboratorio Clínico
+    </ui:define>
+    <ui:define name="content">
+        <p:panel  style="width:500px; margin:0 auto;">
+            <h:panelGrid>
+                <h:panelGrid columns="2">
+                    <h:graphicImage value="#{resource['images:info.png']}" /> 
+                    <h:outputText value="Usted ya ha iniciado sesión"/>
+                </h:panelGrid>            
+                <h:panelGrid columns="2">      
+                    <p:commandButton id="confirmBackToIndex" type="button" value="Regresar al inicio" image="ui-icon-home"
+                                     onclick="window.location='#{facesContext.externalContext.requestContextPath}/faces/index.xhtml'" />
+                    <p:commandButton id="closeSession" process="@this" value="Cerrar sesion" image="ui-icon-power"
+                                     action="#{usuarioBean.cerrarSesion}"/>
+                </h:panelGrid>            
+            </h:panelGrid>  
+        </p:panel>
+    </ui:define>
+</ui:composition>

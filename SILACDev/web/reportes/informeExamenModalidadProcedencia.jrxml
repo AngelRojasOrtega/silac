@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<style name="Crosstab Data Text" isDefault="false" hAlign="Center"/>
+	<parameter name="mes" class="java.lang.String"/>
+	<parameter name="anio" class="java.lang.String"/>
+	<parameter name="modalidad" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT eo.`numeroControl` AS NUMEROORDEN,  
+CONCAT_WS(' ', IFNULL(pe.`primerNombre`,''), IFNULL(pe.`segundoNombre`,''), IFNULL(pe.`primerApellido`,''), IFNULL(pe.`segundoApellido`,'')) AS NOMBRE,
+YEAR(CURDATE())-YEAR(pe.`fechaNacimiento`) + IF(DATE_FORMAT(CURDATE(),'%m-%d') > DATE_FORMAT(pe.`fechaNacimiento`,'%m-%d'), 0, -1) AS EDAD,
+pe.sexo AS SEXO, 
+p.`numExpediente` AS EXPEDIENTE, DATE(r.`fechaResultado`) AS FECHA,
+ts.`nombreTipoServicio` AS PROCEDENCIA,
+e.`nombreExamen` AS PROCEDIMIENTO, e.`codigoExamen` AS CODIGO, e.`idExamen` AS IDEXAMEN, 
+tr.`nombreResultado` AS RESULTADO, tr.`tipoResultado` AS CODIGORES,
+CONCAT_WS(' ', IFNULL(per.`primerNombre`,''), IFNULL(per.`segundoNombre`,''), IFNULL(per.`primerApellido`,''), IFNULL(per.`segundoApellido`,'')) AS RESPONSABLE,
+eo.`codigoMarcacion` AS CODMAR, per.`idPersona` AS CODPERSONA, m.`nombreModalidad` AS MODALIDAD, sec.`nombreSeccion` AS SECCION,
+IFNULL(o.`observaiconesResultados`,'') AS COMENTARIO
+FROM tblpaciente p
+INNER JOIN tblpersona pe ON pe.`idPersona`=p.`idPersona`
+INNER JOIN tblorden o ON o.`idPaciente`= p.`idPaciente`
+INNER JOIN tblexamen_orden eo ON eo.`idOrden` = o.`idOrden`
+INNER JOIN tblservicio s ON s.`idServicio` = o.`idServicio`
+INNER JOIN tbltiposervicio ts ON ts.`idTipoServicio` = s.`idTipoServicio`
+INNER JOIN tblexamen e ON e.`idExamen` = eo.`idExamen`
+INNER JOIN tblresultado r ON r.`idExamenOrden` = eo.`idExamenOrden`
+INNER JOIN tbltiporesultado tr ON tr.`idTipoResultado` = r.`idTipoResultadoExamen`
+INNER JOIN tblempleado em ON em.`codigoMarcacion` = r.`codigoMarcacion`
+INNER JOIN tblpersona per ON per.`idPersona` = em.`idPersona`
+INNER JOIN tblmodalidad m ON m.`idModalidad` = ts.`idModalidad`
+INNER JOIN tblseccion sec ON sec.`idSeccionLaboratorio` = e.`idSeccionLaboratorio`
+WHERE m.`idModalidad` = $P{modalidad} AND MONTH(r.`fechaResultado`)=$P{mes} AND YEAR(r.`fechaResultado`)=$P{anio}]]>
+	</queryString>
+	<field name="NUMEROORDEN" class="java.math.BigInteger">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="NOMBRE" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="EDAD" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="SEXO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="EXPEDIENTE" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="FECHA" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="PROCEDENCIA" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="PROCEDIMIENTO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="CODIGO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="IDEXAMEN" class="java.math.BigInteger">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="RESULTADO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="CODIGORES" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="RESPONSABLE" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="CODMAR" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="CODPERSONA" class="java.math.BigInteger">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="MODALIDAD" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="SECCION" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="COMENTARIO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement x="65" y="23" width="611" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Laboratorio Clínico y Banco de Sangre]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="75" y="39" width="587" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Informe Total Examenes Realizados por Modalidad]]></text>
+			</staticText>
+			<elementGroup>
+				<elementGroup>
+					<image hAlign="Left" vAlign="Middle">
+						<reportElement x="0" y="1" width="101" height="58"/>
+						<imageExpression class="java.lang.String"><![CDATA["/images/minsal.jpg"]]></imageExpression>
+					</image>
+					<image hAlign="Right" vAlign="Middle">
+						<reportElement x="685" y="1" width="66" height="59"/>
+						<imageExpression class="java.lang.String"><![CDATA["/images/elSalvador.jpg"]]></imageExpression>
+					</image>
+				</elementGroup>
+			</elementGroup>
+			<line>
+				<reportElement x="0" y="0" width="769" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="65" y="7" width="611" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Hospital Nacional "Santa Teresa"]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<textField>
+				<reportElement x="389" y="7" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{MODALIDAD}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<summary>
+		<band height="42" splitType="Stretch">
+			<crosstab>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="752" height="42"/>
+				<rowGroup name="FECHA" width="110" totalPosition="End">
+					<bucket>
+						<bucketExpression class="java.sql.Date"><![CDATA[$F{FECHA}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#C4B089" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="43" y="0" width="52" height="25"/>
+								<textElement/>
+								<textFieldExpression class="java.util.Date"><![CDATA[$V{FECHA}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#E6DECF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="109" height="25"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[TOTAL PROCEDENCIA]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="PROCEDENCIA" height="30" totalPosition="End">
+					<bucket>
+						<bucketExpression class="java.lang.String"><![CDATA[$F{PROCEDENCIA}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#C4B089" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="91" height="30"/>
+								<textElement/>
+								<textFieldExpression class="java.lang.String"><![CDATA[$V{PROCEDENCIA}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents backcolor="#E6DECF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="50" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[TOTAL DIA]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="CODIGORESMeasure" class="java.lang.Integer" calculation="Count">
+					<measureExpression><![CDATA[$F{CODIGORES}]]></measureExpression>
+				</measure>
+				<crosstabCell width="92" height="25">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="23" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression class="java.lang.Integer"><![CDATA[$V{CODIGORESMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="92" height="25" rowTotalGroup="FECHA">
+					<cellContents backcolor="#E6DECF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="23" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression class="java.lang.Integer"><![CDATA[$V{CODIGORESMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="PROCEDENCIA">
+					<cellContents backcolor="#E6DECF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression class="java.lang.Integer"><![CDATA[$V{CODIGORESMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="FECHA" columnTotalGroup="PROCEDENCIA">
+					<cellContents backcolor="#E6DECF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression class="java.lang.Integer"><![CDATA[$V{CODIGORESMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

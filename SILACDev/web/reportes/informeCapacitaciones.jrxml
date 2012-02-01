@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<parameter name="marcacion" class="java.lang.String"/>
+	<parameter name="mes" class="java.lang.String"/>
+	<parameter name="anio" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     tblpersona.`primerNombre` AS tblpersona_primerNombre,
+     tblpersona.`segundoNombre` AS tblpersona_segundoNombre,
+     tblpersona.`primerApellido` AS tblpersona_primerApellido,
+     tblpersona.`segundoApellido` AS tblpersona_segundoApellido,
+     tblcapacitacioncontinua.`lugarEvento` AS tblcapacitacioncontinua_lugarEvento,
+     tblcapacitacioncontinua.`nombreEvento` AS tblcapacitacioncontinua_nombreEvento,
+     tblcapacitacioncontinua.`direccionEvento` AS tblcapacitacioncontinua_direccionEvento,
+     tblcapacitacioncontinua.`fechaInicio` AS tblcapacitacioncontinua_fechaInicio,
+     tblcapacitacioncontinua.`fechaFinal` AS tblcapacitacioncontinua_fechaFinal,
+     tblempleado.`codigoMarcacion` AS tblempleado_codigoMarcacion,
+     tblempleado_capacitacion.`tipo` AS tblempleado_capacitacion_tipo,
+     tblcapacitacioncontinua.`idCapacitacion` AS tblcapacitacioncontinua_idCapacitacion,
+     CONCAT(IFNULL(tblpersona.`primerNombre`,''),' ',IFNULL(tblpersona.`segundoNombre`,''),' ',IFNULL(tblpersona.`primerApellido`,''),' ',IFNULL(tblpersona.`segundoApellido`,''))AS nombre,
+     concat(IFNULL(tblcapacitacioncontinua.`lugarEvento`,''),'  ,  ',IFNULL(tblcapacitacioncontinua.`nombreEvento`,''))AS LugarNombre,
+     Date_format(tblcapacitacioncontinua.`fechaInicio`,'%h:%i:%s %p')AS horaInicio,
+     Date_format(tblcapacitacioncontinua.`fechaFinal`,'%h:%i:%s %p')AS horaFinal,
+     Date_format(tblcapacitacioncontinua.`fechaInicio`,'%d/%m/%y')As FechInicio,
+     Date_format(tblcapacitacioncontinua.`fechaFinal`,'%d/%m/%y')As FechFinal,
+     DATEDIFF(tblcapacitacioncontinua.`fechaFinal`,tblcapacitacioncontinua.`fechaInicio`)As Dias
+FROM
+     `tblpersona` tblpersona INNER JOIN `tblempleado` tblempleado ON tblpersona.`idPersona` = tblempleado.`idPersona`
+     INNER JOIN `tblempleado_capacitacion` tblempleado_capacitacion ON tblempleado.`codigoMarcacion` = tblempleado_capacitacion.`codigoMarcacion`
+     INNER JOIN `tblcapacitacioncontinua` tblcapacitacioncontinua ON tblempleado_capacitacion.`idCapacitacion` = tblcapacitacioncontinua.`idCapacitacion`
+WHERE
+     (tblcapacitacioncontinua.`idCapacitacion` = tblcapacitacioncontinua.`idCapacitacion`)
+ AND YEAR(tblcapacitacioncontinua.`fechaInicio`) = $P{anio}
+ AND MONTH(tblcapacitacioncontinua.`fechaInicio`) = $P{mes}
+ AND tblempleado.`codigoMarcacion` = $P{marcacion}
+ORDER BY
+     tblcapacitacioncontinua.`idCapacitacion` ASC,
+     tblcapacitacioncontinua.`nombreEvento` ASC]]>
+	</queryString>
+	<field name="tblpersona_primerNombre" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblpersona_segundoNombre" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblpersona_primerApellido" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblpersona_segundoApellido" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblcapacitacioncontinua_lugarEvento" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblcapacitacioncontinua_nombreEvento" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblcapacitacioncontinua_direccionEvento" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblcapacitacioncontinua_fechaInicio" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblcapacitacioncontinua_fechaFinal" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblempleado_codigoMarcacion" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblempleado_capacitacion_tipo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblcapacitacioncontinua_idCapacitacion" class="java.math.BigInteger">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nombre" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="LugarNombre" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="horaInicio" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="horaFinal" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="FechInicio" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="FechFinal" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Dias" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="totalSuma" class="java.lang.String" resetType="None" incrementType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{horaInicio} + $F{horaFinal}]]></variableExpression>
+	</variable>
+	<variable name="tblempleado_capacitacion_tipo_1" class="java.lang.Integer" resetType="Group" resetGroup="tblcapacitacioncontinua_nombreEvento" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{tblempleado_capacitacion_tipo}]]></variableExpression>
+	</variable>
+	<group name="tblempleado_codigoMarcacion">
+		<groupExpression><![CDATA[$F{tblempleado_codigoMarcacion}]]></groupExpression>
+		<groupHeader>
+			<band height="20" splitType="Stretch">
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="3" width="131" height="17" forecolor="#FFFFFF" backcolor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[Codigo de Marcación: ]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Opaque" x="121" y="3" width="430" height="17" forecolor="#FFFFFF" backcolor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{tblempleado_codigoMarcacion}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="8" splitType="Stretch">
+				<line direction="BottomUp">
+					<reportElement key="line" x="1" y="4" width="554" height="1"/>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="tblcapacitacioncontinua_nombreEvento">
+		<groupExpression><![CDATA[$F{tblcapacitacioncontinua_nombreEvento}]]></groupExpression>
+		<groupHeader>
+			<band height="19" splitType="Stretch">
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="3" width="121" height="15" forecolor="#000000" backcolor="#CCCCFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[Nombre del Empleado:]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Opaque" x="121" y="3" width="431" height="15" forecolor="#000000" backcolor="#CCCCFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{nombre}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="8" splitType="Stretch">
+				<line direction="BottomUp">
+					<reportElement key="line" x="1" y="4" width="554" height="1"/>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement x="65" y="23" width="424" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Hospital Nacional Santa Teresa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="65" y="39" width="424" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Departamento de Laboratorio  y Banco de Sangre]]></text>
+			</staticText>
+			<elementGroup>
+				<elementGroup>
+					<image hAlign="Left" vAlign="Middle">
+						<reportElement x="0" y="1" width="101" height="58"/>
+						<imageExpression class="java.lang.String"><![CDATA["/images/minsal.jpg"]]></imageExpression>
+					</image>
+					<image hAlign="Right" vAlign="Middle">
+						<reportElement x="489" y="1" width="66" height="59"/>
+						<imageExpression class="java.lang.String"><![CDATA["/images/elSalvador.jpg"]]></imageExpression>
+					</image>
+				</elementGroup>
+			</elementGroup>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="65" y="7" width="424" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Informe de Misiones Oficiales y Capacitaciones Nacionales]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="32" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="116" y="3" width="59" height="26" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Hora Inicio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="431" y="3" width="121" height="26" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Lugar y Nombre del Evento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="3" width="51" height="26" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Fecha de Inicio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="48" y="3" width="69" height="26" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Fecha Finalización]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="238" y="3" width="73" height="26" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[ Total Tiempo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="175" y="3" width="63" height="26" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Hora Final]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="311" y="3" width="121" height="26" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Lugar Donde se Realizo la Misión]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="71" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="8" width="555" height="1"/>
+			</line>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="431" y="12" width="121" height="59" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box leftPadding="0"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{LugarNombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="111" y="13" width="58" height="20"/>
+				<box leftPadding="0"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{horaInicio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="177" y="13" width="57" height="20"/>
+				<box leftPadding="0"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{horaFinal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="12" width="49" height="20"/>
+				<box leftPadding="0"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{FechInicio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="55" y="12" width="52" height="20"/>
+				<box leftPadding="0"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{FechFinal}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="311" y="12" width="120" height="59" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box leftPadding="0"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tblcapacitacioncontinua_direccionEvento}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="36" splitType="Stretch">
+			<textField pattern="EEEE dd MMMMM yyyy - hh:mm aaa" isBlankWhenNull="true">
+				<reportElement x="337" y="1" width="218" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<elementGroup>
+				<textField>
+					<reportElement x="205" y="0" width="80" height="20"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Report">
+					<reportElement x="285" y="0" width="40" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+			</elementGroup>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1"/>
+			</line>
+			<image>
+				<reportElement x="0" y="2" width="101" height="32"/>
+				<imageExpression class="java.lang.String"><![CDATA["/images/logoSilac.png"]]></imageExpression>
+			</image>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

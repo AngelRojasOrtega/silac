@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblmovimiento" table="tblmovimiento" catalog="dbsilac">
+        <id name="idMovimiento" type="java.lang.Long">
+            <column name="idMovimiento" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblarticulo" class="com.silac.model.Tblarticulo" fetch="select">
+            <column name="idArticulo" not-null="true">
+                <comment>Identificador del articulo.</comment>
+            </column>
+        </many-to-one>
+        <property name="tipoMovimiento" type="boolean">
+            <column name="tipoMovimiento" not-null="true">
+                <comment>Indica el tipo de movimiento realizado. si fue entrada o salida.</comment>
+            </column>
+        </property>
+        <property name="fecha" type="timestamp">
+            <column name="fecha" length="19" not-null="true">
+                <comment>Fecha en la que se realiz&#243; el movimiento.</comment>
+            </column>
+        </property>
+        <property name="concepto" type="string">
+            <column name="concepto" length="65535">
+                <comment>Concepto o raz&#243;n por la cual se realiza el movimiento.</comment>
+            </column>
+        </property>
+        <set name="tblentradas" inverse="true">
+            <key>
+                <column name="idMovimiento" not-null="true">
+                    <comment>Identificador del movimiento.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblentrada" />
+        </set>
+        <set name="tblsalidas" inverse="true">
+            <key>
+                <column name="idMovimiento" not-null="true">
+                    <comment>Identificador del movimiento.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblsalida" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,96 @@
+/* 
+    Document   : style
+    Created on : 06-20-2011, 09:36:55 PM
+    Author     : yolanda
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+
+.encabezado
+{
+    font-size: 25px;
+    color: blue;
+    position: absolute;
+    left:300px;
+    top: 0px;
+
+}
+.leyenda
+{
+    font-size: 10px;
+    color: red;
+    position: absolute;
+    left: 200px;
+    top:35px;
+}
+.bglogin
+{
+    background:url('images/bg.png') repeat-x;
+}
+.ui-widget,
+.ui-widget .ui-widget {
+    font-size: 11px !important;
+}
+.ui-datatable{
+    overflow: auto !important; 
+}
+
+.ui-panel{
+    border: 0px !important;
+}
+
+.ui-tabs-nav{
+    height: 28px !important;
+}
+.man
+{
+    position: absolute;
+    left: 350px;
+    top:7px;
+    height:220px;
+    width: 320px;
+}
+.wom
+{
+    position: absolute;
+    left: 750px;
+    top:220px;
+}
+.alignTop{
+    vertical-align: top;
+}
+.alignRight{
+    text-align:right ;
+}
+.alignLeft{
+    text-align:left ;
+}
+.alignCenter{
+    text-align:center ;
+}
+.dashboard{
+    padding: 0px 0px 0px 0px !important;
+    margin:0 auto !important;
+}
+.cell:hover{ background-color: #FBEC88;   
+}
+.cell{
+    background-color:#ffffff;
+    display: block;  
+    color:dimgray;
+    width: 99% !important; 
+}
+
+#dtPlan td{
+    padding: 2px 2px 2px 2px;
+    width: 60px !important; 
+}

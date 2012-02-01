@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblpermiso" table="tblpermiso" catalog="dbsilac">
+        <id name="idPermiso" type="java.lang.Long">
+            <column name="idPermiso" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblempleado" class="com.silac.model.Tblempleado" fetch="select">
+            <column name="codigoMarcacion" not-null="true">
+                <comment>C&#243;digo asignado por el departamento de recursos humanos para identificar a los empleados.</comment>
+            </column>
+        </many-to-one>
+        <property name="fechaSolicitud" type="timestamp">
+            <column name="fechaSolicitud" length="19" not-null="true">
+                <comment>Fecha en la que se solicit&#243; el permiso.</comment>
+            </column>
+        </property>
+        <property name="fechaInicio" type="timestamp">
+            <column name="fechaInicio" length="19" not-null="true">
+                <comment>Fecha de inicio del periodo solicitado.</comment>
+            </column>
+        </property>
+        <property name="fechaFinal" type="timestamp">
+            <column name="fechaFinal" length="19" not-null="true">
+                <comment>Fecha final del periodo solicitado.</comment>
+            </column>
+        </property>
+        <property name="observaciones" type="string">
+            <column name="observaciones" length="65535">
+                <comment>Observaciones o comentarios adicionales sobre el permiso solicitado.</comment>
+            </column>
+        </property>
+        <property name="motivo" type="string">
+            <column name="motivo" length="100" not-null="true">
+                <comment>Tipo de permiso solicitado, este puede ser: Personal, vacaciones, por duelo, por maternidad, por estudio, etc.</comment>
+            </column>
+        </property>
+        <property name="tipoLicencia" type="string">
+            <column name="tipoLicencia" length="15" not-null="true" />
+        </property>
+        <property name="goceSueldo" type="boolean">
+            <column name="goceSueldo" not-null="true" />
+        </property>
+        <property name="tipoPermiso" type="boolean">
+            <column name="tipoPermiso" not-null="true" />
+        </property>
+        <property name="jornadaCompleta" type="boolean">
+            <column name="jornadaCompleta" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

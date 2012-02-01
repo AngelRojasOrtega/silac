@@ -1,0 +1,388 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Registrar solicitud de permiso
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript">
+function confirmFunction() {
+updateConfim.jq.click();
+}
+function doPopup(source,title){
+popup=window.open (source, "popup", "height=600, width=900");
+popup=document.title = title;
+popup.focus();
+}
+    function openPopupFunction() {
+openPopup.jq.click();
+}
+        </script>
+        <p:panel header="Registrar solicitud de permiso">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/> 
+            <p:tabView style="height: 100%">
+                <p:tab title="Registrar nuevo permiso">
+                    <h:panelGrid id="campos" columns="3" columnClasses="alignTop,alignTop,alignTop">
+                        <h:outputText value="Empleado:" style="width: 200px"/>
+                        <h:selectOneMenu id="cboEmpleado" 
+                                         value="#{permisosBean.selectedEmpleado}"
+                                         required="#{param['requireGroup1'] == '1'}" 
+                                         requiredMessage="Requerido">
+                            <f:selectItem itemLabel="-Seleccione un empleado-" itemValue="#{null}"/>
+                            <f:selectItems value="#{empleadosBean.listaEmpleados()}"/>
+                        </h:selectOneMenu>
+                        <p:message for="cboEmpleado"/>  
+                        <h:outputText value="Tiempo solicitado mayor a 5 días:"/>
+                        <h:selectBooleanCheckbox id="chkTipoPermiso" 
+                                                 onchange="renderTipoLicencia()" 
+                                                 value="#{permisosBean.permiso.tipoPermiso}"/>
+                        <p:message for="chkTipoPermiso"/> 
+                        <h:outputText value="Permiso con goce de sueldo:"/>
+                        <h:selectBooleanCheckbox id="chkGoceSueldo" value="#{permisosBean.permiso.goceSueldo}" />
+                        <p:message for="chkGoceSueldo"/> 
+                        <p:outputPanel id="lblTipoLicencia">
+                            <h:outputText value="Licencia para:" rendered="#{permisosBean.renderTipoLicencia}" />
+                        </p:outputPanel>
+                        <p:outputPanel id="tipoLicencia">
+                            <h:selectOneMenu id="cboTipoLicencia"
+                                             value="#{permisosBean.permiso.tipoLicencia}"
+                                             rendered="#{permisosBean.renderTipoLicencia}"
+                                             required="#{param['requireGroup1'] == '1'}" 
+                                             requiredMessage="Requerido" 
+                                             onchange="onSelectTipLicencia()" 
+                                             style="width: 200px">
+                                <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="No presentarse a sus labores" itemValue="Ausentarse"/>
+                                <f:selectItem itemLabel="Retirarse de sus labores" itemValue="Retirarse"/>  
+                            </h:selectOneMenu>
+                        </p:outputPanel> 
+                        <p:outputPanel id="msgTipoLicencia">
+                            <p:message for="cboTipoLicencia" rendered="#{permisosBean.renderTipoLicencia}"/>
+                        </p:outputPanel>
+                        <h:outputText value="Desde:"/>
+                        <p:calendar id="txtInicio"
+                                    locale="es"
+                                    binding="#{txtInicio}" 
+                                    value="#{permisosBean.permiso.fechaInicio}" 
+                                    onSelectUpdate="opFecha" 
+                                    selectListener="#{permisosBean.handleDateSelect}"  
+                                    onSelectProcess="@this txtFinal" 
+                                    readOnlyInputText="true" 
+                                    required="#{param['requireGroup1'] == '1'}" 
+                                    requiredMessage="Requerido"                                            
+                                    navigator="true" showOn="button" />
+                        <p:message for="txtInicio"/>  
+                        <h:outputText value="Hasta:"/>
+                        <p:outputPanel id="opFecha">
+                            <p:calendar id="txtFinal"
+                                        locale="es"
+                                        mindate="#{permisosBean.minDate}" 
+                                        value="#{permisosBean.permiso.fechaFinal}" 
+                                        readOnlyInputText="true" 
+                                        required="#{param['requireGroup1'] == '1'}" 
+                                        requiredMessage="Requerido"
+                                        navigator="true" 
+                                        showOn="button">
+                                <f:attribute name="fechaInicio" value="#{txtInicio.value}"/>
+                                <f:validator validatorId="fechaValidator" disabled="#{param['requireGroup1'] != '1'}" />                                        
+                            </p:calendar>
+                        </p:outputPanel>
+                        <p:message for="txtFinal"/>  
+                        <p:outputPanel id="lblJornada">
+                            <h:outputText value="Jornada Completa:"
+                                          rendered="#{permisosBean.renderJornada}"/>
+                        </p:outputPanel>
+                        <p:outputPanel id="Jornada">
+                            <h:selectBooleanCheckbox id="chkJornadaCompleta" 
+                                                     rendered="#{permisosBean.renderJornada}"
+                                                     onchange="renderHorario()" 
+                                                     value="#{permisosBean.permiso.jornadaCompleta}"/>
+                        </p:outputPanel>
+                        <p:outputPanel id="msgJornada">
+                            <p:message for="chkJornadaCompleta"
+                                       rendered="#{permisosBean.renderJornada}"/> 
+                        </p:outputPanel>
+                        <p:outputPanel id="lblHoraInicio">
+                            <h:outputText value="Hora inicio:" rendered="#{permisosBean.renderHoraInicio}"/>
+                        </p:outputPanel>
+                        <p:outputPanel id="horaInicio">
+                            <h:panelGrid columns="3" rendered="#{permisosBean.renderHoraInicio}">
+                                <p:spinner id="txtHoraInicio" binding="#{txtHoraInicio}"
+                                           value="#{permisosBean.horaInicio}" min="0" max="12" size="3"/>
+                                <p:spinner id="txtMinsInicio" binding="#{txtMinsInicio}" value="#{permisosBean.minsInicio}" min="0" max="59" size="3"/>
+                                <h:selectOneMenu id="cboAm_PmInicio" binding="#{cboAm_PmInicio}" value="#{permisosBean.am_pmInicio}">
+                                    <f:selectItem itemLabel="AM" itemValue="0"/>
+                                    <f:selectItem itemLabel="PM" itemValue="1"/>
+                                </h:selectOneMenu>
+                            </h:panelGrid>         
+                        </p:outputPanel>
+                        <p:outputPanel id="msgHoraInicio">
+                            <p:message for="txtHoraInicio" rendered="#{permisosBean.renderHoraInicio}"/>
+                        </p:outputPanel>
+                        <p:outputPanel id="lblHoraFinal">
+                            <h:outputText value="Hora fin:" rendered="#{permisosBean.renderHoraFinal}"/>
+                        </p:outputPanel>
+                        <p:outputPanel id="horaFinal"> 
+                            <h:panelGrid columns="3" rendered="#{permisosBean.renderHoraFinal}">
+                                <p:spinner id="txtHoraFin" binding="#{txtHoraFin}" value="#{permisosBean.horaFinal}" min="0" max="12" size="3"/>
+                                <p:spinner id="txtMinsFin" binding="#{txtMinsFin}" value="#{permisosBean.minsFinal}" min="0" max="59" size="3"/>
+                                <h:selectOneMenu id="cboAm_PmFin" binding="#{cboAm_PmFin}" value="#{permisosBean.am_pmFinal}">
+                                    <f:selectItem itemLabel="AM" itemValue="0"/>
+                                    <f:selectItem itemLabel="PM" itemValue="1"/>
+                                    <f:validator  validatorId="horaValidator"/>
+                                    <f:attribute name="horaInicio" value="#{txtHoraInicio.value}"/>
+                                    <f:attribute name="minsInicio" value="#{txtMinsInicio.value}"/>                                                
+                                    <f:attribute name="am_pmInicio" value="#{cboAm_PmInicio.value}"/>
+                                    <f:attribute name="minsFin" value="#{txtMinsFin.value}"/>
+                                    <f:attribute name="horaFin" value="#{txtHoraFin.value}"/>
+                                </h:selectOneMenu>
+                            </h:panelGrid>  
+                        </p:outputPanel>
+                        <p:outputPanel id="msgHoraFinal">
+                            <p:message for="cboAm_PmFin" rendered="#{permisosBean.renderHoraFinal}"/>  
+                        </p:outputPanel>
+                        <h:outputText value="Motivo del permiso:"/>
+                        <h:selectOneMenu id="cboMotivo" 
+                                         binding="#{cboMotivo}" 
+                                         onchange="onSelectMotivo()" 
+                                         value="#{permisosBean.permiso.motivo}"  
+                                         required="#{param['requireGroup1'] == '1'}" requiredMessage="Requerido" style="width: 200px"  >
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                            <f:selectItem itemLabel="Personal" itemValue="Personal"/>
+                            <f:selectItem itemLabel="Enfermedad" itemValue="Enfermedad"/>  
+                            <f:selectItem itemLabel="Enfermedad gravisima de pariente" itemValue="Enfermedad gravisima de pariente"/>
+                            <f:selectItem itemLabel="Alumbramiento" itemValue="Alumbramiento"/>
+                            <f:selectItem itemLabel="Misión oficial" itemValue="Misión oficial"/>
+                            <f:selectItem itemLabel="Duelo" itemValue="Duelo"/>
+                            <f:selectItem itemLabel="Compensatorio" itemValue="Compensatorio"/>
+                            <f:selectItem itemLabel="Otro" itemValue="Otro"/>
+                        </h:selectOneMenu>
+                        <p:message for="cboMotivo"/>  
+                        <p:outputPanel id="lblOtro">
+                            <h:outputText value="Otro especifique:" 
+                                          rendered="#{permisosBean.renderOtro}"/>
+                        </p:outputPanel>
+                        <p:outputPanel id="otro">
+                            <p:inputText id="txtOtro" 
+                                         required="#{param['requireGroup1'] == '1'}" 
+                                         requiredMessage="Requerido"
+                                         rendered="#{permisosBean.renderOtro}"
+                                         value="#{permisosBean.otro}"
+                                         size="30"/>
+                        </p:outputPanel>
+                        <p:outputPanel id="msgOtro">
+                            <p:message for="txtOtro" rendered="#{permisosBean.renderOtro}"/>  
+                        </p:outputPanel>
+                        <h:outputText value="Observaciones:"/>
+                        <p:inputTextarea id="txtObservaciones"
+                                         value="#{permisosBean.permiso.observaciones}"
+                                         rows="4" cols="30"/>
+                        <p:message for="txtObservaciones"/>  
+                    </h:panelGrid>
+                    <p:remoteCommand name="renderTipoLicencia" 
+                                     actionListener="#{permisosBean.actualizarRenderTipoLicencia}" 
+                                     process="@this chkTipoPermiso" 
+                                     update="tipoLicencia lblTipoLicencia msgTipoLicencia lblJornada Jornada msgJornada horaInicio horaFinal lblHoraInicio lblHoraFinal msgHoraInicio msgHoraFinal"/>
+                    <p:remoteCommand name="onSelectMotivo" 
+                                     actionListener="#{permisosBean.onSelectMotivo}" 
+                                     process="@this cboMotivo" 
+                                     update="otro lblOtro msgOtro">
+                    </p:remoteCommand>
+                    <p:remoteCommand name="renderHorario" 
+                                     actionListener="#{permisosBean.actualizarRenderHorario}" 
+                                     process="@this chkJornadaCompleta" 
+                                     update="horaInicio horaFinal lblHoraInicio lblHoraFinal msgHoraInicio msgHoraFinal"/>
+                    <p:remoteCommand name="onSelectTipLicencia" 
+                                     actionListener="#{permisosBean.onSelectTipoLicencia}" 
+                                     process="@this cboTipoLicencia" 
+                                     update="horaInicio horaFinal lblHoraInicio lblHoraFinal msgHoraInicio msgHoraFinal lblJornada Jornada msgJornada"/>
+                    <h:panelGrid style="width: 100%">
+                        <p:toolbar>  
+                            <p:toolbarGroup align="left">  
+                                <p:commandButton value="Nuevo" 
+                                                 title="Nuevo" 
+                                                 image="ui-icon-document"
+                                                 action="#{permisosBean.nuevo}" 
+                                                 process="@this" immediate="true"
+                                                 update="campos"/>    
+                                <p:commandButton value="Guardar" 
+                                                 action="#{permisosBean.crear}" 
+                                                 oncomplete="confirmFunction()" 
+                                                 update="dtUsuario campos msg" 
+                                                 title="Guardar" 
+                                                 image="ui-icon-disk">
+                                    <f:param name="requireGroup1" value="1"/>
+                                </p:commandButton>  
+                            </p:toolbarGroup>  
+                        </p:toolbar> 
+                    </h:panelGrid>  
+                </p:tab>
+                <p:tab title="Consultar permisos">
+                    <h:panelGrid style="width:100%" >
+                         <p:fieldset legend="Parámetros de búsqueda">
+                    <h:panelGrid id="detalleBusqueda" columns="5" columnClasses="alignTop,alignTop,alignTop,alignTop,alignTop">
+                        <h:panelGrid columnClasses="alignTop">
+                        <h:outputText value="Tipos de Permisos:" />
+                         <h:selectOneRadio id="optPermisos"
+                                                  value="#{permisosBean.selectedTipoPermiso}"
+                                                  required="#{param['requireGroup1'] == '1'}"  requiredMessage="Requerido">
+                                    <f:selectItems value="#{permisosBean.cargarListaTipoPermiso()}" />
+                                </h:selectOneRadio>
+                        </h:panelGrid>
+                        <h:panelGrid columnClasses="alignTop">
+                            <h:outputText value="Desde:"/>
+                            <p:calendar id="txtFechaInicio"
+                                        locale="es"
+                                        selectListener="#{permisosBean.handleDateSelect}"
+                                        onSelectUpdate="opFechas" 
+                                        maxdate="#{permisosBean.hoy}" 
+                                        binding="#{txtFechaInicio}" 
+                                        value="#{permisosBean.fechaIni}"  
+                                        readOnlyInputText="true" 
+                                        size="20" navigator="true" showOn="button"/>
+                        </h:panelGrid>
+                        <h:panelGrid columnClasses="alignTop">
+                            <h:outputText value="Hasta:"/>
+                            <p:outputPanel id="opFechas">
+                                <p:calendar id="txtFechaFinal" 
+                                            value="#{permisosBean.fechaFin}"
+                                            mindate="#{permisosBean.minDate}" 
+                                            maxdate="#{permisosBean.hoy}" 
+                                            navigator="true" 
+                                            locale="es"
+                                            readOnlyInputText="true" 
+                                            size="20" showOn="button"/>
+                            </p:outputPanel>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </p:fieldset>
+                <h:panelGrid style="width: 100%">
+                    <p:toolbar>  
+                        <p:toolbarGroup align="left">  
+                            <p:commandButton id="cmdBuscar" 
+                                             value="Filtrar"
+                                             title="Filtrar"
+                                             image="ui-icon ui-icon-search" 
+                                             process="@this detalleBusqueda" 
+                                             action="#{permisosBean.cargarListaPermisos()}"
+                                             update="dtPermisos detalleBusqueda">
+                            </p:commandButton>
+                            <p:commandButton id="cmdLimpiar" 
+                                             value="Limpiar"
+                                             title="Limpiar"
+                                             image="ui-icon ui-icon-cancel" 
+                                             process="@this detalleBusqueda" 
+                                             action="#{permisosBean.limpiar}"
+                                             update="dtPermisos detalleBusqueda">
+                            </p:commandButton>
+                        </p:toolbarGroup>  
+                    </p:toolbar> 
+                </h:panelGrid>
+                        <p:dataTable id="dtPermisos" var="varPermiso" 
+                                     value="#{permisosBean.listaPermisos}" 
+                                     selection="#{permisosBean.selectedPermisos}"
+                                     paginator="true" 
+                                     rows="10">
+                            <p:column selectionMode="multiple" >
+
+                            </p:column>
+                            <p:column style="width: 32px; text-align: center;">  
+                                <f:facet name="header"> 
+                                    <h:outputText value="Codigo" />  
+                                </f:facet>  
+                                <h:outputText value="#{varPermiso[1].codigoMarcacion}" />  
+                            </p:column> 
+                            <p:column style="width: 200px;">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Empleado" />  
+                                </f:facet>  
+                                <h:outputText value="#{permisosBean.emptyString(varPermiso[0].primerNombre)} 
+                                              #{permisosBean.emptyString(varPermiso[0].segundoNombre)} 
+                                              #{permisosBean.emptyString(varPermiso[0].primerApellido)} 
+                                              #{permisosBean.emptyString(varPermiso[0].segundoApellido)}" />  
+                            </p:column>  
+
+                            <p:column style="width: 64px; text-align: center;">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Fecha"/><br/>
+                                    <h:outputText value="Solicitud"/>
+                                </f:facet>  
+                                <h:outputText value="#{permisosBean.getStringDate(varPermiso[2].fechaSolicitud)}"/> 
+                            </p:column>  
+
+                            <p:column>  
+                                <f:facet name="header">  
+                                    <h:outputText value="Motivo" />  
+                                </f:facet>  
+                                <h:outputText value="#{varPermiso[2].motivo}" />  
+                            </p:column>  
+
+                            <p:column style="width: 64px; text-align: center;">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Desde" />  
+                                </f:facet>  
+                                <h:outputText value="#{permisosBean.getStringDate(varPermiso[2].fechaInicio)}" />  
+                            </p:column>
+                            <p:column  style="width: 64px; text-align: center;">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Hasta" />  
+                                </f:facet>  
+                                <h:outputText value="#{permisosBean.getStringDate(varPermiso[2].fechaFinal)}" />  
+                            </p:column>  
+                            <p:column  style="width: 64px; text-align: center;">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Goce" style="width: 32px; text-align: center;"/> <br/>
+                                    <h:outputText value="Sueldo" /> 
+                                </f:facet>  
+                                <h:outputText value="#{permisosBean.goceSueldo(varPermiso[2].goceSueldo)}" />  
+                            </p:column>  
+
+                            <p:column style="width:64px;">  
+                                <p:commandButton update="display" oncomplete="carDialog.show()"  
+                                                 image="ui-icon ui-icon-pencil">  
+                                    <f:setPropertyActionListener value=""  
+                                                                 target="" />  
+                                </p:commandButton>
+                                <p:commandButton update="display" oncomplete="carDialog.show()"  
+                                                 image="ui-icon ui-icon-trash">  
+                                    <f:setPropertyActionListener value=""  
+                                                                 target="" />  
+                                </p:commandButton>  
+                            </p:column> 
+                            <f:facet name="footer">
+                                <h:panelGrid style="width: 400px; text-align: left;" columns="3">
+                                    <h:outputText value="Exportar como:" />
+                                    <h:selectOneMenu style="width: 200px" id="cboTipo" value="#{permisosBean.selectedTipoExp}" >
+                                        <f:selectItem itemLabel="-Seleccione una opcipón-" itemValue="#{null}"/>
+                                        <f:selectItem itemLabel="Documento PDF" itemValue="application/pdf"/>
+                                        <f:selectItem itemLabel="Documento EXCEL" itemValue="application/vnd.ms-excel"/>
+                                        <f:selectItem itemLabel="Documento HTML" itemValue="text/html"/>
+                                    </h:selectOneMenu> 
+                                    <p:commandButton type="push" 
+                                                     value="Imprimir" 
+                                                     process="@this cboTipo dtPermisos"
+                                                     oncomplete="openPopupFunction()" 
+                                                     update="openPopup" 
+                                                     action="#{permisosBean.onSelectRow}" 
+                                                     title="Imprimir" 
+                                                     image="ui-icon-arrowthickstop-1-s"/>
+                                   
+                                </h:panelGrid> 
+                            </f:facet> 
+                        </p:dataTable>  
+                    </h:panelGrid> 
+                </p:tab>
+            </p:tabView>
+        </p:panel>
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfim" 
+                         update="msg"/>
+        <p:commandButton id="openPopup" 
+                         style="visibility: hidden" 
+                         onclick="doPopup('#{permisosBean.url}', 'Resultados de analisis')"
+                         widgetVar="openPopup"/>
+    </ui:define>
+</ui:composition>

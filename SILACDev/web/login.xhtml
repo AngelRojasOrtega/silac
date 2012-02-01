@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <h:head>
+        <title>SILAC - Sistema Informático para la Planificación y Gestión Administrativa del Laboratorio Clínico</title>
+        <h:outputStylesheet library="css" name="style.css" />
+    </h:head> 
+
+    <h:body styleClass="bglogin">
+        <h:form id="frmLogin">        
+            <p:panel style="width: 450px; height: 230px; margin: 0 auto; margin-top: 195px" header="Inicio de sesión">
+                <h:panelGrid>
+                    <h:graphicImage url="resources/images/logoSilac.png"/>
+                    <h:panelGrid  columns="3">
+                        <h:outputText value="Usuario:"/>
+                        <p:inputText id="txtUser" value="#{usuarioBean.login}" required="true" requiredMessage="Requerido"/>
+                        <p:message for="txtUser"/>
+                        <h:outputText value="Contraseña:"/>
+                        <p:password  id="txtPass" value="#{usuarioBean.pass}" 
+                                     required="true" requiredMessage="Requerido"
+                                     minLength="8" feedback="true" 
+                                     promptLabel="Por favor escriba una contraseña" 
+                                     weakLabel="Débil" goodLabel="Buena" 
+                                     strongLabel="Fuerte"/>
+                        <p:message for="txtPass"/>
+                        <h:outputText value=""/>
+                        <h:panelGrid columns="2">
+                            <p:commandButton action="#{usuarioBean.validarUsuario}" 
+                                             update="frmLogin" value="Ingresar" image="ui-icon-person" 
+                                             title="Ingresar" id="cmdLogin"/>
+                            <p:ajaxStatus style="width:16px;height:16px;">  
+                                <f:facet name="start">  
+                                    <h:graphicImage value="#{resource['images:ajax-loader.gif']}" />
+                                </f:facet>  
+                                <f:facet name="complete">  
+                                    <h:outputText value="" />  
+                                </f:facet>  
+                            </p:ajaxStatus> 
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:panel>
+            <h:panelGrid style="margin: 0 auto;" width="450">
+                <p:messages id="msg" globalOnly="true" showDetail="true"/> 
+            </h:panelGrid>        
+        </h:form>
+    </h:body>
+</html>
+

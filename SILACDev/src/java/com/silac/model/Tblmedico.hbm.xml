@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblmedico" table="tblmedico" catalog="dbsilac">
+        <id name="idMedico" type="java.lang.Integer">
+            <column name="idMedico" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblpersona" class="com.silac.model.Tblpersona" fetch="select">
+            <column name="idPersona" not-null="true">
+                <comment>Identificador de la persona.</comment>
+            </column>
+        </many-to-one>
+        <property name="codMedico" type="string">
+            <column name="codMedico" length="20" not-null="true" unique="true">
+                <comment>C&#243;digo del medico asignado por el ministerio de salud.</comment>
+            </column>
+        </property>
+        <set name="tblordens" inverse="true">
+            <key>
+                <column name="idMedico" not-null="true">
+                    <comment>Identificador del m&#233;dico.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblorden" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblmunicipio" table="tblmunicipio" catalog="dbsilac">
+        <id name="idMunicipio" type="java.lang.Short">
+            <column name="idMunicipio" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tbldepartamento" class="com.silac.model.Tbldepartamento" fetch="select">
+            <column name="idDepartamento" not-null="true">
+                <comment>Identificador del departamento.</comment>
+            </column>
+        </many-to-one>
+        <property name="nomMunicipio" type="string">
+            <column name="nomMunicipio" length="120" not-null="true">
+                <comment>Nombre del municipio.</comment>
+            </column>
+        </property>
+        <set name="tblestablecimientos" inverse="true">
+            <key>
+                <column name="idMunicipio" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.Tblestablecimiento" />
+        </set>
+        <set name="tbldomicilios" inverse="true">
+            <key>
+                <column name="idMunicipio" not-null="true">
+                    <comment>Identificador del municipio.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tbldomicilio" />
+        </set>
+    </class>
+</hibernate-mapping>

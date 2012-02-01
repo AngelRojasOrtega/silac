@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblpedido" table="tblpedido" catalog="dbsilac">
+        <id name="idPedido" type="java.lang.Integer">
+            <column name="idPedido" />
+            <generator class="identity" />
+        </id>
+        <property name="fecha" type="timestamp">
+            <column name="fecha" length="19" not-null="true">
+                <comment>Fecha de solicitud del articulo.</comment>
+            </column>
+        </property>
+        <set name="tbldetallepedidos" inverse="true">
+            <key>
+                <column name="idPedido" not-null="true">
+                    <comment>Identificador del articulo.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tbldetallepedido" />
+        </set>
+    </class>
+</hibernate-mapping>

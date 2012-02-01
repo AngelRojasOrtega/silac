@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblarticulo" table="tblarticulo" catalog="dbsilac">
+        <id name="idArticulo" type="java.lang.Integer">
+            <column name="idArticulo" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblunidadmedidaByUnidadMinimoUso" class="com.silac.model.Tblunidadmedida" fetch="select">
+            <column name="unidadMinimoUso" not-null="true" />
+        </many-to-one>
+        <many-to-one name="tblcatalogo" class="com.silac.model.Tblcatalogo" fetch="select">
+            <column name="idCatalogo" not-null="true">
+                <comment>Identificador de cat&#225;logo.</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="tblunidadmedidaByUnidadMinimoCompra" class="com.silac.model.Tblunidadmedida" fetch="select">
+            <column name="unidadMinimoCompra" not-null="true" />
+        </many-to-one>
+        <property name="codigoArticulo" type="string">
+            <column name="codigoArticulo" length="15" not-null="true">
+                <comment>C&#243;digo del articulo usado por el Almac&#233;n del Hospital.</comment>
+            </column>
+        </property>
+        <property name="nombreArticulo" type="string">
+            <column name="nombreArticulo" length="254" not-null="true">
+                <comment>Nombre del articulo.</comment>
+            </column>
+        </property>
+        <property name="presentacion" type="string">
+            <column name="presentacion" length="25" not-null="true">
+                <comment>Forma en la que es distribuido el articulo (Bote, frasco, pastilla, soluci&#243;n, etc.)</comment>
+            </column>
+        </property>
+        <property name="cantidadMinimaUso" type="double">
+            <column name="cantidadMinimaUso" precision="22" scale="0" not-null="true">
+                <comment>Valor m&#237;nimo del articulo que debe exisitir en el inventario del laboratorio.</comment>
+            </column>
+        </property>
+        <property name="cantidadMinimaCompra" type="double">
+            <column name="cantidadMinimaCompra" precision="22" scale="0" not-null="true">
+                <comment>Valor m&#225;ximo que debe existir en el inventario del laboratorio.</comment>
+            </column>
+        </property>
+        <property name="existencias" type="double">
+            <column name="existencias" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="perecedero" type="boolean">
+            <column name="perecedero" not-null="true" />
+        </property>
+        <property name="factorConversion" type="double">
+            <column name="factorConversion" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="relacion" type="string">
+            <column name="relacion" length="1" not-null="true" />
+        </property>
+        <property name="usoCompartido" type="boolean">
+            <column name="usoCompartido" not-null="true" />
+        </property>
+        <set name="tbldetallepedidos" inverse="true">
+            <key>
+                <column name="idArticulo" not-null="true">
+                    <comment>Identificador del articulo.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tbldetallepedido" />
+        </set>
+        <set name="tblmovimientos" inverse="true">
+            <key>
+                <column name="idArticulo" not-null="true">
+                    <comment>Identificador del articulo.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblmovimiento" />
+        </set>
+        <set name="tblexamenarticulos" inverse="true">
+            <key>
+                <column name="idArticulo" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.Tblexamenarticulo" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,248 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:head>
+        <h:outputStylesheet library="css" name="style.css" />
+    </h:head> 
+
+    <body>
+
+        <ui:composition template="./../templates/template.xhtml">
+
+            <ui:define name="titulo">
+                Asignación de puestos
+            </ui:define>
+
+            <ui:define name="content">
+                <script type="text/javascript">
+function confirmFunction() {
+updateConfim.jq.click();
+}
+                </script>
+                <p:panel header="Asignación de puestos">
+                    <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+                    <h:panelGrid id="campos" style="width: 100%">
+                        <h:panelGrid columns="4" columnClasses="alignTop,alignTop,alignTop">
+                            <h:outputText value="Empleado:" style="width: 200px"/>
+                            <h:selectOneMenu   id="cboEmpleado"
+                                               value="#{asignacionPuestosBean.selectedEmpleado}"
+                                               required="#{param['requireGroup1'] == '1'}"
+                                               requiredMessage="Requerido">
+                                <f:selectItem itemLabel="-Seleccione un empleado-" itemValue="#{null}"></f:selectItem>
+                                <f:selectItems value="#{empleadosBean.listaEmpleados()}"/>
+                            </h:selectOneMenu>
+                            <p:message for="cboEmpleado"/>  
+                            <p:commandButton image="ui-icon ui-icon-search" title="Historial de Puestos del Empleado"
+                                             oncomplete="mostrarHistorial.show()" 
+                                             update="mostrar" 
+                                             process="@this cboEmpleado" action="#{asignacionPuestosBean.populateHistorial}"> 
+                            </p:commandButton>
+                            <h:outputText value="Puesto:"/>
+                            <h:selectOneMenu id="cboPuesto" binding="#{cboPuesto}" onchange="onSelectPuesto()"
+                                             required="#{param['requireGroup1'] == '1'}"
+                                             requiredMessage="Requerido" value="#{asignacionPuestosBean.selectedPuesto}" style="width: 200px">
+                                <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"></f:selectItem>
+                                <f:selectItems value="#{puestoBean.cargarListaPuestos()}"/>
+                            </h:selectOneMenu>
+                            <p:message for="cboPuesto"/> 
+                            <h:outputText value=""/>
+                            <h:outputText value="Fecha de asignación:"/>
+                            <p:calendar id="txtFecAsignacion"
+                                        locale="es"
+                                        maxdate="#{asignacionPuestosBean.hoy}"
+                                        required="#{param['requireGroup1'] == '1'}"
+                                        requiredMessage="Requerido"  value="#{asignacionPuestosBean.puestoEmpleado.fechaAsignacion}"  navigator="true" showOn="button" />
+                            <p:message for="txtFecAsignacion"/>  
+                            <h:outputText value=""/>
+                            <h:outputText value="Unidad presupuestaria:"/>
+                            <p:inputText id="txtUnidad"  
+                                         required="#{param['requireGroup1'] == '1'}"
+                                         requiredMessage="Requerido"  value="#{asignacionPuestosBean.puestoEmpleado.unidadPresupuestaria}"  size="30"/>
+                            <p:message for="txtUnidad"/>  
+                            <h:outputText value=""/>
+                            <h:outputText value="Partida:"/>
+                            <p:inputText id="txtPartida" 
+                                         required="#{param['requireGroup1'] == '1'}"
+                                         requiredMessage="Requerido"  value="#{asignacionPuestosBean.puestoEmpleado.partida}"  size="30"/>
+                            <p:message for="txtPartida"/> 
+                            <h:outputText value=""/>
+                            <h:outputText value="Linea de trabajo:"/>
+                            <p:inputText id="txtLinea"  
+                                         required="#{param['requireGroup1'] == '1'}"
+                                         requiredMessage="Requerido"  value="#{asignacionPuestosBean.puestoEmpleado.lineaTrabajo}"  size="30"/>
+                            <p:message for="txtLinea"/>
+                            <h:outputText value=""/>
+                            <h:outputText value="Asignar sueldo base:"/>
+                            <h:selectBooleanCheckbox id="chkTipoSueldo" onchange="onCheckTipoSueldo()" disabled="#{asignacionPuestosBean.disabledCheckTipoSueldo}" binding="#{chkSueldo}" value="#{asignacionPuestosBean.checkSueldo}"/>
+                            <h:outputText value=""/>
+                            <h:outputText value=""/>
+                            <h:outputText value="Sueldo:"/>
+                            <p:outputPanel id="txtSueldo">
+                                <p:spinner stepFactor="0.01" min="0"  readonly="#{chkSueldo.value}" requiredMessage="Requerido"  value="#{asignacionPuestosBean.sueldoEmpleado.sueldo}"  size="30">
+                                </p:spinner>
+                            </p:outputPanel>
+                            <p:message for="txtSueldo"/>
+                        </h:panelGrid>
+                        <h:panelGrid style="width: 100%">
+                            <p:toolbar>  
+                                <p:toolbarGroup align="left">  
+                                    <p:commandButton value="Nuevo" 
+                                                     process="@this"
+                                                     action="#{empleadosBean.nuevo()}"
+                                                     title="Nuevo" 
+                                                     image="ui-icon-document"/>  
+                                    <p:commandButton value="Guardar" 
+                                                     actionListener="#{asignacionPuestosBean.crear}"                                                             
+                                                     update="msg dtEmpleado campos" 
+                                                     title="Guardar" 
+                                                     image="ui-icon-disk">
+                                        <f:param name="requireGroup1" value="1"></f:param>
+                                    </p:commandButton>
+                                </p:toolbarGroup>  
+                            </p:toolbar> 
+                        </h:panelGrid> 
+                        <p:outputPanel>
+                            <p:dataTable id="dtEmpleado" 
+                                         widgetVar="dtEmpleado"
+                                         style="overflow:scroll; height:350px"
+                                         emptyMessage="No hay registros" 
+                                         var="varAsignacion" 
+                                         value="#{asignacionPuestosBean.empleados}" 
+                                         paginator="true" rows="10">
+                                <f:facet name="header">  
+                                    Puestos asignados 
+                                    <h:panelGrid style="width: 200px;" columns="3">
+                                        <h:outputText value="Buscar: " />  
+                                        <p:inputText  id="globalFilter" onkeyup="dtEmpleado.filter()" style="width:150px" />  
+                                    </h:panelGrid> 
+                                </f:facet> 
+                                <p:column filterBy="#{varAsignacion[0].codigoMarcacion}" style="text-align: center; width: 32px">  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Código marcación" />  
+                                    </f:facet>  
+                                    <h:outputText value="#{varAsignacion[0].codigoMarcacion}" />  
+                                </p:column>  
+                                <p:column filterBy="#{varAsignacion[1].primerNombre}
+                                                  #{varAsignacion[1].segundoNombre} 
+                                                  #{varAsignacion[1].primerApellido}
+                                                  #{varAsignacion[1].segundoApellido}">  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Empleado" />  
+                                    </f:facet>  
+                                    <h:outputText value="#{varAsignacion[1].primerNombre}
+                                                  #{varAsignacion[1].segundoNombre} 
+                                                  #{varAsignacion[1].primerApellido}
+                                                  #{varAsignacion[1].segundoApellido}" />  
+                                </p:column>  
+                                <p:column filterBy="#{varAsignacion[2].nombrePuesto}" >  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Puesto" />  
+                                    </f:facet>  
+                                    <h:outputText value="#{varAsignacion[2].nombrePuesto}" />  
+                                </p:column>  
+                                <p:column filterBy="#{varAsignacion[3].fechaAsignacion}" style="text-align: center">  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Fecha de asignación" />  
+                                    </f:facet>  
+                                    <h:outputText value="#{varAsignacion[3].fechaAsignacion}" />  
+                                </p:column>
+                                <p:column filterBy="#{varAsignacion[4].sueldo}" style="text-align: center">  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Sueldo" />  
+                                    </f:facet>  
+                                    <h:outputText value="#{varAsignacion[4].sueldo}" />  
+                                </p:column>
+                                <p:column style="width: 64px;">  
+                                    <p:commandButton update="display" oncomplete="carDialog.show()"  
+                                                     image="ui-icon ui-icon-pencil">  
+                                        <f:setPropertyActionListener value=""  
+                                                                     target="" />  
+                                    </p:commandButton>
+                                    <p:commandButton update="display" oncomplete="carDialog.show()"  
+                                                     image="ui-icon ui-icon-trash">  
+                                        <f:setPropertyActionListener value="#{varAsignacion}" target="#{asignacionPuestosBean.selectedEmpleado}" />  
+                                    </p:commandButton>  
+                                </p:column> 
+                            </p:dataTable>  
+                        </p:outputPanel> 
+                    </h:panelGrid>
+
+                </p:panel>
+
+               
+
+                <p:dialog 
+                    width="700"   
+                    header="Historial de Puestos" 
+
+                    widgetVar="mostrarHistorial" 
+                    modal="true">  
+                    <p:outputPanel id="mostrar">
+                        <p:dataTable rows="10" paginator="true" value="#{asignacionPuestosBean.historial}" var="varHistorial">
+
+                            <p:column style="text-align: center; width: 32px">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Código marcación" />  
+                                </f:facet>  
+                                <h:outputText value="#{varHistorial.emple.codigoMarcacion}" />  
+                            </p:column>  
+                            <p:column>  
+                                <f:facet name="header">  
+                                    <h:outputText value="Empleado" />  
+                                </f:facet>  
+                                <h:outputText value="#{varHistorial.person.primerNombre}
+                                              #{varHistorial.person.segundoNombre} 
+                                              #{varHistorial.person.primerApellido}
+                                              #{varHistorial.person.segundoApellido}" />  
+                            </p:column>  
+                            <p:column>  
+                                <f:facet name="header">  
+                                    <h:outputText value="Puesto" />  
+                                </f:facet>  
+                                <h:outputText value="#{varHistorial.puesto.nombrePuesto}" />  
+                            </p:column>  
+                            <p:column style="text-align: center">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Fecha de asignación" />  
+                                </f:facet>  
+                                <h:outputText value="#{varHistorial.puestoEmple.fechaAsignacion}" />  
+                            </p:column>
+                            <p:column style="text-align: center">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Sueldo" />  
+                                </f:facet>  
+                                <h:outputText value="#{varHistorial.sueldoEmple.sueldo}" />  
+                            </p:column>
+                            <p:column style="text-align:center">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Estado" />  
+                                </f:facet>  
+                                <h:outputText value="#{varHistorial.determinarEstado()}" />  
+                            </p:column>
+
+                        </p:dataTable> 
+                    </p:outputPanel>
+                </p:dialog>
+                
+                <p:remoteCommand name="onSelectPuesto" process="@this cboPuesto"
+                         action="#{asignacionPuestosBean.renderChkTipoSueldo}" update="chkTipoSueldo txtSueldo">
+            <f:setPropertyActionListener value="#{cboPuesto.value}" target="#{empleadosBean.selectedPuesto}" />  
+        </p:remoteCommand>
+        <p:remoteCommand name="onCheckTipoSueldo" process="@this  cboPuesto chkTipoSueldo" 
+                         update="txtSueldo" action="#{asignacionPuestosBean.renderTxtSueldo}"/>
+
+                <p:commandButton style="visibility: hidden" 
+                                 widgetVar="updateConfim" 
+                                 update="dtEmpleado msg">
+                </p:commandButton>
+
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

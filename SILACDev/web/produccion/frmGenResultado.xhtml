@@ -1,0 +1,160 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Generar resultados
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript">
+    function openPopupFunction() {
+openPopup.jq.click();
+}
+function doPopup(source,title){
+popup=window.open (source, "popup", "height=600, width=900");
+popup=document.title = title;
+popup.focus();
+}
+        </script>
+        <p:panel header="Generar resultados de análisis">
+            <h:panelGrid style="width: 100%">
+                <p:fieldset legend="Parámetros de búsqueda">
+                    <h:panelGrid id="detallePersona" columns="5" columnClasses="alignTop,alignTop,alignTop,alignTop,alignTop">
+                        <h:panelGrid  columnClasses="alignTop">
+                            <h:outputText value="Nombre:"/>
+                            <p:inputText id="txtNombre" value="#{resultadoBean.buscarNombre}" size="20"/>
+                        </h:panelGrid>
+                        <h:panelGrid columnClasses="alignTop">
+                            <h:outputText value="Doc. Identidad:"/>
+                            <p:inputText id="txtDocId" value="#{resultadoBean.buscarDocId}" size="20"/>
+                        </h:panelGrid>
+                        <h:panelGrid columnClasses="alignTop">
+                            <h:outputText value="Num. Expediente:"/>
+                            <p:inputText id="txtExpediente" value="#{resultadoBean.buscarExpediente}" size="20"/>
+                        </h:panelGrid>
+                        <h:panelGrid columnClasses="alignTop">
+                            <h:outputText value="Desde:"/>
+                            <p:calendar id="txtFechaInicio"
+                                        locale="es"
+                                        selectListener="#{resultadoBean.handleDateSelect}"
+                                        onSelectUpdate="opFecha" 
+                                        maxdate="#{resultadoBean.hoy}" 
+                                        binding="#{txtFechaInicio}" 
+                                        value="#{resultadoBean.fechaInicio}"  
+                                        readOnlyInputText="true" 
+                                        size="20"/>
+                        </h:panelGrid>
+                        <h:panelGrid columnClasses="alignTop">
+                            <h:outputText value="Hasta:"/>
+                            <p:outputPanel id="opFecha">
+                                <p:calendar id="txtFechaFinal" 
+                                            value="#{resultadoBean.fechaFinal}"
+                                            mindate="#{resultadoBean.minDate}" 
+                                            maxdate="#{resultadoBean.hoy}" 
+                                            navigator="true" 
+                                            locale="es"
+                                            readOnlyInputText="true" size="20"/>
+                            </p:outputPanel>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </p:fieldset>
+                <h:panelGrid style="width: 100%">
+                    <p:toolbar>  
+                        <p:toolbarGroup align="left">  
+                            <p:commandButton id="cmdBuscar" 
+                                             value="Filtrar"
+                                             title="Filtrar"
+                                             image="ui-icon ui-icon-search" 
+                                             process="@this detallePersona" 
+                                             action="#{resultadoBean.cargarListaResultadosProduccion()}"
+                                             update="dtResultado detallePersona">
+                            </p:commandButton>
+                            <p:commandButton id="cmdLimpiar" 
+                                             value="Limpiar"
+                                             title="Limpiar"
+                                             image="ui-icon ui-icon-cancel" 
+                                             process="@this detallePersona" 
+                                             action="#{resultadoBean.limpiar}"
+                                             update="dtResultado detallePersona">
+                            </p:commandButton>
+                        </p:toolbarGroup>  
+                    </p:toolbar> 
+                </h:panelGrid>
+            </h:panelGrid>
+            <p:dataTable id="dtResultado" 
+                         var="varResultado" 
+                         value="#{resultadoBean.listaResultadosProduccion}" 
+                         selection="#{resultadoBean.selectedResultadoProduccion}"
+                         paginator="true" 
+                         rows="10">
+                <f:facet name="header">
+                    <h:outputText value="Exámenes del paciente"/>
+                </f:facet>   
+                <p:column selectionMode="multiple" >
+
+                </p:column>
+                <p:column style="text-align: center;">
+                    <f:facet name="header">
+                        <h:outputText value="No. Control"/>
+                    </f:facet> 
+                    <h:outputText value="#{varResultado[2]}"/>
+                </p:column>       
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Expediente"/>
+                    </f:facet> 
+                    <h:outputText value="#{varResultado[6]}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Paciente"/>
+                    </f:facet> 
+                    <h:outputText value="#{varResultado[0]}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Examen"/>
+                    </f:facet> 
+                    <h:outputText value="#{varResultado[3]} #{varResultado[4]}"/>
+                </p:column>
+                <p:column style="text-align: center;">
+                    <f:facet name="header">
+                        <h:outputText value="Fecha"/>
+                    </f:facet> 
+                    <h:outputText value="#{varResultado[5]}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Técnico"/>
+                    </f:facet> 
+                    <h:outputText value="#{varResultado[1]}"/>
+                </p:column>    
+                <f:facet name="footer">
+                    <h:panelGrid style="width: 400px; text-align: left;" columns="3">
+                        <h:outputText value="Exportar como:" />
+                        <h:selectOneMenu style="width: 200px" id="cboTipo" value="#{resultadoBean.selectedTipo}" >
+                            <f:selectItem itemLabel="-Seleccione una opcipón-" itemValue="#{null}"/>
+                            <f:selectItem itemLabel="Documento PDF" itemValue="application/pdf"/>
+                            <f:selectItem itemLabel="Documento EXCEL" itemValue="application/vnd.ms-excel"/>
+                            <f:selectItem itemLabel="Documento HTML" itemValue="text/html"/>
+                        </h:selectOneMenu> 
+                        <p:commandButton type="push" 
+                                         value="Imprimir" 
+                                         oncomplete="openPopupFunction()" 
+                                         update="openPopup campos" 
+                                         action="#{resultadoBean.onSelectRow}" 
+                                         title="Imprimir" 
+                                         image="ui-icon-arrowthickstop-1-s"/> 
+                    </h:panelGrid> 
+                </f:facet>   
+            </p:dataTable>
+        </p:panel>
+        <p:commandButton id="openPopup" 
+                         style="visibility: hidden" 
+                         onclick="doPopup('#{resultadoBean.url}', 'Resultados de analisis')"
+                         widgetVar="openPopup"/>
+    </ui:define>
+</ui:composition>

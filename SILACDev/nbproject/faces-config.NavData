@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scene Scope="Project" version="2">
+    <Scope Scope="Faces Configuration Only"/>
+    <Scope Scope="Project">
+        <Node id="produccion/frmRegResultadoExpress.xhtml" x="2150" y="600" zoom="true"/>
+        <Node id="rh/frmPlanificacion.xhtml" x="1650" y="600" zoom="true"/>
+        <Node id="inventario/frmCatalogo.xhtml" x="1400" y="450" zoom="true"/>
+        <Node id="bancoSangre/frmCuestionario.xhtml" x="2400" y="450" zoom="true"/>
+        <Node id="admon/frmExamenes.xhtml" x="2400" y="300" zoom="true"/>
+        <Node id="rh/index.xhtml" x="1650" y="750" zoom="true"/>
+        <Node id="admon/frmTipoServicios.xhtml" x="1400" y="600" zoom="true"/>
+        <Node id="produccion/frmRegResultado.xhtml" x="1400" y="150" zoom="true"/>
+        <Node id="inventario/index.xhtml" x="2150" y="450" zoom="true"/>
+        <Node id="produccion/frmGenLibrosRegistro.xhtml" x="2400" y="150" zoom="true"/>
+        <Node id="rh/frmCambioTurno.xhtml" x="400" y="900" zoom="true"/>
+        <Node id="admon/frmConfig.xhtml" x="650" y="300" zoom="true"/>
+        <Node id="inventario/frmGenCostos.xhtml" x="650" y="750" zoom="true"/>
+        <Node id="bancoSangre/frmServicios.xhtml" x="1150" y="300" zoom="true"/>
+        <Node id="error.xhtml" x="1150" y="750" zoom="true"/>
+        <Node id="bancoSangre/frmEvalDonante.xhtml" x="150" y="600" zoom="true"/>
+        <Node id="rh/frmEmpleado.xhtml" x="1150" y="900" zoom="true"/>
+        <Node id="admon/frmRoles.xhtml" x="650" y="1050" zoom="true"/>
+        <Node id="bancoSangre/frmRecServicios.xhtml" x="900" y="300" zoom="true"/>
+        <Node id="templates/templateError.xhtml" x="1400" y="750" zoom="true"/>
+        <Node id="admon/frmServicios.xhtml" x="2650" y="150" zoom="true"/>
+        <Node id="templates/template.xhtml" x="1400" y="300" zoom="true"/>
+        <Node id="produccion/frmGenTabulador.xhtml" x="150" y="450" zoom="true"/>
+        <Node id="admon/frmLaboratorios.xhtml" x="2150" y="300" zoom="true"/>
+        <Node id="admon/frmEspecialidades.xhtml" x="900" y="1200" zoom="true"/>
+        <Node id="bancoSangre/frmDescartar.xhtml" x="1650" y="450" zoom="true"/>
+        <Node id="admon/frmHistorial.xhtml" x="900" y="600" zoom="true"/>
+        <Node id="produccion/index.xhtml" x="150" y="1500" zoom="true"/>
+        <Node id="produccion/frmGenActividades.xhtml" x="400" y="750" zoom="true"/>
+        <Node id="admon/frmInstituciones.xhtml" x="1400" y="900" zoom="true"/>
+        <Node id="admon/frmUsuarios.xhtml" x="1900" y="300" zoom="true"/>
+        <Node id="bancoSangre/frmConfirmacion.xhtml" x="2150" y="150" zoom="true"/>
+        <Node id="inventario/frmRegEntradas.xhtml" x="1650" y="300" zoom="true"/>
+        <Node id="admon/frmDeptos.xhtml" x="900" y="750" zoom="true"/>
+        <Node id="admon/frmObjetos.xhtml" x="150" y="300" zoom="true"/>
+        <Node id="produccion/frmGenResultado.xhtml" x="400" y="1350" zoom="true"/>
+        <Node id="admon/frmRestore.xhtml" x="150" y="1050" zoom="true"/>
+        <Node id="rh/frmAsignarSeccion.xhtml" x="2650" y="300" zoom="true"/>
+        <Node id="inventario/frmRegPedidos.xhtml" x="650" y="1200" zoom="true"/>
+        <Node id="rh/frmCapacitaciones.xhtml" x="400" y="600" zoom="true"/>
+        <Node id="admon/frmModalidades.xhtml" x="1150" y="1050" zoom="true"/>
+        <Node id="produccion/frmGenEstadisticasOriginal.xhtml" x="150" y="900" zoom="true"/>
+        <Node id="inventario/frmUnidadMedida.xhtml" x="400" y="1050" zoom="true"/>
+        <Node id="bancoSangre/frmEnvio.xhtml" x="900" y="450" zoom="true"/>
+        <Node id="admon/frmAnioLaboral.xhtml" x="150" y="750" zoom="true"/>
+        <Node id="rh/frmActSalario.xhtml" x="650" y="450" zoom="true"/>
+        <Node id="admon/index.xhtml" x="900" y="900" zoom="true"/>
+        <Node id="admon/frmSeccion.xhtml" x="650" y="150" zoom="true"/>
+        <Node id="admon/frmMunicipio.xhtml" x="650" y="1350" zoom="true"/>
+        <Node id="rh/frmPuesto.xhtml" x="400" y="1500" zoom="true"/>
+        <Node id="inventario/frmProcedenciaArticulo.xhtml" x="400" y="150" zoom="true"/>
+        <Node id="produccion/frmRegSolicitud.xhtml" x="1900" y="150" zoom="true"/>
+        <Node id="rh/frmAsigPuesto.xhtml" x="1650" y="150" zoom="true"/>
+        <Node id="inventario/frmRegSalidas.xhtml" x="1900" y="450" zoom="true"/>
+        <Node id="login.xhtml" x="1150" y="600" zoom="true"/>
+        <Node id="templates/template_1.xhtml" x="2900" y="150" zoom="true"/>
+        <Node id="admon/frmMedicos.xhtml" x="1150" y="450" zoom="true"/>
+        <Node id="produccion/frmImpResultado.xhtml" x="1150" y="150" zoom="true"/>
+        <Node id="isLoggedIn.xhtml" x="150" y="1650" zoom="true"/>
+        <Node id="produccion/frmRegEntrega.xhtml" x="650" y="900" zoom="true"/>
+        <Node id="bancoSangre/frmTransfusion.xhtml" x="150" y="1200" zoom="true"/>
+        <Node id="produccion/frmGenEstadisticas.xhtml" x="900" y="150" zoom="true"/>
+        <Node id="admon/frmBackup.xhtml" x="400" y="1200" zoom="true"/>
+        <Node id="bancoSangre/frmExclusion.xhtml" x="400" y="450" zoom="true"/>
+        <Node id="index.xhtml" x="400" y="300" zoom="true"/>
+        <Node id="rh/frmAsisCapacitacion.xhtml" x="150" y="150" zoom="true"/>
+        <Node id="bancoSangre/index.xhtml" x="1900" y="600" zoom="true"/>
+        <Node id="templates/templateIndex.xhtml" x="900" y="1050" zoom="true"/>
+        <Node id="rh/frmPermisos.xhtml" x="650" y="600" zoom="true"/>
+        <Node id="inventario/frmArticulos.xhtml" x="150" y="1350" zoom="true"/>
+        <Node id="admon/frmPreferencias.xhtml" x="1900" y="750" zoom="true"/>
+    </Scope>
+    <Scope Scope="All Faces Configurations"/>
+</Scene>

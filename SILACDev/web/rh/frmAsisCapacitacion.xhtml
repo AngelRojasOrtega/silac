@@ -1,0 +1,282 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="./../templates/template.xhtml">
+
+    <ui:define name="titulo">
+        Asistencia Capacitaciones
+    </ui:define>va
+    <ui:define name="content">
+        <script type="text/javascript">
+function confirmFunction() {
+updateConfim.jq.click();
+}
+function doPopup(source,title){
+popup=window.open (source, "popup", "height=600, width=900");
+popup=document.title = title;
+popup.focus();
+}
+    function openPopupFunction() {
+openPopup.jq.click();
+}
+        </script>
+        <p:panel header="Asistencia Capacitaciones">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/> 
+            <p:tabView tabChangeListener="#{asistenciaCapBean.onTabChange}" widgetVar="tabViewEvent" onTabChangeUpdate="dtSchedule">
+                <p:tab id="formulario" title="Registrar asistencia">
+                    <h:panelGrid id="campos" style="width: 100%">
+                        <p:fieldset legend="Datos de la capacitación">
+                            <h:panelGrid columns="3" columnClasses="alignTop,alignTop,alignTop">
+                                <h:outputText value="Nombre del evento:"/>
+                                <p:inputTextarea id="txtNomEvento" 
+                                                 value="#{asistenciaCapBean.capacitacion.nombreEvento}" 
+                                                 required="#{param['requireGroup1'] == '1'}"  
+                                                 requiredMessage="Requerido" 
+                                                 rows="2" cols="30" />
+                                <p:message for="txtNomEvento"/>  
+                                <h:outputText value="Tipo:" />     
+                                <h:selectOneRadio id="optTipo"
+                                                  value="#{asistenciaCapBean.tipo}"
+                                                  required="#{param['requireGroup1'] == '1'}"  requiredMessage="Requerido">
+                                    <f:selectItems value="#{asistenciaCapBean.cargarListaTipo()}" />
+                                </h:selectOneRadio>
+                                <p:message for="optTipo"/> 
+                                <h:outputText value="Institución responsable:"/>
+                                <h:selectOneMenu id="cboInstitucion" 
+                                                 value="#{asistenciaCapBean.selectedInstitucion}"
+                                                 required="#{param['requireGroup1'] == '1'}"  
+                                                 requiredMessage="Requerido">
+                                    <f:selectItem itemLabel="-Seleccione un opción-" itemValue="#{null}"/>
+                                    <f:selectItems value="#{institucionesBean.listaInstituciones()}"/>
+                                </h:selectOneMenu>
+                                <p:message for="cboInstitucion"/>  
+                                <h:outputText value="Lugar del evento:"/>
+                                <p:inputText id="txtLugar" value="#{asistenciaCapBean.capacitacion.lugarEvento}" size="30"
+                                             required="#{param['requireGroup1'] == '1'}"  
+                                             requiredMessage="Requerido"/>
+                                <p:message for="txtLugar"/>  
+                                <h:outputText value="Dirección:"/>
+                                <p:inputText id="txtDireccion" value="#{asistenciaCapBean.capacitacion.direccionEvento}" size="30"
+                                             required="#{param['requireGroup1'] == '1'}"  
+                                             requiredMessage="Requerido"/>
+                                <p:message for="txtLugar"/> 
+                                <h:outputText value="Fecha de inicio:"/>
+                                <p:calendar id="txtInicio" binding="#{txtInicio}"
+                                            locale="es"
+                                            value="#{asistenciaCapBean.capacitacion.fechaInicio}"
+                                            readOnlyInputText="true" 
+                                            onSelectUpdate="opFecha" 
+                                            selectListener="#{asistenciaCapBean.handleDateSelect}"  
+                                            onSelectProcess="@this txtFinal"
+                                            navigator="true" 
+                                            showOn="button"
+                                            required="#{param['requireGroup1'] == '1'}" 
+                                            requiredMessage="Requerido"/>
+                                <p:message for="txtInicio"/>  
+                                <h:outputText value="Fecha de finalizacion:"/>
+                                <p:outputPanel id="opFecha">
+                                    <p:calendar id="txtFinal"
+                                                locale="es"
+                                                value="#{asistenciaCapBean.capacitacion.fechaFinal}"
+                                                readOnlyInputText="true" 
+                                                mindate="#{asistenciaCapBean.minDate}" 
+                                                navigator="true" 
+                                                showOn="button"
+                                                required="#{param['requireGroup1'] == '1'}"  
+                                                requiredMessage="Requerido">
+                                        <f:attribute name="fechaInicio" value="#{txtInicio.value}"/>
+                                        <f:validator validatorId="fechaValidator" disabled="#{param['requireGroup1'] != '1'}"/>  
+                                    </p:calendar>
+                                </p:outputPanel>
+                                <p:message for="txtFinal"/>  
+                                <h:outputText value="Hora inicio:"/>
+                                <h:panelGrid columns="3">
+                                    <p:spinner id="txtHoraInicio" binding="#{txtHoraInicio}"
+                                               value="#{asistenciaCapBean.horaInicio}" min="0" max="12" size="3"/>
+                                    <p:spinner id="txtMinsInicio" binding="#{txtMinsInicio}" value="#{asistenciaCapBean.minsInicio}" min="0" max="59" size="3"/>
+                                    <h:selectOneMenu id="cboAm_PmInicio" binding="#{cboAm_PmInicio}" value="#{asistenciaCapBean.am_pmInicio}">
+                                        <f:selectItem itemLabel="AM" itemValue="0"/>
+                                        <f:selectItem itemLabel="PM" itemValue="1"/>
+                                    </h:selectOneMenu>
+                                </h:panelGrid>                                
+                                <p:message for="txtHoraInicio"/>  
+                                <h:outputText value="Hora Finalización:"/>
+                                <h:panelGrid columns="3">
+                                    <p:spinner id="txtHoraFin" binding="#{txtHoraFin}" value="#{asistenciaCapBean.horaFinal}" min="0" max="12" size="3"/>
+                                    <p:spinner id="txtMinsFin" binding="#{txtMinsFin}" value="#{asistenciaCapBean.minsFinal}" min="0" max="59" size="3"/>
+                                    <h:selectOneMenu id="cboAm_PmFin" binding="#{cboAm_PmFin}" value="#{asistenciaCapBean.am_pmFinal}">
+                                        <f:selectItem itemLabel="AM" itemValue="0"/>
+                                        <f:selectItem itemLabel="PM" itemValue="1"/>
+                                        <f:validator  validatorId="horaValidator"/>
+                                        <f:attribute name="horaInicio" value="#{txtHoraInicio.value}"/>
+                                        <f:attribute name="minsInicio" value="#{txtMinsInicio.value}"/>                                                
+                                        <f:attribute name="am_pmInicio" value="#{cboAm_PmInicio.value}"/>
+                                        <f:attribute name="minsFin" value="#{txtMinsFin.value}"/>
+                                        <f:attribute name="horaFin" value="#{txtHoraFin.value}"/>
+                                    </h:selectOneMenu>
+                                </h:panelGrid>  
+                                <p:message for="cboAm_PmFin"/>  
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <p:fieldset legend="Participantes">
+                            <h:panelGrid columns="2" columnClasses="alignTop,alignTop">
+                                <p:pickList id="cboEmpleados" value="#{asistenciaCapBean.listaEmpleados}"  
+                                            var="empleado" 
+                                            required="#{param['requireGroup1'] == '1'}" 
+                                            requiredMessage="Requrido"  
+                                            addLabel="Ańadir" addAllLabel="Ańadir todos"
+                                            removeLabel="Quitar" removeAllLabel="Quitar todos"                                      
+                                            itemLabel="#{empleado.nombre}"  
+                                            itemValue="#{empleado}" 
+                                            converter="empleadosPickListConverter">
+                                    <f:facet name="sourceCaption">Empleados</f:facet>  
+                                    <f:facet name="targetCaption">Participantes</f:facet>  
+                                </p:pickList>
+                                <p:message for="cboEmpleados"/>
+                            </h:panelGrid>
+                        </p:fieldset>                   
+                    </h:panelGrid>
+                    <h:panelGrid style="width: 100%">
+                        <p:toolbar>  
+                            <p:toolbarGroup align="left">  
+                                <p:commandButton type="push" value="Nuevo" title="Guardar" image="ui-icon-document"/>  
+                                <p:commandButton value="Guardar" 
+                                                 title="Guardar" 
+                                                 action="#{asistenciaCapBean.crear}"
+                                                 update="campos msg"
+                                                 image="ui-icon-disk">
+                                    <f:param name="requireGroup1" value="1"/>
+                                </p:commandButton>
+                            </p:toolbarGroup>  
+                        </p:toolbar> 
+                    </h:panelGrid> 
+                </p:tab>
+                <p:tab id="consulta" title="Consultar asistencia">
+                    <h:panelGrid id="dtSchedule" style="width: 100%;">
+                        <p:schedule id="myschedule" widgetVar="myschedule" editable="true" draggable="false" resizable="false"
+                                    eventSelectListener="#{asistenciaCapBean.onEventSelect}" 
+                                    value="#{asistenciaCapBean.eventModel}"
+                                    onEventSelectUpdate="eventDetails" 
+                                    onEventSelectComplete="eventDialog.show()">
+                        </p:schedule>  
+                    </h:panelGrid>
+                    <p:dialog widgetVar="eventDialog" header="Detalles del evento" showEffect="clip" hideEffect="clip">  
+                        <h:panelGrid id="eventDetails" columns="2">  
+                            <h:outputLabel for="title" value="Title:" />  
+                            <p:inputTextarea id="title" maxHeight="40" cols="30" rows="30" value="#{asistenciaCapBean.event.title}" />  
+
+                            <h:outputLabel for="from" value="From:" />  
+                            <p:inputMask id="from" mask="99/99/9999"  
+                                         value="#{asistenciaCapBean.event.startDate}" >  
+                                <f:convertDateTime pattern="dd/MM/yyyy" />  
+                            </p:inputMask>  
+
+                            <h:outputLabel for="to" value="To:" />  
+                            <p:inputMask id="to" mask="99/99/9999"  
+                                         value="#{asistenciaCapBean.event.endDate}" >  
+                                <f:convertDateTime pattern="dd/MM/yyyy" />  
+                            </p:inputMask>  
+
+                            <p:commandButton type="reset" value="Reset" />  
+                            <p:commandButton value="Save"  
+                                             oncomplete="myschedule.update();eventDialog.hide();" />  
+                        </h:panelGrid>  
+                    </p:dialog>  
+                </p:tab>
+                <p:tab title="Consultar Capacitaciones">
+                    <h:panelGrid style="width: 100%">
+                        <p:fieldset legend="Parámetros de búsqueda">
+                            <h:panelGrid id="parametros" columns="5" columnClasses="alignDown, alignDown">
+                                <h:outputText value="Año:"/>
+                                <p:spinner id="txtAnio" binding="#{txtanio}" onkeypress="onChangeAnio()" onchange="onChangeAnio()" value="#{asistenciaCapBean.anio}" size="30" stepFactor="1" min="2011" style="width: 200px"/>
+                                <p:message for="txtAnio"/>
+                                <h:outputText value="Capacitaciones:"/>
+                                <h:selectOneMenu id="cboCapacitacion" onchange="onSelectCapacitaciones()"
+                                                 value="#{asistenciaCapBean.selectedIdCapacitacion}"
+                                                 required="#{param['requireGroup1'] == '1'}" 
+                                                 requiredMessage="Requerido">
+                                    <f:selectItem itemLabel="-Seleccione Capacitación-" itemValue="#{null}"/>
+                                    <f:selectItems value="#{asistenciaCapBean.listaCapacitaciones}"/>
+                                </h:selectOneMenu>
+                                <p:message for="cboCapacitacion"/>
+                            </h:panelGrid>                             
+                        </p:fieldset>
+                    </h:panelGrid>
+                    <p:dataTable id="dtCapacitaciones" var="varCapacitacion" 
+                                 value="#{asistenciaCapBean.listaCapacitacion}"
+                                 selection="#{asistenciaCapBean.selectedCapacitacion}"
+                                 paginator="true" 
+                                 rows="10">
+                        <p:column style="width: 16px; text-align: center;"  selectionMode="multiple"/>
+                        <p:column style="width: 150px;" headerText="Empleado">  
+                            <h:outputText value="#{varCapacitacion[0]}" />
+                        </p:column>
+                        <p:column style="width: 64px; text-align: center;">  
+                            <f:facet name="header">  
+                                <h:outputText value="Fecha Inicio" />  
+                            </f:facet>  
+                            <h:outputText value="#{varCapacitacion[3].fechaInicio}" />  
+                        </p:column>
+                        <p:column  style="width: 64px; text-align: center;">  
+                            <f:facet name="header">  
+                                <h:outputText value="Fecha Final" />  
+                            </f:facet>  
+                            <h:outputText value="#{varCapacitacion[3].fechaFinal}" />  
+                        </p:column>  
+                        <p:column  style="width: 128px; text-align: center;">  
+                            <f:facet name="header">  
+                                <h:outputText value="Nombre"/> <br/>
+                                <h:outputText value="Evento"/> 
+                            </f:facet>  
+                            <h:outputText value="#{varCapacitacion[3].nombreEvento}"/>  
+                        </p:column>
+                        <p:column  style="width: 128px; text-align: center;">  
+                            <f:facet name="header">  
+                                <h:outputText value="Lugar"/> <br/>
+                                <h:outputText value="Evento" /> 
+                            </f:facet>  
+                            <h:outputText value="#{varCapacitacion[3].lugarEvento}" />  
+                        </p:column>
+                        <f:facet name="footer">
+                            <h:panelGrid style="width: 400px; text-align: left;" columns="3">
+                                <h:outputText value="Exportar como:" />
+                                <h:selectOneMenu style="width: 200px" id="cboTipo" value="#{asistenciaCapBean.selectedTipoExpor}" >
+                                    <f:selectItem itemLabel="Documento PDF" itemValue="application/pdf"/>
+                                    <f:selectItem itemLabel="Documento EXCEL" itemValue="application/vnd.ms-excel"/>
+                                    <f:selectItem itemLabel="Documento HTML" itemValue="text/html"/>
+                                </h:selectOneMenu> 
+                                <p:commandButton type="push" 
+                                                 value="Imprimir" 
+                                                 process="@this cboTipo dtCapacitaciones"
+                                                 oncomplete="openPopupFunction()" 
+                                                 update="openPopup" 
+                                                 action="#{asistenciaCapBean.onSelectRow}" 
+                                                 title="Imprimir" 
+                                                 image="ui-icon-arrowthickstop-1-s"/>
+
+                            </h:panelGrid> 
+                        </f:facet>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>  
+        </p:panel>
+        <p:remoteCommand name="onChangeAnio" 
+                         action="#{asistenciaCapBean.onChangeAnio}" 
+                         process="@this txtAnio" 
+                         update="cboCapacitacion"/>
+        <p:remoteCommand name="onSelectCapacitaciones" 
+                         action="#{asistenciaCapBean.onSelectCapacitaciones}" 
+                         process="@this cboCapacitacion" 
+                         update="dtCapacitaciones"/>
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfim" 
+                         update="msg"/>
+        <p:commandButton id="openPopup" 
+                         style="visibility: hidden" 
+                         onclick="doPopup('#{asistenciaCapBean.url}', 'Resultados de analisis')"
+                         widgetVar="openPopup"/>
+    </ui:define>
+</ui:composition>
+

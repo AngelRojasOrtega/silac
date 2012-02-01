@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblexamenarticulo" table="tblexamenarticulo" catalog="dbsilac">
+        <id name="idExamenarticulo" type="java.lang.Integer">
+            <column name="idExamenarticulo" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblarticulo" class="com.silac.model.Tblarticulo" fetch="select">
+            <column name="idArticulo" not-null="true" />
+        </many-to-one>
+        <many-to-one name="tblexamen" class="com.silac.model.Tblexamen" fetch="select">
+            <column name="idExamen" not-null="true" />
+        </many-to-one>
+        <property name="cantidad" type="double">
+            <column name="cantidad" precision="22" scale="0" not-null="true">
+                <comment>Cantidad del reactivo o insumo necesaria para realizar el examen.</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

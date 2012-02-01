@@ -1,0 +1,216 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Artículos
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfim.jq.click();
+}
+        </script>
+        <p:panel header="Insumos y reactivos">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+            <p:tabView>
+                <p:tab title="Registrar insumo o reactivo">                        
+                    <p:fieldset legend="Datos del artículo">
+                        <h:panelGrid id="campos" columns="3">
+                            <h:outputText value="Categoría:"/>
+                            <h:selectOneMenu  id="cboCategoria" value="#{articuloBean.selectedCategoria}" style="width: 200px" required="true" requiredMessage="requerido">
+                                <f:selectItem itemLabel="-Seleccione una categoría-" itemValue="#{null}"></f:selectItem>
+                                <f:selectItems value="#{catalogoBean.cargarCategorias()}" />
+                            </h:selectOneMenu>   
+                            <p:message for="cboCategoria"/>
+                            <h:outputText value="Cód. Articulo:"/>
+                            <p:inputText id="txtCodArticulo" value="#{articuloBean.articulo.codigoArticulo}" required="true" requiredMessage="requerido"/>                                
+                            <p:message for="txtCodArticulo"/>
+                            <h:outputText value="Nombre:"/>
+                            <p:inputText id="txtNombre" value="#{articuloBean.articulo.nombreArticulo}" required="true" requiredMessage="requerido"/>                                
+                            <p:message for="txtNombre"/>
+                            <h:outputText value="Presentación:"/>
+                            <p:inputText id="txtPresentacion" value="#{articuloBean.articulo.presentacion}" required="true" requiredMessage="requerido"/>                                
+                            <p:message for="txtPresentacion"/>
+                            <h:outputText value="Cantidad minima de uso:"/>
+                            <h:panelGrid columns="2" columnClasses="alignTop,alignTop" >
+                                <p:spinner id="txtCantidadMinimaUso"
+                                           style="width: 80px" 
+                                           min="0.000000" 
+                                           value="#{articuloBean.articulo.cantidadMinimaUso}" 
+                                           stepFactor="0.000001"/>                                     
+                                <h:selectOneMenu id="cboMedidaMinimaUso" 
+                                                 style="width: 100px" 
+                                                 value="#{articuloBean.selectedUnidadMedidaUso}"                                                    
+                                                 required="true" 
+                                                 requiredMessage="requerido" >
+                                    <f:selectItem itemLabel="" itemValue="#{null}"></f:selectItem>
+                                    <f:selectItems value="#{unidadMedidaBean.cargarListaUnidadMedida()}" />
+                                </h:selectOneMenu>
+                            </h:panelGrid>
+                            <p:message for="cboMedidaMinimaUso"/>
+                            <h:outputText value="Cantidad minima de compra:"/>
+                            <h:panelGrid columns="2" columnClasses="alignTop,alignTop" >
+                                <p:spinner id="txtCantidadMinimaCompra" 
+                                           style="width: 80px"
+                                           min="0.000000"
+                                           value="#{articuloBean.articulo.cantidadMinimaCompra}"
+                                           stepFactor="0.000001"/>                                     
+                                <h:selectOneMenu id="cboMedidaMinimaCompra" 
+                                                 style="width: 100px" 
+                                                 value="#{articuloBean.selectedUnidadMedidaCompra}"                                                    
+                                                 required="true" 
+                                                 requiredMessage="requerido">
+                                    <f:selectItem itemLabel="" itemValue="#{null}"></f:selectItem>
+                                    <f:selectItems value="#{unidadMedidaBean.cargarListaUnidadMedida()}" />
+                                </h:selectOneMenu>
+                            </h:panelGrid>
+                            <p:message for="cboMedidaMinimaCompra"/>
+                            <h:outputText value="Factor conversion:"/> 
+                            <p:spinner id="txtFactorConversion"
+                                       min="0.000000"
+                                       value="#{articuloBean.articulo.factorConversion}"
+                                       stepFactor="0.000001"
+                                       required="true" 
+                                       requiredMessage="requerido" />  
+                            <p:message for="txtFactorConversion"/>
+                            <h:outputText value="Relacion:"/>
+                            <h:selectOneMenu  id="cboRelacion" 
+                                              value="#{articuloBean.articulo.relacion}" 
+                                              style="width: 
+                                              200px" 
+                                              required="true" 
+                                              requiredMessage="requerido">
+                                <f:selectItem itemLabel="-Seleccione una opcion-" itemValue="#{null}"/>                                   
+                                <f:selectItem itemLabel="Multiplicacion (*)" itemValue="*"/>   
+                                <f:selectItem itemLabel="Division (/)" itemValue="/"/> 
+                            </h:selectOneMenu>   
+                            <p:message for="cboCategoria"/>
+                            <h:outputText value="Perecedero:"/>
+                            <h:selectBooleanCheckbox id="chkPerecedero" value="#{articuloBean.articulo.perecedero}"/>
+                            <p:message for="chkPerecedero" />
+                            <h:panelGrid style="width: 100%">
+                                <h:outputText value="El articulo se usa simultaneamente"/>
+                                <h:outputText value="en varios examenes:"/>
+                                </h:panelGrid>
+                                <h:selectBooleanCheckbox id="chkUsoCompartido" value="#{articuloBean.articulo.usoCompartido}"/>
+                                <p:message for="chkUsoCompartido" />
+                            
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <h:panelGrid style="width: 100%">
+                        <p:toolbar>  
+                            <p:toolbarGroup align="left">  
+                                <p:commandButton value="Nuevo" 
+                                                 title="Nuevo" 
+                                                 action="#{articuloBean.nuevo}" 
+                                                 update="campos" 
+                                                 process="@this"
+                                                 immediate="true"
+                                                 image="ui-icon-document"/>     
+                                <p:commandButton value="Guardar" 
+                                                 action="#{articuloBean.crear}" 
+                                                 oncomplete="confirmFunction()" 
+                                                 update="dtArticulo campos msg" 
+                                                 title="Guardar" 
+                                                 image="ui-icon-disk">                                                                                       
+                                </p:commandButton>   
+                            </p:toolbarGroup>  
+                        </p:toolbar>
+                    </h:panelGrid> 
+                </p:tab>
+                <p:tab title="Consultar insumos o reactivos">
+                    <p:dataTable id="dtArticulo"  
+                                 widgetVar="dtArticulo" 
+                                 style="overflow:scroll; height:350px"
+                                 emptyMessage="No hay registros" 
+                                 value="#{articuloBean.articulos}" 
+                                 var="varArt">
+                        <f:facet name="header">  
+                            <h:panelGrid style="width: 200px;" columns="3">
+                                <h:outputText value="Buscar: " />  
+                                <p:inputText  id="globalFilter" onkeyup="dtArticulo.filter()" style="width:150px" />  
+                            </h:panelGrid> 
+                        </f:facet>  
+                        <p:column filterBy="#{varArt.articulo.codigoArticulo}" style="text-align:center">  
+                            <f:facet name="header">  
+                                <h:outputText value="Código" />  
+                            </f:facet>  
+                            <h:outputText value="#{varArt.articulo.codigoArticulo}" />  
+                        </p:column>
+                        <p:column filterBy="#{varArt.categoria}">  
+                            <f:facet name="header">  
+                                <h:outputText value="Categoría" />  
+                            </f:facet>  
+                            <h:outputText value="#{varArt.categoria}" />  
+                        </p:column>
+                        <p:column filterBy="#{varArt.articulo.nombreArticulo}">  
+                            <f:facet name="header">  
+                                <h:outputText value="Artículo" />  
+                            </f:facet>  
+                            <h:outputText value="#{varArt.articulo.nombreArticulo}" />  
+                        </p:column>
+                        <p:column>  
+                            <f:facet name="header">  
+                                <h:outputText value="Presentación" />  
+                            </f:facet>  
+                            <h:outputText value="#{varArt.articulo.presentacion}" />  
+                        </p:column>
+                        <p:column style="text-align:center">  
+                            <f:facet name="header">  
+                                <h:outputText value="Unidad de Uso" />  
+                            </f:facet>  
+                            <h:outputText value="#{varArt.unidadUso}" />  
+                        </p:column>
+                        <p:column style="text-align:center">  
+                            <f:facet name="header">  
+                                <h:outputText value="Unidad de Compra" />  
+                            </f:facet>  
+                            <h:outputText value="#{varArt.unidadCompra}" />  
+                        </p:column>
+                        <p:column style="width:64px">  
+                            <p:commandButton image="ui-icon ui-icon-pencil"/>   
+                            <p:commandButton image="ui-icon ui-icon-trash"
+                                             oncomplete="confirmation.show()" 
+                                             update="confirm" 
+                                             process="@this">  
+                                <f:setPropertyActionListener value="#{varArt}" target="#{articuloBean.selectedArticulo}" />
+                            </p:commandButton>
+                        </p:column> 
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+        </p:panel>
+        <p:confirmDialog message="Desea eliminar el registro?" 
+                         width="400"   
+                         header="Confirm" 
+                         severity="alert" 
+                         widgetVar="confirmation" 
+                         modal="true">  
+            <p:outputPanel id="confirm">
+                <h:panelGrid>
+                    <h:outputText  value=" #{articuloBean.selectedArticulo.articulo.codigoArticulo} 
+                                   #{articuloBean.selectedArticulo.articulo.nombreArticulo} "/>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Si" 
+                                         update="msg"
+                                         action="#{articuloBean.eliminar}" 
+                                         oncomplete="confirmation.hide(); confirmFunction()" 
+                                         process="@this">
+                            <f:param name="idArticulo" 
+                                     value="#{articuloBean.selectedArticulo.articulo.idArticulo}"/>
+                        </p:commandButton>
+                        <p:commandButton value="No" 
+                                         onclick="confirmation.hide()" 
+                                         type="button" />    
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:confirmDialog>
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfim" 
+                         update="dtArticulo msg"/>
+    </ui:define>
+</ui:composition>

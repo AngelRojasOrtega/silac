@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <body>
+        <ui:composition template="./../templates/template.xhtml">
+            <ui:define name="titulo">
+                Descartar unidades
+            </ui:define>
+            <ui:define name="content">
+                <p:panel header="Descartar unidades">
+                    <h:panelGrid style="width: 100%">
+                        <p:fieldset legend="Datos de descarte">
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Número de bolsa:"/>
+                                <h:panelGrid columns="2">
+                                    <p:inputText id="txtNumBolsa"/> 
+                                    <p:commandButton type="push" value="Buscar" title="Guardar" image="ui-icon-search"/>  
+                                </h:panelGrid>
+                                <h:outputText value="Fecha descarte:"/>
+                                <p:calendar id="txtFecDescarte" locale="es" navigator="true" showOn="button" />
+                                <h:outputText value="Tipo de componente:"/>
+                                <h:selectOneMenu style="width: 200px"  id="cboComponente">
+                                    <f:selectItem itemLabel="-Seleccione una opción-" itemValue="1"></f:selectItem>
+                                </h:selectOneMenu> 
+                                <h:outputText value="Motivo descarte:"/>
+                                <p:inputTextarea id="txtMotivo"/>  
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <p:dataTable rows="10" paginator="true" value="" var="excluido">
+                            <f:facet name="header">  
+                                Unidades descartadas
+                            </f:facet> 
+                            <p:column style="text-align:center">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Número de bolsa" />  
+                                </f:facet>  
+                                <h:outputText value="999" />  
+                            </p:column>
+                            <p:column style="text-align:center">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Fecha de descarte" />  
+                                </f:facet>  
+                                <h:outputText value="dd/mm/aaaa" />  
+                            </p:column>
+                            <p:column style="text-align:center">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Tipo de componente" />  
+                                </f:facet>  
+                                <h:outputText value="Tipo" />  
+                            </p:column>
+                            <p:column style="text-align:center">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Motivo" />  
+                                </f:facet>  
+                                <h:outputText value="Motivo de descarte" />  
+                            </p:column>         
+                            <p:column style="width:64px">   
+                                <p:commandButton image="ui-icon ui-icon-pencil"/> 
+                                <p:commandButton image="ui-icon ui-icon-trash"/> 
+                            </p:column> 
+                        </p:dataTable>
+                    </h:panelGrid>
+                    <h:panelGrid style="width: 100%">
+                        <p:toolbar>  
+                            <p:toolbarGroup align="left">  
+                                <p:commandButton type="push" value="Nuevo" title="Nuevo" image="ui-icon-document" /> 
+                                <p:commandButton type="push" value="Guardar" title="Guardar" image="ui-icon-disk"/>  
+                            </p:toolbarGroup>  
+                        </p:toolbar>  
+                    </h:panelGrid>
+                </p:panel> 
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

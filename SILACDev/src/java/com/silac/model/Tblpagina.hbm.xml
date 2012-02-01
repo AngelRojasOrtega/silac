@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblpagina" table="tblpagina" catalog="dbsilac">
+        <id name="idPagina" type="java.lang.Short">
+            <column name="idPagina" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblobjeto" class="com.silac.model.Tblobjeto" fetch="select">
+            <column name="idObjeto" not-null="true">
+                <comment>Identificador del objeto.</comment>
+            </column>
+        </many-to-one>
+        <property name="url" type="string">
+            <column name="url" length="65535" not-null="true">
+                <comment>URL (Uniform Resources Locator) o direccion de la pagina Web.</comment>
+            </column>
+        </property>
+        <property name="titulo" type="string">
+            <column name="titulo" length="254">
+                <comment>Titulo de la p&#225;gina web.</comment>
+            </column>
+        </property>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="65535">
+                <comment>Descripci&#243;n del proposito de la p&#225;gina Web.</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

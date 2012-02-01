@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblsalida" table="tblsalida" catalog="dbsilac">
+        <id name="idSalida" type="java.lang.Long">
+            <column name="idSalida" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblentrada" class="com.silac.model.Tblentrada" fetch="select">
+            <column name="idEntrada" not-null="true">
+                <comment>Identificador de la entrada.</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="tblmovimiento" class="com.silac.model.Tblmovimiento" fetch="select">
+            <column name="idMovimiento" not-null="true">
+                <comment>Identificador del movimiento.</comment>
+            </column>
+        </many-to-one>
+        <property name="destino" type="string">
+            <column name="destino" length="100" not-null="true">
+                <comment>Destino donde sera usado el articulo.</comment>
+            </column>
+        </property>
+        <property name="cantidad" type="double">
+            <column name="cantidad" precision="22" scale="0" not-null="true">
+                <comment>Cantidad solicitada del articulo.</comment>
+            </column>
+        </property>
+        <property name="motivo" type="string">
+            <column name="motivo" length="25" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

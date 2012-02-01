@@ -1,0 +1,475 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:p="http://primefaces.prime.com.tr/ui"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Exámenes
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction(args) {
+if(args == "articulo"){
+updateConfirmArticulo.jq.click();   
+}else if(args == "parametro"){
+updateConfirmParametro.jq.click();
+}else if(args=="examen"){
+updateConfirmExamen.jq.click();
+}
+}
+function doPopup(source, title) {
+    popup = window.open(source, "popup", "height=600,width=900)");
+    popup.document.title = title;
+    popup.focus();
+}
+        </script>
+        <p:panel header="Exámenes">
+            <p:growl life="10000" id="msg" globalOnly="true" showDetail="true"/> 
+            <p:tabView>
+                <p:tab title="Registrar examenes">
+                    <h:panelGrid id="campos" columns="3">
+                        <h:outputText value="Sección:"/> 
+                        <h:selectOneMenu id="cboSeccion"
+                                         style="width: 200px" 
+                                         required="#{param['requireGroup1'] == '1'}"                                                      
+                                         requiredMessage="requerido" 
+                                         value="#{examenesBean.selectedSeccion}">
+                            <f:selectItem itemLabel="-Seleccione una Sección-" itemValue="#{null}"/>
+                            <f:selectItems itemLabel="-Seleccione una Sección-" value="#{seccionesBean.cargarSecciones()}"/>                                        
+                        </h:selectOneMenu>
+                        <p:message for="cboSeccion"/>   
+                        <h:outputText value="Nombre:"/> 
+                        <p:inputText id="txtNomExamen" 
+                                     size="30" 
+                                     required="#{param['requireGroup1'] == '1'}"
+                                     value="#{examenesBean.examen.nombreExamen}"
+                                     requiredMessage="requerido"/>
+                        <p:message for="txtNomExamen"/>                               
+                        <h:outputText value="Código:"/> 
+                        <p:inputText id="txtCodExamen" 
+                                     value="#{examenesBean.examen.codigoExamen}"
+                                     size="30" 
+                                     required="#{param['requireGroup1'] == '1'}" 
+                                     requiredMessage="requerido">
+                            <f:validator validatorId="itemExamenValidator"/>
+                        </p:inputText>
+                        <p:message for="txtCodExamen"/>                          
+                    </h:panelGrid>   
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Agregar reactivo o insumo" 
+                                         image="ui-icon ui-icon-circle-plus"  
+                                         type="push" 
+                                         process="@this" 
+                                         immediate="true" 
+                                         action="#{examenesBean.nuevoArticulo}"                                                     
+                                         oncomplete="agregarReactivo.show()" 
+                                         update="detalleReactivo"/>
+                        <p:commandButton value="Agregar parametro" 
+                                         image="ui-icon ui-icon-circle-plus"
+                                         type="push" 
+                                         process="@this" 
+                                         immediate="true" 
+                                         action="#{examenesBean.nuevoParametro}"                                                     
+                                         oncomplete="agregarParametro.show()" 
+                                         update="detalleParametro"/>
+                    </h:panelGrid>       
+                    <h:panelGrid style="width: 100%">
+                        <p:toolbar>  
+                            <p:toolbarGroup align="left">  
+                                <p:commandButton value="Nuevo" process="@this" 
+                                                 title="Nuevo" immediate="true" 
+                                                 action="#{examenesBean.nuevo}"
+                                                 update="campos dtArticulo dtParametro"
+                                                 image="ui-icon-document" />  
+                                <p:commandButton value="Guardar" 
+                                                 title="Guardar"
+                                                 action="#{examenesBean.crear}"
+                                                 oncomplete="confirmFunction('examen')" 
+                                                 update="campos dtArticulo dtExamen dtParametro msg detalleReactivo detalleParametro"
+                                                 image="ui-icon-disk">
+                                    <f:param name="requireGroup1" value="1"/>
+                                </p:commandButton>
+                                <p:commandButton ajax="false" 
+                                                 type="push" 
+                                                 immediate="true"
+                                                 image="ui-icon-print" 
+                                                 value="Imprimir listado de pruebas"
+                                                 onclick="doPopup('#{request.contextPath}/faces/createReportServlet?fileName=listadoOficialPruebas&amp;tipo=application/pdf', 'Listado Oficial de Pruebas del Laboratorio');"/>                           
+                            </p:toolbarGroup>  
+                        </p:toolbar> 
+                    </h:panelGrid>
+                    <h:panelGrid columns="2" columnClasses="alignTop,alignTop" style="width:100%;">
+                        <p:dataTable id="dtArticulo" 
+                                     var="varArticulos"
+                                     emptyMessage="No se han asignado reactivos o insumos" 
+                                     value="#{examenesBean.listaArticulosAsignados}">
+                            <f:facet name="header">Reactivos e insumos</f:facet>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Reactivo/"/><br/>
+                                    <h:outputText value="Insumo"/>
+                                </f:facet>
+                                <h:outputText value="#{varArticulos.nombreArticulo}"/>
+                            </p:column>
+                            <p:column style="text-align:center">
+                                <f:facet name="header"><h:outputText value="Cantidad"/></f:facet>
+                                <h:outputText  value="#{varArticulos.examenarticulo.cantidad}"/>
+                            </p:column>
+                            <p:column style="width: 64px">
+                                <p:commandButton  image="ui-icon ui-icon-pencil"/>
+                                <p:commandButton  image="ui-icon-trash" 
+                                                  oncomplete="confirmationArticulo.show()" 
+                                                  update="confirmArticulo" 
+                                                  process="@this">  
+                                    <f:setPropertyActionListener value="#{varArticulos}" target="#{examenesBean.selectedArticuloAsignado}" />
+                                </p:commandButton> 
+                            </p:column>
+                        </p:dataTable>
+                        <p:dataTable id="dtParametro" 
+                                     var="varParametros" 
+                                     emptyMessage="No hay parametros asignados" 
+                                     value="#{examenesBean.listaParametrosAsignados}">
+                            <f:facet name="header">Parametros</f:facet>
+                            <p:column>
+                                <f:facet name="header"><h:outputText value="Parametro"/></f:facet>
+                                <h:outputText value="#{varParametros.parametro.nombreParametro}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header"><h:outputText value="Tipo"/></f:facet>
+                                <h:outputText value="#{varParametros.parametro.tipoParametro}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Unidad"/><br/>
+                                    <h:outputText value="Medida"/>
+                                </f:facet>
+                                <h:outputText value="#{varParametros.unidadMedida}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header"><h:outputText value="Min."/></f:facet>
+                                <h:outputText value="#{varParametros.parametro.valorMinimo}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header"><h:outputText value="Max."/></f:facet>
+                                <h:outputText value="#{varParametros.parametro.valorMaximo}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Valor"/><br/>
+                                    <h:outputText value="Normal"/>
+                                </f:facet>
+                                <h:outputText value="#{varParametros.parametro.valorNormal}"/>
+                            </p:column>
+                            <p:column style="text-align:center">
+                                <f:facet name="header">
+                                    <h:outputText value="Valor"/><br/>
+                                    <h:outputText value="Fijo"/>
+                                </f:facet>
+                                <h:outputText  value="#{examenesBean.booleanString(varParametros.parametro.fijo)}"/>
+                            </p:column>
+                            <p:column style="width: 60px">
+                                <f:facet name="header" id=""><h:outputText value=""/></f:facet>
+                                <p:commandButton  image="ui-icon ui-icon-pencil"/>
+                                <p:commandButton  image="ui-icon-trash" 
+                                                  oncomplete="confirmationParametro.show()" 
+                                                  update="confirmParametro" 
+                                                  process="@this">  
+                                    <f:setPropertyActionListener value="#{varParametros}" target="#{examenesBean.selectedParametroAsignado}" />
+                                </p:commandButton> 
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGrid>     
+                </p:tab>
+                <p:tab title="Consultar examanes">
+                    <p:dataTable id="dtExamen" 
+                                 var="varExamen" 
+                                 widgetVar="dtExamen" 
+                                 style="overflow:scroll; height:350px"
+                                 emptyMessage="No hay registros" 
+                                 value="#{examenesBean.listaExamenes}">
+                        <f:facet name="header">  
+                            <h:panelGrid style="width: 200px;" columns="3">
+                                <h:outputText value="Buscar: " />  
+                                <p:inputText  id="globalFilter" onkeyup="dtExamen.filter()" style="width:150px" />  
+                            </h:panelGrid> 
+                        </f:facet>  
+                        <p:column style="text-align:center; width:32px;" 
+                                  filterBy="#{varExamen.examen.codigoExamen}">
+                            <f:facet name="header">
+                                <h:outputText value="Codigo"/><br/>
+                            </f:facet>
+                            <h:outputText value="#{varExamen.examen.codigoExamen}"/>
+                        </p:column>
+                        <p:column filterBy="#{varExamen.nombreSeccion}">
+                            <f:facet name="header">
+                                <h:outputText value="Seccion"/><br/>
+                            </f:facet>
+                            <h:outputText value="#{varExamen.nombreSeccion}"/>
+                        </p:column>
+                        <p:column filterBy="#{varExamen.examen.nombreExamen}">
+                            <f:facet name="header">
+                                <h:outputText value="Nombre Examen"/>
+                            </f:facet>
+                            <h:outputText  value="#{varExamen.examen.nombreExamen}"/>
+                        </p:column>
+                        <p:column style="text-align:center">
+                            <f:facet name="header">
+                                <h:outputText value="Reactivos/"/><br/>
+                                <h:outputText value="Insumos/"/>
+                            </f:facet>
+                            <p:commandLink value="Reactivos e insumos"/>
+                        </p:column>
+                        <p:column style="text-align:center">
+                            <f:facet name="header">
+                                <h:outputText value="Parametros"/>
+                            </f:facet>
+                            <p:commandLink value="Parametros"/>
+                        </p:column>
+                        <p:column style="width: 64px">
+                            <p:commandButton  image="ui-icon ui-icon-pencil"/>
+                            <p:commandButton  image="ui-icon-trash" 
+                                              oncomplete="confirmationExamen.show()" 
+                                              update="confirmExamen" 
+                                              process="@this">  
+                                <f:setPropertyActionListener value="#{varExamen}" target="#{examenesBean.selectedExamen}" />
+                            </p:commandButton> 
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+            <h:panelGrid style="width:100%">                        
+            </h:panelGrid>
+        </p:panel>
+        <p:outputPanel id="reactivoDialog">
+            <p:dialog modal="true" 
+                      draggable="false" 
+                      header="Agregar reactivo o insumo" 
+                      width="450" 
+                      height="200"
+                      resizable="false" 
+                      widgetVar="agregarReactivo"
+                      visible="#{not empty facesContext.maximumSeverity}">  
+                <p:messages globalOnly="true" id="msgReactivo"/>
+                <h:panelGrid id="detalleReactivo" columns="3" styleClass="alignTop,alignTop,alignTop" >
+                    <h:outputText value="Categoria:"/>
+                    <h:selectOneMenu style="width: 200px"  
+                                     id="cboCategoria" 
+                                     onchange="onSelectCategoria()" 
+                                     value="#{examenesBean.selectedCategoria}" 
+                                     required="#{param['requireGroup2'] == '1'}" requiredMessage="Requerido">
+                        <f:selectItem itemLabel="Seleccione una categoria" itemValue="#{null}"/>
+                        <f:selectItems value="#{catalogoBean.cargarCategorias()}" />
+                    </h:selectOneMenu>   
+                    <p:message for="cboCategoria"/>
+                    <h:outputText value="Articulo:"/> 
+                    <p:outputPanel id="articulo">
+                        <h:selectOneMenu id="cboArticulo" 
+                                         style="width: 200px" 
+                                         required="#{param['requireGroup2'] == '1'}" 
+                                         requiredMessage="Requerido"
+                                         value="#{examenesBean.selectedArticulo}">
+                            <f:selectItem itemLabel="-Seleccione un articulo-" itemValue="#{null}"/>
+                            <f:selectItems value="#{examenesBean.listaArticulos}"/>
+                        </h:selectOneMenu>
+                    </p:outputPanel>
+                    <p:message for="cboArticulo"/>
+                    <h:outputText value="Cantidad:"/> 
+                    <p:spinner id="txtCantidad"
+                               value="#{examenesBean.articuloAsignado.cantidad}"
+                               min="0.000000"
+                               stepFactor="0.000001"
+                               required="#{param['requireGroup2'] == '1'}"
+                               showOn="hover"
+                               requiredMessage="requerido"/>    
+                    <p:message for="txtCantidad"/>
+                    <p:commandButton value="Agregar"
+                                     image="ui-icon ui-icon-circle-plus" 
+                                     process="detalleReactivo"
+                                     action="#{examenesBean.asignarArticulo}" 
+                                     update="detalleReactivo dtArticulo reactivoDialog">
+                        <f:param name="requireGroup2" value="1"/>
+                    </p:commandButton>
+                </h:panelGrid>
+            </p:dialog>                    
+        </p:outputPanel>
+        <p:outputPanel id="parametroDialog">
+            <p:dialog modal="true" 
+                      draggable="false" 
+                      header="Agregar parametro" 
+                      width="475"  
+                      height="350"
+                      resizable="false" 
+                      widgetVar="agregarParametro"
+                      visible="#{not empty facesContext.maximumSeverity}">
+                <p:messages globalOnly="true" id="msgParametro"/>
+                <h:panelGrid id="detalleParametro">
+                    <p:fieldset legend="Datos del parametro">
+                        <h:panelGrid columns="3" styleClass="alignTop,alignTop,alignTop" >
+                            <h:outputText value="Nombre:"/> 
+                            <p:inputText id="txtNomParametro" 
+                                         size="30" 
+                                         required="#{param['requireGroup3'] == '1'}"
+                                         value="#{examenesBean.parametroAsignado.nombreParametro}"
+                                         requiredMessage="requerido"/>
+                            <p:message for="txtNomParametro"/>  
+                            <h:outputText value="Tipo parametro:"/> 
+                            <h:selectOneMenu id="cboTipoParametro"
+                                             style="width: 200px" 
+                                             required="#{param['requireGroup3'] == '1'}"                                                      
+                                             requiredMessage="requerido" 
+                                             onchange="onSelectTipoParametro()" 
+                                             value="#{examenesBean.parametroAsignado.tipoParametro}">
+                                <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="Valor" itemValue="Valor"/> 
+                                <f:selectItem itemLabel="Logico" itemValue="Logico"/> 
+                                <f:selectItem itemLabel="Texto" itemValue="Texto"/> 
+                            </h:selectOneMenu>
+                            <p:message for="cboTipoParametro"/> 
+                            <h:outputText value="Valor fijo:"/>
+                            <h:selectBooleanCheckbox id="chkValorFijo" value="#{examenesBean.parametroAsignado.fijo}"/>
+                            <p:message for="chkValorFijo" />
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <p:outputPanel id="valoresParametro">
+                        <p:fieldset legend="Valores" rendered="#{examenesBean.renderValoresParametro}" >
+                            <h:panelGrid columns="3" styleClass="alignTop,alignTop,alignTop" >
+                                <h:outputText value="Unidad medida:"/>
+                                <h:selectOneMenu id="cboUnidadMedida"
+                                                 style="width: 200px" 
+                                                 required="#{param['requireGroup3'] == '1'}"                                                      
+                                                 requiredMessage="requerido" 
+                                                 value="#{examenesBean.selectedUnidadMedida}">
+                                    <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                                    <f:selectItems value="#{unidadMedidaBean.cargarListaUnidadMedida()}"/> 
+                                </h:selectOneMenu>
+                                <p:message for="cboUnidadMedida"/> 
+                                <h:outputText value="Valor minimo:"/> 
+                                <p:spinner id="txtValorMinimo"
+                                           value="#{examenesBean.parametroAsignado.valorMinimo}"
+                                           min="0.000000"
+                                           stepFactor="0.000001"
+                                           required="#{param['requireGroup3'] == '1'}"
+                                           showOn="hover"
+                                           requiredMessage="requerido"/>    
+                                <p:message for="txtValorMinimo"/>
+                                <h:outputText value="Valor maximo:"/> 
+                                <p:spinner id="txtValorMaximo"
+                                           value="#{examenesBean.parametroAsignado.valorMaximo}"
+                                           min="0.000000"
+                                           stepFactor="0.000001"
+                                           required="#{param['requireGroup3'] == '1'}"
+                                           showOn="hover"
+                                           requiredMessage="requerido"/>    
+                                <p:message for="txtValorMaximo"/>
+                                <h:outputText value="Valor normal:"/> 
+                                <p:spinner id="txtValorNormal"
+                                           value="#{examenesBean.parametroAsignado.valorNormal}"
+                                           min="0.000000"
+                                           stepFactor="0.000001"
+                                           required="#{param['requireGroup3'] == '1'}"
+                                           showOn="hover"
+                                           requiredMessage="requerido"/>    
+                                <p:message for="txtValorNormal"/>
+                            </h:panelGrid>
+                        </p:fieldset>
+                    </p:outputPanel>
+                    <p:commandButton value="Agregar"
+                                     image="ui-icon ui-icon-circle-plus" 
+                                     process="@this detalleParametro"
+                                     action="#{examenesBean.asignarParametro}" 
+                                     update="detalleParametro dtParametro parametroDialog">
+                        <f:param name="requireGroup3" value="1"/>
+                    </p:commandButton>
+                </h:panelGrid>
+            </p:dialog>
+        </p:outputPanel>
+        <p:confirmDialog message="Desea remover el reactivo o insumo?" 
+                         width="400"   
+                         header="Confirmacion" 
+                         severity="alert" 
+                         widgetVar="confirmationArticulo" 
+                         modal="true">  
+            <p:outputPanel id="confirmArticulo">
+                <h:panelGrid>
+                    <h:outputText  value="#{examenesBean.selectedArticuloAsignado.nombreArticulo}"/>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Si" 
+                                         update="dtArticulo msg"
+                                         action="#{examenesBean.removerArticulo}" 
+                                         oncomplete="confirmationArticulo.hide(); confirmFunction('articulo')" 
+                                         process="@this">
+                        </p:commandButton>
+                        <p:commandButton value="No" 
+                                         onclick="confirmationArticulo.hide()" 
+                                         type="button" />    
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:confirmDialog>  
+        <p:confirmDialog message="Desea remover el parametro?" 
+                         width="400"   
+                         header="Confirmacion" 
+                         severity="alert" 
+                         widgetVar="confirmationParametro" 
+                         modal="true">  
+            <p:outputPanel id="confirmParametro">
+                <h:panelGrid>
+                    <h:outputText  value="#{examenesBean.selectedParametroAsignado.parametro.nombreParametro}"/>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Si" 
+                                         update="dtParametro msg"
+                                         action="#{examenesBean.removerParametro}" 
+                                         oncomplete="confirmationParametro.hide(); confirmFunction('parametro')" 
+                                         process="@this">
+                        </p:commandButton>
+                        <p:commandButton value="No" 
+                                         onclick="confirmationParametro.hide()" 
+                                         type="button" />    
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:confirmDialog> 
+        <p:confirmDialog message="Desea eliminar el examen?" 
+                         width="400"   
+                         header="Confirmacion" 
+                         severity="alert" 
+                         widgetVar="confirmationExamen" 
+                         modal="true">  
+            <p:outputPanel id="confirmExamen">
+                <h:panelGrid>
+                    <h:outputText  value="#{examenesBean.selectedExamen.examen.nombreExamen}"/>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Si" 
+                                         update="dtExamen msg"
+                                         action="#{examenesBean.eliminar}" 
+                                         oncomplete="confirmationExamen.hide(); confirmFunction('examen'); dtExamen.filter()" 
+                                         process="@this">
+                        </p:commandButton>
+                        <p:commandButton value="No" 
+                                         onclick="confirmationExamen.hide()" 
+                                         type="button" />    
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:confirmDialog>                 
+        <p:remoteCommand name="onSelectCategoria" 
+                         action="#{examenesBean.renderCboArticulo}" 
+                         process="@this cboCategoria" 
+                         update="articulo"/>  
+        <p:remoteCommand name="onSelectTipoParametro" 
+                         action="#{examenesBean.onSelectTipoParametro}" 
+                         process="@this cboTipoParametro" 
+                         update="valoresParametro"/>  
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfirmArticulo" 
+                         update="dtArticulo msg"/>
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfirmParametro" 
+                         update="dtParametro msg"/>
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfirmExamen" 
+                         update="dtExamen msg"/>
+    </ui:define>
+</ui:composition>

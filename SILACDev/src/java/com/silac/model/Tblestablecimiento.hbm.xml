@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblestablecimiento" table="tblestablecimiento" catalog="dbsilac">
+        <id name="idEstablecimiento" type="int">
+            <column name="idEstablecimiento" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="tblmunicipio" class="com.silac.model.Tblmunicipio" fetch="select">
+            <column name="idMunicipio" not-null="true" />
+        </many-to-one>
+        <property name="nombre" type="string">
+            <column name="nombre" length="254" not-null="true">
+                <comment>Nombre del establecimiento.</comment>
+            </column>
+        </property>
+        <property name="codigo" type="string">
+            <column name="codigo" length="25" not-null="true">
+                <comment>C&#243;digo del establecimiento.</comment>
+            </column>
+        </property>
+        <property name="direccion" type="string">
+            <column name="direccion" length="65535" not-null="true">
+                <comment>Direcci&#243;n del establecimiento.</comment>
+            </column>
+        </property>
+        <property name="telefono" type="string">
+            <column name="telefono" length="9" not-null="true">
+                <comment>Telefono del establecimiento.</comment>
+            </column>
+        </property>
+        <property name="tema" type="string">
+            <column name="tema" length="50" />
+        </property>
+        <property name="logo" type="java.lang.Byte">
+            <column name="logo">
+                <comment>Logo de la instituci&#243;n.</comment>
+            </column>
+        </property>
+        <property name="obejtivoGeneral" type="string">
+            <column name="obejtivoGeneral" length="65535">
+                <comment>Objetivo general del laboratorio.</comment>
+            </column>
+        </property>
+        <property name="objetivos" type="string">
+            <column name="objetivos" length="65535">
+                <comment>Objetivos especificos del laboratorio.</comment>
+            </column>
+        </property>
+        <property name="metas" type="string">
+            <column name="metas" length="65535">
+                <comment>Metas del laboratorio.</comment>
+            </column>
+        </property>
+        <property name="politicas" type="string">
+            <column name="politicas" length="65535">
+                <comment>Politicas del laboratorio.</comment>
+            </column>
+        </property>
+        <set name="tbljefes" inverse="true">
+            <key>
+                <column name="idEstablecimiento" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.Tbljefe" />
+        </set>
+        <set name="tbldirectors" inverse="true">
+            <key>
+                <column name="idEstablecimiento" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.Tbldirector" />
+        </set>
+    </class>
+</hibernate-mapping>

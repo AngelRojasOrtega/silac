@@ -1,0 +1,194 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Registrar entrega de resultados
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript">
+function confirmFunction() {
+updateConfim.jq.click();
+}
+        </script>
+        <p:panel header="Entrega de resultados">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/> 
+            <h:panelGrid style="width: 100%">
+                <p:fieldset legend="Datos del receptor">
+                    <h:panelGrid id="campos" columns="3">
+                        <h:outputText value="Primer Nombre:"/>
+                        <p:inputText id="txtPrimerNombre" 
+                                     value="#{entregaBean.persona.primerNombre}" 
+                                     readonly="#{entregaBean.cargarPersona}" 
+                                     required="true" 
+                                     requiredMessage="Requerido" 
+                                     size="30"/>
+                        <h:panelGrid columns="3" columnClasses="alignTop,alignTop">
+                            <p:commandButton id="cmdBuscarPaciente"
+                                             value="Buscar" 
+                                             oncomplete="buscarPersona.show()" update="detallePersona"  
+                                             image="ui-icon ui-icon-search" />
+                            <p:commandButton id="cmdLimpiar" 
+                                             action="#{entregaBean.limpiar}"
+                                             value="Limpiar" 
+                                             update="campos dtPersona detallePersona" 
+                                             image="ui-icon ui-icon-close"/>
+                            <p:message for="txtPrimerNombre"/>  
+                        </h:panelGrid>          
+                        <h:outputText value="Segundo Nombre:"/>
+                        <p:inputText id="txtSegundoNombre" 
+                                     value="#{entregaBean.persona.segundoNombre}"
+                                     readonly="#{entregaBean.cargarPersona}" 
+                                     size="30"/>
+                        <p:message for="txtSegundoNombre"/>  
+                        <h:outputText value="Primer Apellido:"/>
+                        <p:inputText id="txtPrimerApellido" 
+                                     value="#{entregaBean.persona.primerApellido}"
+                                     readonly="#{entregaBean.cargarPersona}" 
+                                     required="true" 
+                                     requiredMessage="Requerido" 
+                                     size="30"/>
+                        <p:message for="txtPrimerApellido"/>  
+                        <h:outputText value="Segundo Apellido:"/>
+                        <p:inputText id="txtSegundoApellido"
+                                     value="#{entregaBean.persona.segundoApellido}"
+                                     readonly="#{entregaBean.cargarPersona}" 
+                                     size="30"/>
+                        <p:message for="txtSegundoApellido"/>  
+                        <h:outputText value="Tipo Doc. Id.:"/>
+                        <h:selectOneMenu id="cboDocId"
+                                         style="width: 200px" 
+                                         value="#{entregaBean.persona.tipoDocId}"
+                                         required="true" 
+                                         requiredMessage="Requerido">
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                            <f:selectItem itemLabel="DUI" itemValue="DUI"/>
+                            <f:selectItem itemLabel="NIT o lincencia de conducir" itemValue="NIT o lincencia de conducir"/>
+                            <f:selectItem itemLabel="Pasaporte" itemValue="Pasaporte"/>
+                        </h:selectOneMenu>
+                        <p:message for="cboDocId"/> 
+                        <h:outputText value="Doc. Id.:"/>
+                        <p:inputText id="txtDocId" 
+                                     value="#{entregaBean.persona.docId}"
+                                     required="true" 
+                                     requiredMessage="Requerido"
+                                     size="30"/>
+                        <p:message for="txtDocId"/> 
+                    </h:panelGrid>
+                </p:fieldset>
+                <style type="text/css">
+                    .ui-datatable-data table td{
+                        border : 0px !important;
+                    }
+                </style>  
+                <p:dataTable id="dtOrden"
+                             var="varOrden" 
+                             value="#{entregaBean.cargarOrdenesFinalizadas()}"  
+                             selection="#{entregaBean.selectedOrden}"
+                             paginator="true" 
+                             rows="10">
+                    <f:facet name="header">
+                        <h:outputText value="Resultados pendientes de entregar"/>
+                    </f:facet>   
+                    <p:column selectionMode="multiple" />
+                    <p:column headerText="Num. Control" style="text-align: center; width: 32px;">
+                        <h:outputText value="#{varOrden.numControl}"/>
+                    </p:column>   
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Paciente"/>
+                        </f:facet> 
+                        <h:outputText value="#{varOrden.paciente}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Examen"/>
+                        </f:facet> 
+                        <h:outputText value="#{varOrden.codigo} #{varOrden.examen}"/>
+                    </p:column>
+                    <p:column style="text-align: center; width: 32px;">
+                        <f:facet name="header">
+                            <h:outputText value="Fecha"/>
+                        </f:facet> 
+                        <h:outputText value="#{varOrden.fecha}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Técnico"/>
+                        </f:facet> 
+                        <h:outputText value="#{varOrden.tecnico}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+            <h:panelGrid style="width: 100%">
+                <p:toolbar>  
+                    <p:toolbarGroup align="left">  
+                        <p:commandButton id="cmdEntregar" 
+                                         process="@this dtOrden campos" 
+                                         action="#{entregaBean.crear}"
+                                         value="Entregar" 
+                                         oncomplete="confirmFunction();" 
+                                         update="campos dtPersona dtOrden msg detallePersona" 
+                                         image="ui-icon ui-icon-disk"/>
+                    </p:toolbarGroup>  
+                </p:toolbar> 
+            </h:panelGrid> 
+        </p:panel>
+        <p:dialog modal="true" 
+                  draggable="false" 
+                  header="Buscar persona" 
+                  width="550" 
+                  height="350"
+                  widgetVar="buscarPersona">  
+            <h:panelGrid id="detallePersona" columns="3" columnClasses="alignTop,alignTop,alignTop">
+                <h:panelGrid  columnClasses="alignTop">
+                    <h:outputText value="Nombre:"/>
+                    <p:inputText id="txtBuscarNombre" value="#{personasBean.buscarNombre}" size="20"/>
+                    <p:commandButton value="Buscar"
+                                     image="ui-icon ui-icon-search" 
+                                     process="@this detallePersona" 
+                                     action="#{entregaBean.buscar()}"
+                                     update="dtPersona">
+                        <f:param name="requireGroup2" value="1"/>
+                    </p:commandButton>
+                </h:panelGrid>
+                <h:panelGrid columnClasses="alignTop">
+                    <h:outputText value="Doc. Identidad:"/>
+                    <p:inputText id="txtBuscarDocId" value="#{personasBean.buscarDocId}" size="20"/>
+                </h:panelGrid>
+                <h:panelGrid columnClasses="alignTop">
+                    <h:outputText value="Num. Expediente:"/>
+                    <p:inputText id="txtBuscarExpediente" value="#{personasBean.buscarExpediente}" size="20"/>
+                </h:panelGrid>
+            </h:panelGrid>
+            <p:dataTable id="dtPersona" 
+                         var="varPersona" 
+                         value="#{entregaBean.listaPersonas}" 
+                         paginator="true" 
+                         selection="#{entregaBean.selectedResultadoBusqueda}" 
+                         rowSelectListener="#{entregaBean.onRowSelect}" 
+                         onRowSelectComplete="buscarPersona.hide()" 
+                         onRowSelectUpdate="msg campos"
+                         selectionMode="single" 
+                         rows="5"
+                         emptyMessage="No se encontraron registros">
+                <p:column headerText="Nombre">
+                    #{varPersona[0]}
+                </p:column>
+                <p:column headerText="Documento de indentidad">
+                    #{varPersona[1]}
+                </p:column>
+                <p:column headerText="Num. Expediente">
+                    #{varPersona[2]}
+                </p:column>
+            </p:dataTable>
+        </p:dialog>  
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfim" 
+                         update="dtOrden msg">
+        </p:commandButton>
+    </ui:define>
+</ui:composition>

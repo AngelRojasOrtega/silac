@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tbltiporesultado" table="tbltiporesultado" catalog="dbsilac">
+        <id name="idTipoResultado" type="java.lang.Short">
+            <column name="idTipoResultado" />
+            <generator class="identity" />
+        </id>
+        <property name="tipoResultado" type="short">
+            <column name="tipoResultado" not-null="true" unique="true">
+                <comment>N&#250;mero que identifica al tipo de resultado, seg&#250;n los cat&#225;logos de pruebas del Ministerio de Salud.</comment>
+            </column>
+        </property>
+        <property name="nombreResultado" type="string">
+            <column name="nombreResultado" length="25" not-null="true">
+                <comment>Nombre del resultado.</comment>
+            </column>
+        </property>
+        <set name="tblresultados" inverse="true">
+            <key>
+                <column name="idTipoResultadoExamen" not-null="true">
+                    <comment>Identificador del tipo de resultado.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblresultado" />
+        </set>
+    </class>
+</hibernate-mapping>

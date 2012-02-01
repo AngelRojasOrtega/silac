@@ -1,0 +1,154 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Consultar existencias y estado
+    </ui:define>    
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfim.jq.click();
+}
+        </script>
+        <p:panel header="Consulta de existencias y estado de artículos">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+            <h:panelGrid id="campos" style="width: 100%">
+                <p:fieldset legend="Datos del artículo">
+                    <h:panelGrid columns="4">
+                        <h:outputText value="Categoria:"/>
+                        <h:selectOneMenu style="width: 200px"  
+                                         id="cboCategoria" 
+                                         value="#{salidaBean.selectedCategoria}" 
+                                         onchange="onSelectCategoria()"
+                                         required="true" 
+                                         requiredMessage="requerido">
+                            <f:selectItem itemLabel="Seleccione una categoria" itemValue="#{null}"></f:selectItem>
+                            <f:selectItems value="#{catalogoBean.cargarCategorias()}" />
+                        </h:selectOneMenu>   
+                        <p:message for="cboCategoria"/>
+                        <h:outputText value=""/>
+                        <h:outputText value="Articulo:"/>
+                        <h:selectOneMenu style="width: 200px"  
+                                         id="cboArticulo"                                          
+                                         binding="#{cboArticulo}" 
+                                         value="#{salidaBean.selectedArticulo}"
+                                         onchange="onSelectArticulo()"
+                                         required="true" 
+                                         requiredMessage="requerido">
+                            <f:selectItem itemLabel="Seleccione un articulo" itemValue="#{null}"></f:selectItem>
+                            <f:selectItems  value="#{salidaBean.listaArticulos}" />
+                        </h:selectOneMenu>   
+                        <p:message for="cboArticulo"/>
+                        <p:commandButton image="ui-icon ui-icon-search" title="Consultar Existencias"                                        
+                                         update="mostrar" 
+                                         process="@this cboArticulo" action="#{salidaBean.populateListaExistenciasEstado}">  
+
+                        </p:commandButton>
+                        <h:outputText value="Existencias:"/>
+                        <p:outputPanel id="opExistencias">
+                            <p:inputText id="txtExistencias" binding="#{txtExistencias}" required="false" value="#{salidaBean.existencias}" readonly="true" >                               
+                            </p:inputText> 
+                            <h:outputText value="#{salidaBean.existencias.equals('0.0')?'No hay existencias':''}" />
+                        </p:outputPanel>
+                        <p:message id="msgExistencias" for="txtExistencias"/>
+
+                        <h:outputText value=""/>                        
+
+
+                    </h:panelGrid>
+                </p:fieldset>
+
+
+            </h:panelGrid>
+        </p:panel>
+        <style type="text/css">
+            #mostrar td{
+                padding: 0px 0px 0px 0px;
+            }
+        </style>
+
+        <p:dataTable id="mostrar" 
+                     widgetVar="mostrar" 
+                     rows="10" 
+                     paginator="true" 
+                     value="#{salidaBean.listaExistencias}" 
+                     var="varExi">
+            <f:facet name="header">  
+                Monitoreo
+                <h:panelGrid style="width: 260px;" columns="3">
+                    <h:outputText value="Buscar: " />  
+                    <p:inputText  id="globalFilter" onkeyup="mostar.filter()" style="width:150px" />  
+                </h:panelGrid> 
+            </f:facet> 
+
+            <p:column filterBy="#{varExi.entrada.numeroVale}" style="text-align:center; width:32px">  
+                <f:facet name="header">  
+                    <h:outputText value="No. Vale" />  
+                </f:facet>  
+                <h:outputText value="#{varExi.entrada.numeroVale}" />  
+            </p:column>
+
+            <p:column style="text-align:center; width:32px">  
+                <f:facet name="header">  
+                    <h:outputText value="No. Lote" />  
+                </f:facet>  
+                <h:outputText value="#{varExi.entrada.numeroLote}" />  
+            </p:column>
+
+            <p:column  style="text-align:center">  
+                <f:facet name="header">  
+                    <h:outputText value="Entrada" />  
+                </f:facet>  
+                <h:outputText value="#{varExi.entrada.fechaRecepcion}" />  
+            </p:column>
+
+            <p:column filterBy="#{varExi.entrada.fechaVencimiento}" style="text-align:center">  
+                <f:facet name="header">  
+                    <h:outputText value="Vencimiento" />  
+                </f:facet>  
+                <h:outputText value="#{varExi.entrada.fechaVencimiento}" />  
+            </p:column>
+
+            <p:column  style="text-align:center">  
+                <f:facet name="header">  
+                    <h:outputText value="Registro" />  
+                </f:facet>  
+                <h:outputText value="#{varExi.fecha}" />  
+            </p:column>
+
+            <p:column style="text-align:center">  
+                <f:facet name="header">  
+                    <h:outputText value="Nombre" />  
+                </f:facet>  
+                <h:outputText value="#{varExi.entrada.idEntrada} #{varExi.articulo.nombreArticulo}" />  
+            </p:column>
+
+            <p:column style="text-align:center">  
+                <f:facet name="header">  
+                    <h:outputText value="Existencias" />  
+                </f:facet>  
+                <h:outputText value="#{varExi.entrada.existencia}" />  
+            </p:column>
+
+            <p:column style="text-align:center; width:64px">  
+                <f:facet name="header">  
+                    <h:outputText value="Estado" />  
+                </f:facet>  
+                <span style="padding: 4px 4px 4px 4px; font-weight:bolder; display:block; background-color:#{varExi.determinarEstado()=='Caducado'?'red':(varExi.determinarEstado()=='Por Caducar'?'orange':'green')}; color:#ffffff">
+                    <h:outputText value="#{varExi.determinarEstado()}" />  
+                </span>
+            </p:column>
+
+        </p:dataTable> 
+
+
+        <p:remoteCommand name="onSelectArticulo" process="@this cboArticulo" action="#{salidaBean.renderTxtExistencias}" update="opExistencias msgExistencias" />
+        <p:remoteCommand name="onSelectCategoria" process="@this cboCategoria" action="#{salidaBean.renderCboArticulo}" update="cboArticulo" />
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfim" 
+                         update="dtSalida msg"/>
+    </ui:define>
+</ui:composition>

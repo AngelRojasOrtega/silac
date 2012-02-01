@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<parameter name="fecha" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT s.`codigoSeccion` AS CODIGSECCION, s.`nombreSeccion` AS NOMBRESECCION, 
+DATE(pt.`fechaEntrada`) AS FECHA,
+DATE_FORMAT(pt.`fechaEntrada`,'%h:%i:%s:%p') AS HORAENTRADA, DATE_FORMAT(pt.`fechaSalida`,'%h:%i:%s:%p') AS HORASALIDA,
+CONCAT_WS(' ', IFNULL(p.`primerNombre`,''), IFNULL(p.`segundoNombre`,''), IFNULL(p.`primerApellido`,''), IFNULL(p.`segundoApellido`,'')) AS EMPLEADO,
+pt.`horaDuracion` AS DURACIONHORAS, pt.`minsDuracion` AS DURACIONMIN 
+FROM tblpersona p
+INNER JOIN tblempleado e ON e.`idPersona`=p.`idPersona`
+INNER JOIN tblplanificaciontrabajo pt ON pt.`codigoMarcacion` = e.`codigoMarcacion`
+INNER JOIN tblcargalaboral cl ON cl.`idCargaLaboral` = pt.`idCargaLaboral`
+INNER JOIN tblasignarseccion a ON a.`idPlanificacionTrabajo` = pt.`idPlanificacionTrabajo`
+INNER JOIN tblseccion s ON s.`idSeccionLaboratorio` = a.`idSeccionLaboratorio`
+WHERE DATE(pt.`fechaEntrada`) = $P{fecha}]]>
+	</queryString>
+	<field name="CODIGSECCION" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="NOMBRESECCION" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="FECHA" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="HORAENTRADA" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="HORASALIDA" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="EMPLEADO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="DURACIONHORAS" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="DURACIONMIN" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="66" y="49" width="424" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Secciones Asignadas por Día]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="66" y="33" width="424" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Laboratorio Clínico y Banco de Sangre]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="66" y="17" width="424" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Hospital Nacional "Santa Teresa"]]></text>
+			</staticText>
+			<image hAlign="Left" vAlign="Middle">
+				<reportElement x="1" y="11" width="101" height="58"/>
+				<imageExpression class="java.lang.String"><![CDATA["/images/minsal.jpg"]]></imageExpression>
+			</image>
+			<image hAlign="Right" vAlign="Middle">
+				<reportElement x="490" y="11" width="66" height="59"/>
+				<imageExpression class="java.lang.String"><![CDATA["/images/elSalvador.jpg"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<textField>
+				<reportElement x="315" y="3" width="43" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{FECHA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="165" y="3" width="150" height="20"/>
+				<textElement/>
+				<text><![CDATA[Secciones Asignadas para el dia:]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="23" splitType="Stretch">
+			<staticText>
+				<reportElement x="358" y="2" width="85" height="20"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[HORA ENTRADA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="2" width="45" height="20"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="443" y="2" width="90" height="20"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[HORA SALIDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="165" y="2" width="193" height="20"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE EMPLEADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="56" y="2" width="109" height="20"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SECCION]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="11" y="0" width="45" height="20"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{FECHA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="56" y="0" width="109" height="20"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{NOMBRESECCION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="165" y="0" width="193" height="20"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{EMPLEADO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="358" y="0" width="85" height="20"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{HORAENTRADA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="443" y="0" width="90" height="20"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{HORASALIDA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement x="286" y="17" width="40" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="1" y="19" width="101" height="32"/>
+				<imageExpression class="java.lang.String"><![CDATA["/images/logoSilac.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="206" y="17" width="80" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEE dd MMMMM yyyy - hh:mm aaa" isBlankWhenNull="true">
+				<reportElement x="338" y="18" width="218" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.TblempleadoCapacitacion" table="tblempleado_capacitacion" catalog="dbsilac">
+        <composite-id name="id" class="com.silac.model.TblempleadoCapacitacionId">
+            <key-property name="codigoMarcacion" type="short">
+                <column name="codigoMarcacion" />
+            </key-property>
+            <key-property name="idCapacitacion" type="long">
+                <column name="idCapacitacion" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="tblcapacitacioncontinua" class="com.silac.model.Tblcapacitacioncontinua" update="false" insert="false" fetch="select">
+            <column name="idCapacitacion" not-null="true" />
+        </many-to-one>
+        <many-to-one name="tblempleado" class="com.silac.model.Tblempleado" update="false" insert="false" fetch="select">
+            <column name="codigoMarcacion" not-null="true" />
+        </many-to-one>
+        <property name="tipo" type="string">
+            <column name="tipo" length="25" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

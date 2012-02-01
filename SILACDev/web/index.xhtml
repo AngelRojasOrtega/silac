@@ -1,0 +1,121 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="templates/templateIndex.xhtml">
+    <ui:define name="titulo">
+        SILAC - Sistema Informático para la Planificación y Gestión Administrativa del Laboratorio Clínico
+    </ui:define>
+    <ui:define name="content">
+        <h:panelGrid border="0" cellpadding="0" cellspacing="0" styleClass="dashboard" >
+            <p:dashboard id="board" model="#{dashBoard.model}"  
+                         reorderListener="#{dashBoard.handleReorder}">  
+                <p:panel id="anio" header="Año Laboral">  
+                    <p:fieldset>
+                        <h:panelGrid columns="2">
+                            <h:outputText value="Establecer año laborar:"/>
+                            <h:selectOneMenu style="width: 200px" id="cboAnio">
+                                <f:selectItem itemLabel="-Seleccione una opción-" itemValue="1"></f:selectItem>
+                            </h:selectOneMenu>
+                            <h:outputText value="Recordar selección:"/>
+                            <h:selectManyCheckbox id="chkSeleccionar" value="">
+                                <f:selectItem itemLabel="" itemValue="Todos" />
+                            </h:selectManyCheckbox> 
+                        </h:panelGrid>
+                        <h:panelGrid style="width: 100%" >
+                            <p:toolbar>  
+                                <p:toolbarGroup align="left">  
+                                    <p:commandButton type="push" value="Selecciconar" title="Seleccionar" image="ui-icon ui-icon-check" />    
+                                </p:toolbarGroup>  
+                            </p:toolbar> 
+                        </h:panelGrid>
+                    </p:fieldset>
+                </p:panel>  
+                <p:panel id="pendientes" header="Exámenes pendientes">  
+                    <p:dataTable rows="10" paginator="true" value="" var="examen">
+                        <p:column style="text-align:center">  
+                            <f:facet name="header">  
+                                <h:outputText value="No. Control" />  
+                            </f:facet>  
+                            <h:outputText value="99999999" />  
+                        </p:column> 
+                        <p:column>  
+                            <f:facet name="header">  
+                                <h:outputText value="Fecha" />  
+                            </f:facet>  
+                            <h:outputText value="dd/mm/aaaa" />  
+                        </p:column>
+                        <p:column>  
+                            <f:facet name="header">  
+                                <h:outputText value="Paciente" />  
+                            </f:facet>  
+                            <h:outputText value="Nombre del Paciente" />  
+                        </p:column>
+                        <p:column>  
+                            <f:facet name="header">  
+                                <h:outputText value="Examen" />  
+                            </f:facet>  
+                            <h:outputText value="Nombre del examen" />  
+                        </p:column>
+                        <p:column style="width:32px">  
+                            <p:commandButton update="display" oncomplete="carDialog.show()"  
+                                             image="ui-icon ui-icon-search">  
+                                <f:setPropertyActionListener value="" target="" />  
+                            </p:commandButton> 
+                        </p:column>  
+                    </p:dataTable>
+                </p:panel>  
+
+                <p:panel id="capacitaciones" header="Capacitaciones">  
+                    <p:dataTable rows="10" paginator="true" value="" var="capacitacion">
+                        <p:column style="width: 32px;">  
+                            <f:facet name="header">  
+                                <h:outputText value="Fecha" />  
+                            </f:facet>  
+                            <h:outputText value="dd/mm/aaaa" />  
+                        </p:column>
+                        <p:column>  
+                            <f:facet name="header">  
+                                <h:outputText value="Evento" />  
+                            </f:facet>  
+                            <h:outputText value="Nombre del evento" />  
+                        </p:column>
+                        <p:column>  
+                            <f:facet name="header">  
+                                <h:outputText value="Lugar" />  
+                            </f:facet>  
+                            <h:outputText value="Lugar del evento" />  
+                        </p:column>
+                        <p:column style="width:32px">  
+                            <p:commandButton update="display" oncomplete="carDialog.show()"  
+                                             image="ui-icon ui-icon-search">  
+                                <f:setPropertyActionListener value="" target="" />  
+                            </p:commandButton> 
+                        </p:column>  
+                    </p:dataTable>
+                </p:panel>  
+                <p:panel id="rotacion" header="Rotación diaria">  
+                    <p:dataTable value="" var="rotacion">
+                        <p:column>  
+                            <f:facet name="header">  
+                                <h:outputText value="Empleado" />  
+                            </f:facet>  
+                            <h:outputText value="Nombre del empleado" />  
+                        </p:column>
+                        <p:column>  
+                            <f:facet name="header">  
+                                <h:outputText value="Area asignada" />  
+                            </f:facet>  
+                            <h:outputText value="Area asignada" />  
+                        </p:column> 
+                    </p:dataTable>
+                </p:panel>  
+                <p:panel id="plan" header="Planificación mensual">  
+                    <p:calendar id="txtPlan" locale="es"  mode="inline"/>
+                </p:panel>  
+            </p:dashboard> 
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="prueba" pageWidth="612" pageHeight="792" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<parameter name="codMarcacion" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{codMarcacion}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="mes" class="java.lang.String"/>
+	<parameter name="anio" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     tblempleado.`codigoMarcacion` AS tblempleado_codigoMarcacion,
+     tblempleado.`nombreAfp` AS tblempleado_nombreAfp,
+     tblempleado.`nup` AS tblempleado_nup,
+     tblpuesto.`nombrePuesto` AS tblpuesto_nombrePuesto,
+     tblpuestoempleado.`unidadPresupuestaria` AS tblpuestoempleado_unidadPresupuestaria,
+     tblpuestoempleado.`partida` AS tblpuestoempleado_partida,
+     tblpuestoempleado.`lineaTrabajo` AS tblpuestoempleado_lineaTrabajo,
+     tblpersona.`primerNombre` AS tblpersona_primerNombre,
+     tblpersona.`segundoNombre` AS tblpersona_segundoNombre,
+     tblpersona.`primerApellido` AS tblpersona_primerApellido,
+     tblpersona.`segundoApellido` AS tblpersona_segundoApellido,
+     tblpersona.`idPersona` AS tblpersona_idPersona,
+     tblsueldoempleado.`sueldo` AS tblsueldoempleado_sueldo,
+     tblpermiso.`fechaSolicitud` AS tblpermiso_fechaSolicitud,
+     tblpermiso.`fechaInicio` AS tblpermiso_fechaInicio,
+     tblpermiso.`fechaFinal` AS tblpermiso_fechaFinal,
+     tblpermiso.`observaciones` AS tblpermiso_observaciones,
+     tblpermiso.`motivo` AS tblpermiso_motivo,
+     tblpermiso.`tipoLicencia` AS tblpermiso_tipoLicencia,
+     date_format(tblpermiso.`fechaInicio`,'%d/%m/%Y')as fechaIni,
+     date_format(tblpermiso.`fechaFinal`,'%d/%m/%Y')as fechaFin,
+     date_format(tblpermiso.`fechaSolicitud`,'%d/%m/%Y')as fecha,
+     CONCAT(IFNULL(tblpersona.`primerNombre`,''),' ',IFNULL(tblpersona.`segundoNombre`,''),' ',IFNULL(tblpersona.`primerApellido`,''),' ',IFNULL(tblpersona.`segundoApellido`,''))AS nombre,
+     tblsueldoempleado.`estado` AS tblsueldoempleado_estado
+FROM
+     `tblempleado` tblempleado INNER JOIN `tblpermiso` tblpermiso ON tblempleado.`codigoMarcacion` = tblpermiso.`codigoMarcacion`
+     INNER JOIN `tblpersona` tblpersona ON tblempleado.`idPersona` = tblpersona.`idPersona`
+     INNER JOIN `tblpuestoempleado` tblpuestoempleado ON tblempleado.`codigoMarcacion` = tblpuestoempleado.`codigoMarcacion`
+     INNER JOIN `tblpuesto` tblpuesto ON tblpuestoempleado.`idPuesto` = tblpuesto.`idPuesto`
+     INNER JOIN `tblsueldoempleado` tblsueldoempleado ON tblpuestoempleado.`idPuestoEmpleado` = tblsueldoempleado.`idPuestoEmpleado`
+WHERE
+     (tblsueldoempleado.`estado` = '0'
+  OR tblsueldoempleado.`estado` = '1')
+ AND tblempleado.`codigoMarcacion` = $P{codMarcacion}
+ AND YEAR(tblpermiso.`fechaSolicitud`) = $P{anio}
+ AND MONTH(tblpermiso.`fechaSolicitud`) = $P{mes}
+ORDER BY
+     tblempleado.`codigoMarcacion` ASC,
+     nombre ASC,
+     tblpermiso.`fechaSolicitud` ASC     
+     ]]>
+	</queryString>
+	<field name="tblempleado_codigoMarcacion" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblempleado_nombreAfp" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblempleado_nup" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblpuesto_nombrePuesto" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblpuestoempleado_unidadPresupuestaria" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblpuestoempleado_partida" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblpuestoempleado_lineaTrabajo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblpersona_primerNombre" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblpersona_segundoNombre" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblpersona_primerApellido" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblpersona_segundoApellido" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblpersona_idPersona" class="java.math.BigInteger">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblsueldoempleado_sueldo" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblpermiso_fechaSolicitud" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblpermiso_fechaInicio" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblpermiso_fechaFinal" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblpermiso_observaciones" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblpermiso_motivo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblpermiso_tipoLicencia" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fechaIni" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fechaFin" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nombre" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<group name="tblpermiso_fechaSolicitud" isResetPageNumber="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{tblpermiso_fechaSolicitud}]]></groupExpression>
+		<groupHeader>
+			<band height="18" splitType="Stretch">
+				<textField>
+					<reportElement mode="Opaque" x="118" y="1" width="454" height="17" forecolor="#FFFFFF" backcolor="#000000"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{fecha}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="1" width="118" height="17" forecolor="#FFFFFF" backcolor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[Fecha de Elaboración:]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band splitType="Stretch"/>
+		</groupFooter>
+	</group>
+	<group name="tblpersona_primerNombre" isResetPageNumber="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{tblpersona_primerNombre}]]></groupExpression>
+		<groupHeader>
+			<band height="34" splitType="Stretch">
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="1" width="139" height="16" forecolor="#000000" backcolor="#CCCCFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[Nombre de Empleado:]]></text>
+				</staticText>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement mode="Opaque" x="119" y="1" width="269" height="16" forecolor="#000000" backcolor="#CCCCFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{nombre}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement positionType="FixRelativeToBottom" x="0" y="32" width="572" height="1"/>
+				</line>
+				<staticText>
+					<reportElement mode="Opaque" x="387" y="1" width="36" height="16" forecolor="#000000" backcolor="#CCCCFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[AFP]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="386" y="16" width="37" height="16" forecolor="#000000" backcolor="#CCCCFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[NUP]]></text>
+				</staticText>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement mode="Opaque" x="422" y="1" width="150" height="16" forecolor="#000000" backcolor="#CCCCFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{tblempleado_nombreAfp}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement mode="Opaque" x="422" y="16" width="150" height="16" forecolor="#000000" backcolor="#CCCCFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$F{tblempleado_nup}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="16" width="387" height="16" forecolor="#000000" backcolor="#CCCCFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="3" splitType="Stretch"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement x="65" y="23" width="424" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Hospital Nacional Santa Teresa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="65" y="39" width="424" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Dirección Regional de Salud Paracentral]]></text>
+			</staticText>
+			<elementGroup>
+				<elementGroup>
+					<image hAlign="Left" vAlign="Middle">
+						<reportElement x="0" y="1" width="101" height="58"/>
+						<imageExpression class="java.lang.String"><![CDATA["/images/minsal.jpg"]]></imageExpression>
+					</image>
+					<image hAlign="Right" vAlign="Middle">
+						<reportElement x="489" y="1" width="66" height="59"/>
+						<imageExpression class="java.lang.String"><![CDATA["/images/elSalvador.jpg"]]></imageExpression>
+					</image>
+				</elementGroup>
+			</elementGroup>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="65" y="7" width="424" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Solicitud de Licencias o Acciones de Personal]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="266" splitType="Stretch">
+			<rectangle>
+				<reportElement x="1" y="79" width="570" height="185"/>
+			</rectangle>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Opaque" x="409" y="114" width="161" height="27" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{fechaFin}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Opaque" x="425" y="158" width="145" height="28" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tblpuestoempleado_unidadPresupuestaria}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Opaque" x="425" y="213" width="145" height="28" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tblpuestoempleado_lineaTrabajo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Opaque" x="425" y="185" width="145" height="30" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tblpuestoempleado_partida}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Opaque" x="425" y="239" width="145" height="24" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{tblsueldoempleado_sueldo}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="51" width="572" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="26" width="572" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="3" width="572" height="1"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="6" width="99" height="17" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Nombre de la Plaza:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="29" width="140" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Observaciones o Anexos: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement mode="Opaque" x="128" y="30" width="436" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tblpermiso_observaciones}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="104" y="5" width="467" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tblpuesto_nombrePuesto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="201" y="144" width="109" height="27" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Nombre, Cargo y Firma de Jefe Inmediato]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="184" y="215" width="145" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Dr. Tito Hernán Gámez Duran]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="40" y="144" width="109" height="29" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Nombre y Firma de Empleado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="36" y="229" width="110" height="33" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Nombre, Cargo y Firma de Jefe Superior]]></text>
+			</staticText>
+			<line>
+				<reportElement x="184" y="230" width="145" height="1"/>
+			</line>
+			<line>
+				<reportElement x="184" y="141" width="139" height="1"/>
+			</line>
+			<line>
+				<reportElement x="8" y="232" width="154" height="1"/>
+			</line>
+			<line>
+				<reportElement x="9" y="141" width="153" height="1"/>
+			</line>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Opaque" x="10" y="125" width="152" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="193" y="232" width="130" height="30" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Director Hospital Nacional  Santa Teresa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="341" y="81" width="229" height="13" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Periodo de la Licencia]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="341" y="91" width="68" height="26" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Fecha Inicio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="341" y="116" width="69" height="24" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Fecha Final]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="341" y="141" width="229" height="18" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Forma de Pago]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="341" y="158" width="84" height="28" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Unidad Presupuestaria]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="341" y="185" width="84" height="33" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Linea de Trabajo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="341" y="213" width="84" height="28" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Partida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="341" y="235" width="84" height="28" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Salario]]></text>
+			</staticText>
+			<line>
+				<reportElement x="339" y="140" width="232" height="1"/>
+			</line>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Opaque" x="408" y="93" width="162" height="22" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{fechaIni}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="54" width="50" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Motivo:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Opaque" x="53" y="54" width="76" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tblpermiso_motivo}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="339" y="79" width="1" height="185"/>
+			</line>
+			<line>
+				<reportElement x="0" y="75" width="572" height="1"/>
+			</line>
+			<line>
+				<reportElement x="173" y="79" width="1" height="185"/>
+			</line>
+			<line>
+				<reportElement x="1" y="174" width="338" height="1"/>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="36" splitType="Stretch">
+			<textField pattern="EEEE dd MMMMM yyyy - hh:mm aaa" isBlankWhenNull="true">
+				<reportElement x="337" y="1" width="218" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<elementGroup>
+				<textField>
+					<reportElement x="205" y="0" width="80" height="20"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Report">
+					<reportElement x="285" y="0" width="40" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+			</elementGroup>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1"/>
+			</line>
+			<image>
+				<reportElement x="0" y="2" width="101" height="32"/>
+				<imageExpression class="java.lang.String"><![CDATA["/images/logoSilac.png"]]></imageExpression>
+			</image>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,719 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <body>
+        <ui:composition template="./../templates/template.xhtml">
+            <ui:define name="titulo">
+                Evaluación de donantes
+            </ui:define>
+            <ui:define name="content">
+                <script type="text/javascript">
+                    function confirmFunction() {
+updateConfim.jq.click();
+}
+                    function updateRemoteFunction() {
+updateRemote.jq.click();
+}
+function onSelectRadio(args) {
+jQuery('#indexRow').val(args);
+jQuery('#idRadio').val('dtCuestionario:'+args+':optRespuesta');
+updateRemoteFunction();
+alert(jQuery('#idRadio').val());
+}
+                </script>
+                <p:panel header="Evaluación de donantes">
+                    <h:panelGrid style="width: 100%">
+                        <p:wizard   backLabel="Anterior" nextLabel="Siguiente" widgetVar="wizEvaluacion" effect="">
+                            <p:tab id="donante" title="Donante">
+                                <p:fieldset legend="Buscar Donante">
+                                    <h:panelGrid columns="3" columnClasses="alignTop,alignTop,alignTop">      
+                                        <h:outputText value="Doc. Identidad:"/>
+                                        <p:autoComplete id="txtDocIdBuscar" 
+                                                        onkeyup="onKeyPress()" 
+                                                        selectListener="#{evaluacionDonanteBean.onSelectDocId}" 
+                                                        onSelectUpdate="otros personal" 
+                                                        completeMethod="#{autoCompleteBean.complete}" 
+                                                        value="#{evaluacionDonanteBean.docId}"
+                                                        required="true"
+                                                        requiredMessage="Requerido" size="30">
+                                            <f:attribute name="field" value="docId"/>
+                                            <f:attribute name="table" value="tblpersona"/>
+                                        </p:autoComplete>
+                                        <h:panelGrid style="text-align:left;" columns="3" columnClasses="alignTop,alignTop">
+                                            <p:commandButton id="cmdBuscarPaciente"
+                                                             value="Buscar" 
+                                                             oncomplete="buscarPersona.show()" update="detallePersona"  
+                                                             image="ui-icon ui-icon-search" />
+                                            <p:commandButton id="cmdLimpiar" 
+                                                             action="#{evaluacionDonanteBean.limpiar}"
+                                                             value="Limpiar"
+                                                             process="@this campos"
+                                                             update="campos dtPersona detallePersona" 
+                                                             image="ui-icon ui-icon-close"/>
+                                        </h:panelGrid>
+                                    </h:panelGrid>     
+                                </p:fieldset>
+                                <p:fieldset id="personal" legend="Datos personales del donante" >
+                                    <h:panelGrid columns="3" columnClasses="alignTop,alignTop,alignTop">                                       
+                                        <h:outputText value="Primer nombre:"/>                            
+                                        <p:autoComplete id="txtPriNombre" 
+                                                        size="30" 
+                                                        value="#{evaluacionDonanteBean.persona.primerNombre}"
+                                                        completeMethod="#{autoCompleteBean.complete}" 
+                                                        required="true" 
+                                                        requiredMessage="Requerido">
+                                            <f:attribute name="field" value="primerNombre"/>
+                                            <f:attribute name="table" value="tblpersona"/>
+                                        </p:autoComplete>
+                                        <p:message for="txtPriNombre"/> 
+                                        <h:outputText value="Segundo nombre:"/>                            
+                                        <p:autoComplete id="txtSegNombre"
+                                                        size="30"
+                                                        completeMethod="#{autoCompleteBean.complete}"
+                                                        value="#{evaluacionDonanteBean.persona.segundoNombre}">
+                                            <f:attribute name="field" value="segundoNombre"/>
+                                            <f:attribute name="table" value="tblpersona"/>
+                                        </p:autoComplete>
+                                        <p:message for="txtSegNombre"/> 
+                                        <h:outputText value="Primer apellido:"/>                            
+                                        <p:autoComplete id="txtPriApellido"
+                                                        size="30"
+                                                        completeMethod="#{autoCompleteBean.complete}" 
+                                                        value="#{evaluacionDonanteBean.persona.primerApellido}" 
+                                                        required="true"
+                                                        requiredMessage="Requerido">
+                                            <f:attribute name="field" value="primerApellido"/>
+                                            <f:attribute name="table" value="tblpersona"/>
+                                        </p:autoComplete>
+                                        <p:message for="txtPriApellido"/> 
+                                        <h:outputText value="Segundo apellido:"/>                            
+                                        <p:autoComplete id="txtSegApellido"
+                                                        size="30"
+                                                        completeMethod="#{autoCompleteBean.complete}" 
+                                                        value="#{evaluacionDonanteBean.persona.segundoApellido}">
+                                            <f:attribute name="field" value="segundoApellido"/>
+                                            <f:attribute name="table" value="tblpersona"/>
+                                        </p:autoComplete>
+                                        <p:message for="txtSegApellido"/> 
+                                        <h:outputText value="Fecha Nacimiento:"/>
+                                        <p:calendar id="txtFechaNac" 
+                                                    locale="es"     
+                                                    size="30"
+                                                    value="#{evaluacionDonanteBean.persona.fechaNacimiento}" 
+                                                    disabled="#{evaluacionDonanteBean.cargarFechaNacimiento}" 
+                                                    maxdate="#{evaluacionDonanteBean.hoy}"
+                                                    required="true"
+                                                    requiredMessage="Requerido" 
+                                                    navigator="true" 
+                                                    showOn="button">                       
+                                        </p:calendar>
+                                        <p:message for="txtFechaNac"/> 
+                                        <h:outputText value="Sexo:" />     
+                                        <h:selectOneRadio id="optSexo" 
+                                                          disabled="#{evaluacionDonanteBean.cargarSexo}" 
+                                                          value="#{evaluacionDonanteBean.persona.sexo}"
+                                                          required="true"  requiredMessage="Requerido">
+                                            <f:selectItems value="#{personasBean.cargarListaSexo()}" />
+                                        </h:selectOneRadio>
+                                        <p:message for="optSexo"/>  
+                                    </h:panelGrid>     
+                                </p:fieldset>
+                                <p:fieldset id="otros" legend="Otros datos">
+                                    <h:panelGrid columns="3" columnClasses="alignTop,alignTop">
+                                        <h:outputText value="Estado civil:"/>
+                                        <h:selectOneMenu id="cboEstadoCivil" 
+                                                         value="#{evaluacionDonanteBean.persona.estadoCivil}"
+                                                         style="width: 200px" 
+                                                         required="true" 
+                                                         requiredMessage="Requerido">
+                                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                                            <f:selectItem itemLabel="Soltero" itemValue="Soltero"/>
+                                            <f:selectItem itemLabel="Casado" itemValue="Casado"/>
+                                            <f:selectItem itemLabel="Divorciado" itemValue="Divorciado"/>
+                                            <f:selectItem itemLabel="Viudo" itemValue="Viuedo"/>
+                                        </h:selectOneMenu>
+                                        <p:message for="cboEstadoCivil"/>
+                                        <h:outputText value="Tipo doc. identidad:"/> 
+                                        <h:selectOneMenu  id="cboTipo"
+                                                          value="#{evaluacionDonanteBean.persona.tipoDocId}"
+                                                          required="true"                                                  
+                                                          requiredMessage="Requerido" style="width: 200px">
+                                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                                            <f:selectItem itemLabel="DUI" itemValue="DUI"/>
+                                            <f:selectItem itemLabel="NIT o lincencia de conducir" itemValue="NIT o lincencia de conducir"/>
+                                            <f:selectItem itemLabel="Pasaporte" itemValue="Pasaporte"/>
+                                        </h:selectOneMenu>
+                                        <p:message for="cboTipo"/> 
+                                        <h:outputText value="Doc. Identidad:"/>
+                                        <p:inputText id="txtDocId"
+                                                     size="30"
+                                                     value="#{evaluacionDonanteBean.persona.docId}"
+                                                     required="true"
+                                                     requiredMessage="Requerido"/>
+                                        <p:message for="txtDocId"/>
+                                        <h:outputText value="Departamento:"/>
+                                        <h:selectOneMenu id="cboDepto" onchange="onSelectDepto()" 
+                                                         required="true"  
+                                                         requiredMessage="Requerido" 
+                                                         value="#{evaluacionDonanteBean.selectedDepto}" 
+                                                         style="width: 200px">
+                                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                                            <f:selectItems value="#{domicilioBean.cargarListaDeptos()}" />
+                                        </h:selectOneMenu>
+                                        <p:message for="cboDepto"/>
+                                        <h:outputText value="Municipio:"/>
+                                        <h:selectOneMenu id="cboMunicipio" 
+                                                         required="true"
+                                                         requiredMessage="Requerido" 
+                                                         value="#{evaluacionDonanteBean.selectedMunicipio}" 
+                                                         style="width: 200px">
+                                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                                            <f:selectItems value="#{evaluacionDonanteBean.listaMunicipios}" /> 
+                                        </h:selectOneMenu>
+                                        <p:message for="cboMunicipio"/>
+                                        <h:outputText value="Dirección:"/>                            
+                                        <p:inputTextarea id="txtDireccionParticular"
+                                                         rows="2"
+                                                         cols="30"
+                                                         value="#{evaluacionDonanteBean.domicilio.direccion}"
+                                                         required="true" 
+                                                         requiredMessage="Requerido" />
+                                        <p:message for="txtDireccionParticular"/>
+                                        <h:outputText value="Telefono particular:"/>                            
+                                        <p:inputMask id="txtTelefonoParticular"
+                                                     mask="9999-9999"
+                                                     value="#{evaluacionDonanteBean.domicilio.telefonoParticular}"
+                                                     size="30"/>
+                                        <p:message for="txtTelefonoParticular"/>
+                                        <h:outputText value="Lugar de trabajo:"/>                            
+                                        <p:autoComplete id="txtLugarTrabajo"
+                                                        completeMethod="#{autoCompleteBean.complete}"
+                                                        value="#{evaluacionDonanteBean.lugarTrabajo.lugarTrabajo}"
+                                                        required="true" 
+                                                        requiredMessage="Requerido"
+                                                        size="30">
+                                            <f:attribute name="field" value="lugarTrabajo"/>
+                                            <f:attribute name="table" value="tbllugtrabajo"/>
+                                        </p:autoComplete>
+                                        <p:message for="txtLugarTrabajo"/>
+                                        <h:outputText value="Dirección:"/>                            
+                                        <p:inputTextarea id="txtDireccionTrabajo"
+                                                         value="#{evaluacionDonanteBean.lugarTrabajo.direccionTrabajo}"
+                                                         rows="2"
+                                                         cols="30"
+                                                         required="true" 
+                                                         requiredMessage="Requerido"/>
+                                        <p:message for="txtDireccionTrabajo"/>
+                                        <h:outputText value="Telefono del trabajo:"/>                            
+                                        <p:inputMask id="txtTelefonoTrabajo"
+                                                     mask="9999-9999"
+                                                     value="#{evaluacionDonanteBean.lugarTrabajo.telefonoTrabajo}" 
+                                                     size="30"/>
+                                        <p:message for="txtTelefonoTrabajo"/>
+                                        <h:outputText value="Lugar que refiere al donante:"/>
+                                        <p:autoComplete id="txtLugReferencia" 
+                                                        value="#{evaluacionDonanteBean.evaluacion.lugarReferencia}" 
+                                                        completeMethod="#{autoCompleteBean.complete}" 
+                                                        size="30"
+                                                        required="true" 
+                                                        requiredMessage="Requerido">
+                                            <f:attribute name="field" value="lugarReferencia"/>
+                                            <f:attribute name="table" value="tblevaluaciondonante"/>
+                                        </p:autoComplete>
+                                        <p:message for="txtLugReferencia"/>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </p:tab>
+                            <p:tab id="antecedentes" title="Antecedentes">
+                                <p:fieldset>
+                                    <h:panelGrid columns="3">
+                                        <h:outputText value="Donante primera vez:"/>
+                                        <h:selectOneRadio id="optPrimeraVez"
+                                                          required="true"
+                                                          requiredMessage="Requerido"
+                                                          value="#{evaluacionDonanteBean.antecedentes.donantePrimerizo}">
+                                            <f:selectItems value="#{evaluacionDonanteBean.cargarListaPrimeraVez()}" />
+                                        </h:selectOneRadio>
+                                        <p:message for="optPrimeraVez"/>
+                                        <h:outputText value="Donante convertido a habitual:"/>
+                                        <h:selectOneRadio id="optHabitual"
+                                                          required="true"
+                                                          requiredMessage="Requerido"
+                                                          value="#{evaluacionDonanteBean.antecedentes.donanteHabitual}">
+                                            <f:selectItems value="#{evaluacionDonanteBean.cargarListaDonanteHabitual()}" />
+                                        </h:selectOneRadio>
+                                        <p:message for="optHabitual"/>
+                                        <h:outputText value="Donante convertido a voluntario:"/>
+                                        <h:selectOneRadio id="optVoluntario"
+                                                          required="true"
+                                                          requiredMessage="Requerido"
+                                                          value="#{evaluacionDonanteBean.antecedentes.donanteVoluntario}">
+                                            <f:selectItems value="#{evaluacionDonanteBean.cargarListaVoluntario()}" />
+                                        </h:selectOneRadio>
+                                        <p:message for="optVoluntario"/>
+                                        <h:outputText value="Total de donaciones:"/>
+                                        <p:spinner id="txtTotalDonaciones"
+                                                   size="30"
+                                                   value="#{evaluacionDonanteBean.antecedentes.totalDonaciones}"
+                                                   required="true" 
+                                                   requiredMessage="Requerido"/>
+                                        <p:message for="txtTotalDonaciones"/>
+                                        <h:outputText value="Donaciones por Año:"/>
+                                        <p:spinner id="txtTotalAnio"
+                                                   min="0"
+                                                   size="30"
+                                                   value="#{evaluacionDonanteBean.antecedentes.donacionesAnuales}"
+                                                   required="true" 
+                                                   requiredMessage="Requerido"/>
+                                        <p:message for="txtTotalAnio"/>
+                                        <h:outputText value="Lugar donde donó:"/>
+                                        <p:autoComplete id="txtLugDonación"
+                                                        required="true"
+                                                        size="30"
+                                                        requiredMessage="Requerido"
+                                                        completeMethod="#{autoCompleteBean.complete}" 
+                                                        value="#{evaluacionDonanteBean.antecedentes.lugarDonacion}">
+                                            <f:attribute name="field" value="lugarDonacion"/>
+                                            <f:attribute name="table" value="tblantecedentes_donante"/>
+                                        </p:autoComplete>
+                                        <p:message for="txtLugDonación"/>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </p:tab>
+                            <p:tab id="evluacionFisica" title="Evaluación Física">
+                                <p:fieldset>
+                                    <h:panelGrid columns="3"  columnClasses="alignTop,alignTop,alignTop">
+                                        <h:outputText value="¿Ha comido algo hoy?:"/>
+                                        <h:selectOneRadio id="optComida"
+                                                          required="true"
+                                                          requiredMessage="Requerido"
+                                                          value="#{evaluacionDonanteBean.evalFisica.tomoAlimentos}">
+                                            <f:selectItems value="#{evaluacionDonanteBean.cargarListaComida()}" />
+                                        </h:selectOneRadio>
+                                        <p:message for="optComida"/>
+                                        <h:outputText value="Inspección de los brazos:"/>
+                                        <p:inputTextarea id="txtBrazos"
+                                                         cols="30" rows="4"
+                                                         value="#{evaluacionDonanteBean.evalFisica.inspeccionBrazos}"
+                                                         required="true"
+                                                         requiredMessage="Requerido"/>
+                                        <p:message for="txtBrazos"/>
+                                        <h:outputText value="Peso:"/>
+                                        <p:spinner id="txtPeso"
+                                                   size="30"
+                                                   required="true"
+                                                   requiredMessage="Requerido"
+                                                   min="0" stepFactor="0.01"
+                                                   value="#{evaluacionDonanteBean.evalFisica.peso}"/>
+                                        <p:message for="txtPeso"/>
+                                        <h:outputText value="Presión arterial:"/>
+                                        <p:spinner id="txtPresion" 
+                                                   size="30"
+                                                   required="true"
+                                                   requiredMessage="Requerido"
+                                                   min ="0" stepFactor="0.01"
+                                                   value="#{evaluacionDonanteBean.evalFisica.presionArterial}"/> 
+                                        <p:message for="txtPresion"/>
+                                        <h:outputText value="Pulso:"/>
+                                        <p:spinner id="txtPulso"
+                                                   size="30"
+                                                   required="true"
+                                                   requiredMessage="Requerido"
+                                                   min="0" stepFactor="0.01"
+                                                   value="#{evaluacionDonanteBean.evalFisica.pulso}"/> 
+                                        <p:message for="txtPulso"/>
+                                        <h:outputText value="Temperatura:"/>
+                                        <p:spinner id="txtTemperatura"
+                                                   size="30"
+                                                   min="0" stepFactor="0.01"
+                                                   required="true"
+                                                   requiredMessage="Requerido"
+                                                   value="#{evaluacionDonanteBean.evalFisica.temperatura}"/>
+                                        <p:message for="txtTemperatura"/>
+                                        <h:outputText value="Hemograma:"/>
+                                        <h:selectOneRadio id="optHemograma"
+                                                          required="true"
+                                                          requiredMessage="Requerido"
+                                                          value="#{evaluacionDonanteBean.evalFisica.hemograma}">
+                                            <f:selectItems value="#{evaluacionDonanteBean.cargarListaHemograma()}" />
+                                        </h:selectOneRadio>
+                                        <p:message for="optHemograma"/>
+                                        <h:outputText value="Hemoglobina:"/>
+                                        <h:selectOneRadio id="optHemoglobina"
+                                                          required="true"
+                                                          requiredMessage="Requerido"
+                                                          value="#{evaluacionDonanteBean.evalFisica.hemoglobina}">
+                                            <f:selectItems value="#{evaluacionDonanteBean.cargarListaHemoglobina()}" />
+                                        </h:selectOneRadio>
+                                        <p:message for="optHemoglobina"/>
+                                        <h:outputText value="Hematrocito:"/>
+                                        <p:spinner id="txtHematrocito"
+                                                   size="30"
+                                                   min="0" stepFactor="0.01"
+                                                   required="true"
+                                                   requiredMessage="Requerido"/>
+                                        <p:message for="txtHematrocito"/>
+                                        <h:outputText value="Observaciones:"/>
+                                        <p:inputTextarea id="txtObservaciones"
+                                                         cols="30" rows="4"
+                                                         value="#{evaluacionDonanteBean.evalFisica.observaciones}"/>
+                                        <p:message for="txtObservaciones"/>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </p:tab>
+                            <p:tab id="entrevista" title="Entrevista">
+                                <style type="text/css">
+                                    .ui-datatable-data table td{
+                                        border : 0px !important;
+                                    }
+                                    .ui-datalist-content ul{
+                                        border : 0px !important;
+                                    }
+                                    .columnCriterio{
+                                        width: 100px;
+                                    }
+                                    .columnAcciones{
+                                        width:64px; 
+                                    }
+                                    .cell:hover{ background-color: #FBEC88;   
+                                                 height: 30px;
+                                    }
+                                    .cell{
+                                        background-color:transparent;
+                                        color:dimgray;
+                                        height: 30px;
+                                    }
+                                </style>
+                                <p:outputPanel id="opCuestionario">
+                                    <p:dataTable id="dtCuestionario" 
+                                                 rowIndexVar="indexRow" 
+                                                 value="#{evaluacionDonanteBean.listaCuestionario}" 
+                                                 var="varCuestionario" 
+                                                 rows="10" 
+                                                 paginator="true">
+                                        <p:column style="text-align: center; vertical-align: top; width: 32px">
+                                            <f:facet name="header">No.</f:facet>
+                                            <h:outputText value="#{varCuestionario.pregunta.numeroPregunta}"/>
+                                        </p:column>
+                                        <p:column style="text-align: left; vertical-align: top;">
+                                            <f:facet name="header">Pregunta</f:facet>
+                                            <h:outputText value="#{varCuestionario.pregunta.pregunta}"/>                                            
+                                            <h:dataTable id="dtCriterio" style="max-height: 100px; overflow: scroll;" 
+                                                         rendered="#{(varCuestionario.respuestaPregunta.respuesta == varCuestionario.pregunta.rechazarDonante)?true:false}" 
+                                                         value="#{varCuestionario.listaCriterios}" 
+                                                         var="varCriterio">
+                                                <h:column>
+                                                    <h:panelGrid columnClasses="columnCriterio,columnAcciones" columns="2">
+                                                        <p:outputPanel>
+                                                            #{varCriterio.criterio.textoCriterio}<br/>                                                              
+                                                            <p:outputPanel rendered="#{not varCriterio.criterio.periodoExclusion.equals('Sin exclusion') and not varCriterio.criterio.periodoExclusion.equals('Permanente')}">
+                                                                <em>(Diferido por: #{varCriterio.criterio.tiempoExclusion} #{varCriterio.criterio.periodoExclusion.equals('Anios')?'Años':varCriterio.criterio.periodoExclusion})</em>                                                              
+                                                            </p:outputPanel>
+                                                            <p:outputPanel rendered="#{varCriterio.criterio.periodoExclusion.equals('Sin exclusion')}">
+                                                                <em>(Apto para donar)</em>                                                              
+                                                            </p:outputPanel>
+                                                            <p:outputPanel rendered="#{varCriterio.criterio.periodoExclusion.equals('Permanente')}">
+                                                                <em>(No apto para donar)</em>                                                              
+                                                            </p:outputPanel>
+                                                        </p:outputPanel>
+                                                        <p:commandButton
+                                                            title="Chequear"
+                                                            process="@this"
+                                                            update="opCuestionario" 
+                                                            action="#{evaluacionDonanteBean.onSelectCriterio}"
+                                                            image="#{varCriterio.respuestaCriterio.respuesta ? 'ui-icon ui-icon-bullet':'ui-icon ui-icon-radio-on'}">
+                                                            <f:setPropertyActionListener value="#{varCriterio}" target="#{evaluacionDonanteBean.selectedCriterio}"/>
+                                                            <f:setPropertyActionListener value="#{varCuestionario}" target="#{evaluacionDonanteBean.selectedEvaluacion}" />                                                           
+                                                            <f:attribute name="boton" value="si"/>
+                                                        </p:commandButton>
+                                                    </h:panelGrid>
+                                                </h:column>
+
+                                            </h:dataTable>
+                                        </p:column>
+                                        <p:column style="text-align: center; width: 32px; vertical-align: top;">                                        
+                                            <f:facet name="header">Si</f:facet>
+                                            <p:commandButton
+                                                title="Si"
+                                                process="@this"
+                                                update="opCuestionario" 
+                                                action="#{evaluacionDonanteBean.onSelectRespuesta}"
+                                                disabled="#{evaluacionDonanteBean.rechazar}" 
+                                                image="#{varCuestionario.respuestaPregunta.respuesta ? 'ui-icon ui-icon-bullet':'ui-icon ui-icon-radio-on'}">
+                                                <f:setPropertyActionListener value="#{varCuestionario}" target="#{evaluacionDonanteBean.selectedEvaluacion}"/>
+                                                <f:attribute name="boton" value="si"/>
+                                            </p:commandButton>
+                                            <!--h:selectOneRadio id="optRespuesta{indexRow}"  
+                                                              onchange="onSelectRadio({indexRow})"  
+                                                              disabled="{evaluacionDonanteBean.rechazar}" 
+                                                              style="text-align: left;" 
+                                                              valueChangeListener="{evaluacionDonanteBean.onChangeRespuesta}"                                                                
+                                                              value="{varCuestionario.respuestaPregunta.respuesta}" 
+                                                              required="true">
+                                                <f:selectItems value="{evaluacionDonanteBean.cargarListaRespuestaCuestionario()}"/>
+                                                <f:attribute name="selectedPregunta" value="{varCuestionario}"/>     
+
+                                                <f:ajax event="change" execute="@this" listener="{evaluacionDonanteBean.onSelectRespuesta}" render="respuesta"/>                                            
+                                            </h:selectOneRadio>
+                                            <p:message for="optRespuesta" display="icon"/-->
+                                        </p:column>
+                                        <p:column style="text-align: center; width: 32px; vertical-align: top;">                                        
+                                            <f:facet name="header">No</f:facet>
+                                            <p:commandButton
+                                                title="No"
+                                                process="@this"
+                                                update="opCuestionario" 
+                                                action="#{evaluacionDonanteBean.onSelectRespuesta}" 
+                                                disabled="#{evaluacionDonanteBean.rechazar}" 
+                                                image="#{(varCuestionario.respuestaPregunta.respuesta == null || varCuestionario.respuestaPregunta.respuesta)? 'ui-icon ui-icon-radio-on':'ui-icon ui-icon-bullet'}">
+                                                <f:setPropertyActionListener value="#{varCuestionario}" target="#{evaluacionDonanteBean.selectedEvaluacion}" />
+                                                <f:attribute name="boton" value="no"/>
+                                            </p:commandButton>
+                                            <!--h:selectOneRadio id="optRespuesta{indexRow}"  
+                                                              onchange="onSelectRadio({indexRow})"  
+                                                              disabled="{evaluacionDonanteBean.rechazar}" 
+                                                              style="text-align: left;" 
+                                                              valueChangeListener="{evaluacionDonanteBean.onChangeRespuesta}"                                                                
+                                                              value="{varCuestionario.respuestaPregunta.respuesta}" 
+                                                              required="true">
+                                                <f:selectItems value="{evaluacionDonanteBean.cargarListaRespuestaCuestionario()}"/>
+                                                <f:attribute name="selectedPregunta" value="{varCuestionario}"/>     
+
+                                                <f:ajax event="change" execute="@this" listener="{evaluacionDonanteBean.onSelectRespuesta}" render="respuesta"/>                                            
+                                            </h:selectOneRadio>
+                                            <p:message for="optRespuesta" display="icon"/-->
+                                        </p:column>
+                                    </p:dataTable>
+                                    <p:dialog header="Rechazar Donante?" 
+                                              width="400" 
+                                              closable="false"   
+                                              visible="#{evaluacionDonanteBean.rechazar}"  
+                                              widgetVar="confirmation" 
+                                              modal="true">
+                                        <p:outputPanel rendered="#{evaluacionDonanteBean.showConfirmPregunta}" >
+                                            El donante contesto <Strong>#{evaluacionDonanteBean.selectedEvaluacion.respuestaPregunta.respuesta?'Si':'No'}</Strong> a la pregunta <strong>#{evaluacionDonanteBean.selectedEvaluacion.pregunta.numeroPregunta}</strong>:<br/><br/>
+                                            <strong><em>#{evaluacionDonanteBean.selectedEvaluacion.pregunta.pregunta}</em></strong>, <br/><br/>El donante sera declarado no apto para donar. Seleccione la accion que desea realizar.
+                                        </p:outputPanel>
+                                        <p:outputPanel rendered="#{evaluacionDonanteBean.showConfirmCriterio}" >
+                                            <p:outputPanel rendered="#{evaluacionDonanteBean.diferido}">
+                                                El donante sera diferido para el siguiente periodo: <strong>#{evaluacionDonanteBean.selectedCriterio.criterio.tiempoExclusion} #{evaluacionDonanteBean.selectedCriterio.criterio.periodoExclusion}</strong><br/><br/>
+                                                Posterior al cual podr someterse de nuevo al proceso.<br/><br/>
+                                            </p:outputPanel>
+                                            <p:outputPanel rendered="#{!evaluacionDonanteBean.diferido}">
+                                                El donante sera rechazado debido a la opción seleccionada<br/><br/>
+                                            </p:outputPanel>
+                                        </p:outputPanel>
+                                        <h:panelGrid columns="2">
+                                            <p:commandButton value="#{evaluacionDonanteBean.diferido?'Diferir donante':'Rechazar Donante'}" 
+                                                             action ="#{evaluacionDonanteBean.onClickRechazar}"
+                                                             update="resultado"
+                                                             oncomplete="wizEvaluacion.next()"
+                                                             process="@this entrevista">
+                                            </p:commandButton>
+                                            <p:commandButton value="Continuar cuestionario" 
+                                                             action="#{evaluacionDonanteBean.reiniciarCuestionario}" 
+                                                             update="opCuestionario"
+                                                             oncomplete="confirmation.hide()" 
+                                                             process="@this"/>    
+                                        </h:panelGrid>
+                                    </p:dialog>
+                                </p:outputPanel>
+                                <p:fieldset legend="Comentarios">
+                                    <h:panelGrid columns="3">
+                                        <h:outputText value="Comentarios:"/>
+                                        <p:inputTextarea id="txtComEntrevista"
+                                                         cols="30"
+                                                         rows="4">
+                                            <f:validator validatorId="evaluacionValidator"/>
+                                        </p:inputTextarea> 
+                                        <p:message for="txtComEntrevista"/>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </p:tab>
+                            <p:tab id="Resultado" title="Resultado">
+                                <p:fieldset legend="Sugerencias">
+                                    <h:outputText value="Resultado sugerido para la entrevista realizada al donante:"/><br/><br/>
+                                    <p:outputPanel id="resultadoAprobado" style="color:green" rendered="#{evaluacionDonanteBean.diferido != true and evaluacionDonanteBean.rechazar != true}">
+                                        <strong>El donante ha sido aprobado para donar</strong>
+                                    </p:outputPanel>
+                                    <p:outputPanel id="resultadoRechazado"  style="color:red" rendered="#{evaluacionDonanteBean.rechazar == true and evaluacionDonanteBean.diferido != true}">
+                                        <strong>El donante ha sido rechazado, porque no cumple las condiciones para donar</strong>
+                                    </p:outputPanel>
+                                    <p:outputPanel id="resultadoDiferido"  style="color:orange" rendered="#{evaluacionDonanteBean.diferido}">
+                                        <strong>El donante ha sido diferido, porque no cumple las condiciones para donar</strong>
+                                    </p:outputPanel>
+                                </p:fieldset>
+                                <p:fieldset id="resultado" legend="Resultado">
+                                    <h:panelGrid columns="3" columnClasses="alignTop,alignTop,alignTop">
+                                        <h:outputText value="Resultado:"/>
+                                        <h:selectOneRadio id="optResultado"
+                                                          required="true" onchange="onChangeResultado()"                                                      
+                                                          requiredMessage="requerido"
+                                                          value="#{evaluacionDonanteBean.evaluacion.resultado}">
+                                            <f:selectItems value="#{evaluacionDonanteBean.cargarListaResultado()}" />
+                                        </h:selectOneRadio>        
+                                        <p:message for="optResultado"/>
+                                        <h:outputText rendered="#{evaluacionDonanteBean.renderMotivo or evaluacionDonanteBean.renderDiferido}" value="Motivo exclusion:"/>
+                                        <p:inputTextarea id="txtMotivoExclusion"
+                                                         rendered="#{evaluacionDonanteBean.renderMotivo or evaluacionDonanteBean.renderDiferido}"
+                                                         required="true"                                                      
+                                                         requiredMessage="requerido"
+                                                         rows="4" 
+                                                         cols="30"   
+                                                         value="#{evaluacionDonanteBean.exclusion.motivoExclusion}"/>
+                                        <p:message for="txtMotivoExclusion"
+                                                   rendered="#{evaluacionDonanteBean.renderMotivo or evaluacionDonanteBean.renderDiferido}"/>
+                                        <h:outputText value="Tiempo exclusion:"
+                                                      rendered="#{evaluacionDonanteBean.renderDiferido}"/>                                        
+                                        <p:spinner id="txtTiempoExclusion"
+                                                   rendered="#{evaluacionDonanteBean.renderDiferido}"
+                                                   required="true"                                                      
+                                                   requiredMessage="requerido"
+                                                   min="0" stepFactor="1" size="30"
+                                                   value="#{evaluacionDonanteBean.exclusion.tiempoExclusion}"/>
+                                        <p:message for="txtTiempoExclusion"
+                                                   rendered="#{evaluacionDonanteBean.renderDiferido}"/>
+                                        <h:outputText value="Periodo Exclusión:"
+                                                      rendered="#{evaluacionDonanteBean.renderDiferido}"/> 
+                                        <h:selectOneMenu id="cboPeriodoExclusion"
+                                                         rendered="#{evaluacionDonanteBean.renderDiferido}"
+                                                         style="width: 200px" 
+                                                         required="true"                                                      
+                                                         requiredMessage="requerido"
+                                                         value="#{evaluacionDonanteBean.exclusion.periodoExclusion}">
+                                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                                            <f:selectItem itemLabel="Sin exclusión" itemValue="Sin exclusion"/>
+                                            <f:selectItem itemLabel="Horas" itemValue="Horas"/>
+                                            <f:selectItem itemLabel="Días" itemValue="Dias"/>
+                                            <f:selectItem itemLabel="Semanas" itemValue="Semanas"/>
+                                            <f:selectItem itemLabel="Meses" itemValue="Meses"/>
+                                            <f:selectItem itemLabel="Años" itemValue="Anios"/>
+                                            <f:selectItem itemLabel="Permanente" itemValue="Permanente"/>
+                                        </h:selectOneMenu>
+                                        <p:message for="cboPeriodoExclusion"
+                                                   rendered="#{evaluacionDonanteBean.renderDiferido}"/>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                                <h:panelGrid style="width: 100%">
+                                    <p:toolbar>  
+                                        <p:toolbarGroup align="left">  
+                                            <p:commandButton type="push" value="Guardar" title="Guardar" image="ui-icon-disk"/>  
+                                        </p:toolbarGroup>  
+                                    </p:toolbar>  
+                                </h:panelGrid>
+                            </p:tab>
+                            <!--p:tab id="Extraccion" title="Extraccion">
+                                <h:panelGrid>
+                                    <p:fieldset>
+                                        <h:panelGrid columns="2">
+                                            <h:outputText value="Unidad completa:"/>
+                                            <h:selectOneRadio id="optUnidadCompleta">
+                                                <f:selectItem id="optUnidadCompleta1" itemLabel="Si" itemValue="1" />
+                                                <f:selectItem id="optUnidadCompleta2" itemLabel="No" itemValue="2" />
+                                            </h:selectOneRadio>        
+                                            <h:outputText value="Hora inicio:"/>
+                                            <p:inputText id="txtHoraInicio"  />
+                                            <h:outputText value="Hora finalización:"/>
+                                            <p:inputText id="txtHoraFinal"/>
+                                            <h:outputText value="Reacciones adversas posdonación:"/>
+                                            <h:selectOneRadio id="optReacciones">
+                                                <f:selectItem id="optReacciones1" itemLabel="Ninguna" itemValue="1" />
+                                                <f:selectItem id="optReacciones2" itemLabel="Leve" itemValue="2" />
+                                                <f:selectItem id="optReacciones3" itemLabel="Moderada" itemValue="3" />
+                                                <f:selectItem id="optReacciones4" itemLabel="Severa" itemValue="4" />
+                                            </h:selectOneRadio>  
+                                            <h:outputText value="Observaciones:"/>
+                                            <p:inputTextarea id="txtObsExtraccion"  />
+                                            <h:outputText value="Consentimiento:"/>
+                                            <h:selectOneRadio id="optConsentimiento">
+                                                <f:selectItem id="optConsentimiento1" itemLabel="Si" itemValue="1" />
+                                                <f:selectItem id="optConsentimiento2" itemLabel="No" itemValue="2" />
+                                            </h:selectOneRadio>  
+                                        </h:panelGrid>
+                                    </p:fieldset>
+                                </h:panelGrid>
+                            </p:tab-->
+                        </p:wizard>
+                    </h:panelGrid>
+                </p:panel> 
+                <p:dialog modal="true" 
+                          draggable="false" 
+                          header="Buscar persona" 
+                          width="550" 
+                          height="350"
+                          widgetVar="buscarPersona">  
+                    <h:panelGrid id="detallePersona" columns="3" columnClasses="alignTop,alignTop,alignTop">
+                        <h:panelGrid  columnClasses="alignTop">
+                            <h:outputText value="Nombre:"/>
+                            <p:inputText id="txtBuscarNombre" value="#{personasBean.buscarNombre}" size="20"/>
+                            <p:commandButton value="Buscar"
+                                             image="ui-icon ui-icon-search" 
+                                             process="@this detallePersona" 
+                                             action="#{evaluacionDonanteBean.buscar()}"
+                                             update="dtPersona">
+                                <f:param name="requireGroup2" value="1"/>
+                            </p:commandButton>
+                        </h:panelGrid>
+                        <h:panelGrid columnClasses="alignTop">
+                            <h:outputText value="Doc. Identidad:"/>
+                            <p:inputText id="txtBuscarDocId" value="#{personasBean.buscarDocId}" size="20"/>
+                        </h:panelGrid>
+                        <h:panelGrid columnClasses="alignTop">
+                            <h:outputText value="Num. Expediente:"/>
+                            <p:inputText id="txtBuscarExpediente" value="#{personasBean.buscarExpediente}" size="20"/>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                    <p:dataTable id="dtPersona" 
+                                 var="varPersona" 
+                                 value="#{evaluacionDonanteBean.listaDonantes}" 
+                                 paginator="true" 
+                                 selection="#{evaluacionDonanteBean.selectedDonante}" 
+                                 rowSelectListener="#{evaluacionDonanteBean.onRowSelect}" 
+                                 onRowSelectComplete="buscarPersona.hide()" 
+                                 onRowSelectUpdate="msg campos"
+                                 selectionMode="single" 
+                                 rows="5"
+                                 emptyMessage="No se encontraron registros">
+                        <p:column headerText="Nombre">
+                            #{varPersona[0]}
+                        </p:column>
+                        <p:column headerText="Documento de indentidad">
+                            #{varPersona[1]}
+                        </p:column>
+                        <p:column headerText="Num. Expediente">
+                            #{varPersona[2]}
+                        </p:column>
+                        <p:column headerText="Excluido">
+                            <h:outputText value="#{varPersona[6]}"/>                             
+                        </p:column>
+                    </p:dataTable>
+                </p:dialog>
+
+                <h:inputHidden binding="#{idRadio}" value="#{evaluacionDonanteBean.idRadio}" id="idRadio"/>
+                <h:inputHidden value="#{evaluacionDonanteBean.indexRow}" id="indexRow"/>
+                <p:remoteCommand name="onChangeResultado" process="@this optResultado" 
+                                 update="resultado" action="#{evaluacionDonanteBean.onChangeResultado}"/>
+                <p:remoteCommand name="onKeyPress" process="@this txtDocIdBuscar" 
+                                 update="otros personal msg" action="#{evaluacionDonanteBean.onKeyPress}"/>
+                <p:remoteCommand name="onSelectDepto" process="@this cboDepto" 
+                                 update="cboMunicipio" action="#{evaluacionDonanteBean.onSelectDepto}"/>
+                <p:outputPanel id="remoteRespuesta">
+                    <p:remoteCommand name="onSelectRespuesta" process="@this #{idRadio.value} indexRow"  
+                                     update="opCuestionario dtCuestionario" action="#{evaluacionDonanteBean.onSelectRespuesta}"/>
+                </p:outputPanel>
+                <p:commandButton id="updateRemote" onclick="onSelectRespuesta()" 
+                                 style="visibility: hidden"
+                                 widgetVar="updateRemote"
+                                 update="remoteRespuesta  opCuestionario"/>
+                <p:commandButton style="visibility: hidden" 
+                                 widgetVar="updateConfim" 
+                                 update="opCuestionario msg"/>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

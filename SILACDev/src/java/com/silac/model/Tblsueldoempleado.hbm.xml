@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblsueldoempleado" table="tblsueldoempleado" catalog="dbsilac">
+        <id name="idSueldoEmpleado" type="java.lang.Integer">
+            <column name="idSueldoEmpleado" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblpuestoempleado" class="com.silac.model.Tblpuestoempleado" fetch="select">
+            <column name="idPuestoEmpleado" not-null="true">
+                <comment>Identificador del puesto asignado al empleado.</comment>
+            </column>
+        </many-to-one>
+        <property name="fechaAsignacion" type="timestamp">
+            <column name="fechaAsignacion" length="19" not-null="true">
+                <comment>Fecha en la que se asigno el nuevo sueldo.</comment>
+            </column>
+        </property>
+        <property name="sueldo" type="double">
+            <column name="sueldo" precision="22" scale="0" not-null="true">
+                <comment>Sueldo asignado al empleado.</comment>
+            </column>
+        </property>
+        <property name="estado" type="boolean">
+            <column name="estado" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

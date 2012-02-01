@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblcapacitacioncontinua" table="tblcapacitacioncontinua" catalog="dbsilac">
+        <id name="idCapacitacion" type="java.lang.Long">
+            <column name="idCapacitacion" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblinstitucion" class="com.silac.model.Tblinstitucion" fetch="select">
+            <column name="idInstitucion" not-null="true">
+                <comment>Identificador de la instituci&#243;n.</comment>
+            </column>
+        </many-to-one>
+        <property name="nombreEvento" type="string">
+            <column name="nombreEvento" length="65535" not-null="true">
+                <comment>Nombre de la capacitaci&#243;n o evento.</comment>
+            </column>
+        </property>
+        <property name="lugarEvento" type="string">
+            <column name="lugarEvento" length="254" not-null="true">
+                <comment>Lugar donde se realizar&#225; la capacitaci&#243;n.</comment>
+            </column>
+        </property>
+        <property name="direccionEvento" type="string">
+            <column name="direccionEvento" length="65535">
+                <comment>Direcci&#243;n donde se llevar&#225; a cabo la capacitaci&#243;n.</comment>
+            </column>
+        </property>
+        <property name="fechaInicio" type="timestamp">
+            <column name="fechaInicio" length="19" not-null="true">
+                <comment>Fecha en la que inicia la capacitaci&#243;n.</comment>
+            </column>
+        </property>
+        <property name="fechaFinal" type="timestamp">
+            <column name="fechaFinal" length="19" not-null="true">
+                <comment>Fecha de finalizaci&#243;n de la capactiaci&#243;n.</comment>
+            </column>
+        </property>
+        <set name="tblempleadoCapacitacions" inverse="true">
+            <key>
+                <column name="idCapacitacion" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.TblempleadoCapacitacion" />
+        </set>
+    </class>
+</hibernate-mapping>

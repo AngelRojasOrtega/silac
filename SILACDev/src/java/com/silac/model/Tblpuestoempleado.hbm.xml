@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblpuestoempleado" table="tblpuestoempleado" catalog="dbsilac">
+        <id name="idPuestoEmpleado" type="java.lang.Integer">
+            <column name="idPuestoEmpleado" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblpuesto" class="com.silac.model.Tblpuesto" fetch="select">
+            <column name="idPuesto" not-null="true">
+                <comment>Identificador del puesto.</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="tblempleado" class="com.silac.model.Tblempleado" fetch="select">
+            <column name="codigoMarcacion" not-null="true">
+                <comment>C&#243;digo asignado por el departamento de recursos humanos para identificar a los empleados.</comment>
+            </column>
+        </many-to-one>
+        <property name="fechaAsignacion" type="timestamp">
+            <column name="fechaAsignacion" length="19" not-null="true">
+                <comment>Fecha en la que fue asignado el puesto al empleado.</comment>
+            </column>
+        </property>
+        <property name="unidadPresupuestaria" type="string">
+            <column name="unidadPresupuestaria" length="50">
+                <comment>Unidad presupuestaria donde se contempla el puesto asignado.</comment>
+            </column>
+        </property>
+        <property name="partida" type="string">
+            <column name="partida" length="15">
+                <comment>Partida del presupuesto donde se contempla el puesto asignado.</comment>
+            </column>
+        </property>
+        <property name="lineaTrabajo" type="string">
+            <column name="lineaTrabajo" length="15">
+                <comment>Categoria que identifica el tipo de trabajo realizado por el empleado.</comment>
+            </column>
+        </property>
+        <property name="estado" type="boolean">
+            <column name="estado" not-null="true">
+                <comment>Indica si el empleado esta ejerciendo actualmente el puesto.</comment>
+            </column>
+        </property>
+        <set name="tblsueldoempleados" inverse="true">
+            <key>
+                <column name="idPuestoEmpleado" not-null="true">
+                    <comment>Identificador del puesto asignado al empleado.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblsueldoempleado" />
+        </set>
+    </class>
+</hibernate-mapping>

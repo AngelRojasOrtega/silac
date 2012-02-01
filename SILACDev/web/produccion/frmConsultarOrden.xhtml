@@ -1,0 +1,155 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../templates/template.xhtml">
+    <ui:define name="titulo">
+        Consultar estado de ordenes
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript">
+function confirmFunction() {
+updateConfirm.jq.click();
+}
+        </script>
+        <p:panel id="pOrden" header="Consultar Estado de las ordenes">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+            <p:tabView widgetVar="tabViewOrden" tabChangeListener="#{ordenBean.onTabChange}" onTabChangeUpdate="updateConfirm">
+
+                <p:tab title="Consultar ordenes">
+                    <style type="text/css">
+                        #dtOrden td{
+                            padding: 0px 0px 0px 0px;
+                        }
+                    </style>
+                    <p:dataTable id="dtOrden" 
+                                 widgetVar="dtOrden"                                        
+                                 var="varOrden" 
+                                 rows="10" 
+                                 paginator="true" 
+                                 value="#{ordenBean.listaOrdenes}">
+                        <f:facet name="header">  
+                            <h:panelGrid style="width: 200px;" columns="3">
+                                <h:outputText value="Buscar: " />  
+                                <p:inputText  id="globalFilter" onkeyup="dtOrden.filter()" style="width:150px" />  
+                            </h:panelGrid> 
+                        </f:facet>  
+                        <p:column filterBy="#{varOrden.expediente}" headerText="Num. Exp." style="text-align: center; width: 32px">
+                            <h:outputText value="#{varOrden.expediente}"/>
+                        </p:column>
+                        <p:column filterBy="#{varOrden.paciente}" headerText="Paciente" style="text-align: left;">
+                            <h:outputText value="#{varOrden.paciente}"/>
+                        </p:column> 
+                        <p:column filterBy="#{varOrden.seccion}" headerText="Seccion" style="text-align: left;">
+                            <h:outputText value="#{varOrden.seccion}"/>
+                        </p:column> 
+                        <p:column filterBy="#{varOrden.examen}" headerText="Examen" style="text-align: left; width: 32px">
+                            <h:outputText value="#{varOrden.examen}"/>
+                        </p:column> 
+                        <p:column filterBy="#{varOrden.fecha}" headerText="Fecha" style="text-align: left; width: 64px;">
+                            <h:outputText value="#{ordenBean.getStringDate(varOrden.fecha)}"/>
+                        </p:column> 
+                        <p:column  headerText="Numero de control" style="text-align: center; width: 32px">
+                            <h:outputText value="#{varOrden.examenOrden.numeroControl}"/>
+                        </p:column> 
+                        <p:column filterBy="#{varOrden.examenOrden.estado}" headerText="Estado" style="width: 64px;">
+                            <span style="padding: 4px 4px 4px 4px; font-weight:bolder; display:block; background-color:#{varOrden.examenOrden.estado=='Finalizado'?'green':(varOrden.examenOrden.estado=='Pendiente'?'red':(varOrden.examenOrden.estado=='Entregado'?'orange':'black'))}; color:#ffffff">
+                                <h:outputText value="#{varOrden.examenOrden.estado}"/>
+                            </span>
+                        </p:column> 
+                        <p:column style="width: 64px;">  
+                            <p:commandButton  image="ui-icon ui-icon-pencil"/>
+                            <p:commandButton  image="ui-icon-trash">  
+                                <f:setPropertyActionListener value="#{varOrden}" target="#{ordenBean.selectedOrden}" />
+                            </p:commandButton>  
+                        </p:column> 
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+        </p:panel>
+        <p:outputPanel id="rechazoDialog">
+            <p:dialog modal="true" 
+                      draggable="false" 
+                      header="Rechazar muestra" 
+                      width="450" 
+                      height="150"
+                      resizable="false" 
+                      widgetVar="rechazarMuestra"
+                      visible="#{not empty facesContext.maximumSeverity}">  
+                <p:messages globalOnly="true" id="msgReactivo"/>
+                <h:panelGrid id="detalleRechazo" columns="3" styleClass="alignTop,alignTop,alignTop" >
+                    <h:outputText value="Categoria:"/>
+                    <h:selectOneMenu style="width: 200px"  
+                                     id="cboMotivo" 
+                                     value="#{ordenBean.selectedExamenSolicitado.incidencia.motivo}" 
+                                     onchange="onSelectMotivo()" 
+                                     required="#{param['requireGroup3'] == '3'}" 
+                                     requiredMessage="Requerido">
+                        <f:selectItem itemLabel="Seleccione una opcion" itemValue="#{null}"/>
+                        <f:selectItem itemLabel="Muestra incompleta" itemValue="Muestra incompleta"/>
+                        <f:selectItem itemLabel="Muestra descompuesta" itemValue="Muestra descompuesta"/>
+                        <f:selectItem itemLabel="Muestra coagulada" itemValue="Muestra coagulada"/>
+                        <f:selectItem itemLabel="Muestra equivocada" itemValue="Muestra equivocada"/>
+                        <f:selectItem itemLabel="Otro" itemValue="Otro"/>
+                    </h:selectOneMenu>   
+                    <p:message for="cboMotivo"/>        
+                    <h:outputText value="Otro, Especifique:"
+                                  rendered="#{ordenBean.selectedExamenSolicitado.renderMotivo}"/>
+                    <p:inputTextarea id="txtMotivoRechazo" 
+                                     rows="2" 
+                                     autoResize="false"
+                                     value="#{ordenBean.selectedExamenSolicitado.incidencia.descripcion}"
+                                     required="#{param['requireGroup3'] == '3'}"
+                                     requiredMessage="Requerido"
+                                     rendered="#{ordenBean.selectedExamenSolicitado.renderMotivo}" 
+                                     cols="30"/>
+                    <p:message for="txtMotivoRechazo"
+                               rendered="#{ordenBean.selectedExamenSolicitado.renderMotivo}" /> 
+                    <p:commandButton value="Rechazar"
+                                     title="Rechazar muestra"
+                                     image="ui-icon ui-icon-cancel" 
+                                     process="@this detalleRechazo"
+                                     action="#{ordenBean.onClickCancel}" 
+                                     oncomplete="confirmFunction()"
+                                     update="dtExamen detalleRechazo rechazoDialog">
+                        <f:param name="requireGroup3" value="3"/>
+                    </p:commandButton>
+                    <p:commandButton value="Cerrar"
+                                     title="Cerrar"
+                                     image="ui-icon ui-icon-close" 
+                                     oncomplete="rechazarMuestra.hide()"/>
+                </h:panelGrid>
+            </p:dialog>  
+        </p:outputPanel>
+        <p:remoteCommand name="onSelectDepto" process="@this cboDepto" 
+                         update="cboMunicipio" action="#{ordenBean.onSelectDepto}"/>
+        <p:remoteCommand name="onCheckDomicilio" process="@this chkDomicilio" 
+                         update="camposDomicilio"/>
+        <p:remoteCommand name="onCheckTrabajo" process="@this chkTrabajo" 
+                         update="camposTrabajo"/>
+        <p:remoteCommand name="onSelectModalidad" process="@this cboModalidad" 
+                         update="cboTipoServicio cboServicio" action="#{ordenBean.onSelectModalidad}"/>
+        <p:remoteCommand name="onSelectTipoServicio" process="@this cboTipoServicio" 
+                         update="cboServicio" action="#{ordenBean.onSelectTipoServicio}"/>
+        <p:remoteCommand name="onSelectSeccion" process="@this cboSeccion" 
+                         update="cboExamen" action="#{ordenBean.onSelectSeccion}"/>        
+        <p:remoteCommand name="onCheckDomicilio" process="@this chkDomicilio" 
+                         update="camposDomicilio"/> 
+        <p:remoteCommand name="onCheckTrabajo" process="@this chkTrabajo" 
+                         update="camposTrabajo"/> 
+        <p:remoteCommand name="onCheckIdentificacion" process="@this chkIdentificacion" 
+                         update="camposIdentificacion"/> 
+        <p:remoteCommand name="onCheckMotivo" process="@this chkMotivo" 
+                         update="camposMotivo"/> 
+        <p:remoteCommand name="onSelectDepto" process="@this cboDepto" 
+                         update="cboMunicipio" action="#{ordenBean.onSelectDepto}"/>
+        <p:remoteCommand name="onSelectMotivo" process="@this cboMotivo" 
+                         update="detalleRechazo" action="#{ordenBean.onSelectMotivo}"/>  
+        <p:commandButton id="updateConfirm" 
+                         style="visibility: hidden" 
+                         widgetVar="updateConfirm" oncomplete="#{ordenBean.activeTab}"   
+                         update="dtExamen dtOrden msg">
+        </p:commandButton>
+    </ui:define>
+</ui:composition>

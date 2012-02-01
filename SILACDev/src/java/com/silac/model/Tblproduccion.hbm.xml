@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblproduccion" table="tblproduccion" catalog="dbsilac">
+        <id name="idProduccion" type="java.lang.Long">
+            <column name="idProduccion" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblparametro" class="com.silac.model.Tblparametro" fetch="select">
+            <column name="idParametro" not-null="true" />
+        </many-to-one>
+        <many-to-one name="tblexamenOrden" class="com.silac.model.TblexamenOrden" fetch="select">
+            <column name="idExamenOrden" not-null="true" />
+        </many-to-one>
+        <property name="valor" type="string">
+            <column name="valor" not-null="true">
+                <comment>Valor o resultado obtenido en la prueba.</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

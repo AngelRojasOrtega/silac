@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../templates/template.xhtml">
+
+            <ui:define name="titulo">
+                Capacitaciones impartidas por el laboratorio
+            </ui:define>
+
+            <ui:define name="content">
+                <p:panel header="Capacitaciones impartidas por el laboratorio">
+                    <h:panelGrid style="width: 100%">
+                        <p:fieldset legend="Datos de la capacitación">
+                            <h:panelGrid columns="3" columnClasses="alignTop,alignTop,alignTop">
+                                <h:outputText value="Nombre del evento:"/>
+                                <p:inputTextarea rows="2" cols="30" id="txtNomEvento"/>
+                                <p:message for="txtNomEvento"/>  
+                                <h:outputText value="Lugar del evento:"/>
+                                <p:inputText size="30" id="txtLugar"/>
+                                <p:message for="txtLugar"/>  
+                                <h:outputText value="Dirección:"/>
+                                <p:inputText size="30" id="txtDireccion"/>
+                                <p:message for="txtLugar"/> 
+                                <h:outputText value="Fecha de inicio:"/>
+                                <p:calendar id="txtInicio" locale="es" navigator="true" showOn="button" />
+                                <p:message for="txtInicio"/>  
+                                <h:outputText value="Fecha de finalizacion:"/>
+                                <p:calendar id="txtFinal" locale="es" navigator="true" showOn="button" />
+                                <p:message for="txtFinal"/>  
+                                <h:outputText value="Hora inicio:"/>
+                                <p:inputText id="txtHoraInicio" size="30"/>
+                                <p:message for="txtHoraInicio"/>  
+                                <h:outputText value="Hora Finalización:"/>
+                                <p:inputText id="txtHoraFin" size="30"/>
+                                <p:message for="txtHoraFin"/>  
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <p:fieldset legend="Encargados">
+                            <p:pickList value="#{pickList.cities}"  
+                                        var="city"  
+                                        itemLabel="#{city}"  
+                                        itemValue="#{city}">
+                                <f:facet name="sourceCaption">Empleados disponibles</f:facet>  
+                                <f:facet name="targetCaption">Facilitadores</f:facet>  
+                            </p:pickList>                                                      
+                        </p:fieldset>         
+                    </h:panelGrid>
+                    <h:panelGrid style="width: 100%">
+                        <p:toolbar>  
+                            <p:toolbarGroup align="left">  
+                                <p:commandButton type="push" value="Nuevo" title="Guardar" image="ui-icon-document"/>  
+                                <p:commandButton type="push" value="Buscar" title="Buscar" image="ui-icon-search"/>    
+                                <p:commandButton type="push" value="Modificar" title="Modificar" image="ui-icon-pencil"/>   
+                                <p:commandButton type="push" value="Cancelar" title="Cancelar" image="ui-icon-cancel"/> 
+                                <p:commandButton type="push" value="Guardar" title="Guardar" image="ui-icon-disk"/>    
+                            </p:toolbarGroup>  
+                        </p:toolbar> 
+                    </h:panelGrid>  
+                </p:panel>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

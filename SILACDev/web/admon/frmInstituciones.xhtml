@@ -1,0 +1,121 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Instituciones 
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfirm.jq.click();
+}
+        </script>
+        <p:panel header="Instituciones">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/> 
+            <h:panelGrid style="width:100%">
+                <h:panelGrid id="campos" columns="3">
+                    <h:outputText value="Nombre de la institucion:"/> 
+                    <p:inputText id="txtNomInstitucion" value="#{institucionesBean.inst.nombre}" size="25" required="true" requiredMessage="Requerido"/>
+                    <p:message for="txtNomInstitucion"/>        
+                    <h:outputText value="Teléfono:"/> 
+                    <p:inputMask mask="9999-9999" id="txtTelefono" value="#{institucionesBean.inst.telefono}" size="25"/>
+                    <h:outputText value=""/> 
+                    <h:outputText value="Direccion:"/> 
+                    <p:inputTextarea id="txtDireccion" value="#{institucionesBean.inst.direccion}" cols="25"/>
+                </h:panelGrid>   
+                <h:panelGrid style="width: 100%">
+                    <p:toolbar>  
+                        <p:toolbarGroup align="left">  
+                            <p:commandButton value="Nuevo"
+                                             immediate="true"
+                                             title="Nuevo"
+                                             process="@this"
+                                             action="#{institucionesBean.nuevo}"                                                  
+                                             update="campos dtInst"
+                                             image="ui-icon-document"/>                                  
+                            <p:commandButton value="Guardar" 
+                                             process="@this campos" 
+                                             action="#{institucionesBean.crear}" 
+                                             oncomplete="confirmFunction()" 
+                                             update="dtInst campos msg" 
+                                             title="Guardar" 
+                                             image="ui-icon-disk">                                                                                       
+                            </p:commandButton>   
+                        </p:toolbarGroup>  
+                    </p:toolbar> 
+                </h:panelGrid>
+                <p:dataTable id="dtInst" 
+                             widgetVar="dtInst" 
+                             var="varInst"
+                             rows="10" paginator="true" 
+                             value="#{institucionesBean.insts}">
+                    <f:facet name="header">  
+                        <h:panelGrid style="width: 200px;" columns="3">
+                            <h:outputText value="Buscar: " />  
+                            <p:inputText  id="globalFilter" onkeyup="dtInst.filter()" style="width:150px" />  
+                        </h:panelGrid> 
+                    </f:facet>  
+                    <p:column filterBy="#{varInst.idInstitucion}" style="text-align: center; width: 32px">
+                        <f:facet name="header"><h:outputText value="Código"/></f:facet>
+                        <h:outputText value="#{varInst.idInstitucion}"/>
+                    </p:column>
+                    <p:column filterBy="#{varInst.nombre}" >
+                        <f:facet name="header"><h:outputText value="Laboratorio"/></f:facet>
+                        <h:outputText value="#{varInst.nombre}"/>
+                    </p:column>
+                    <p:column filterBy="#{varInst.direccion}" >
+                        <f:facet name="header"><h:outputText value="Dirección"/></f:facet>
+                        <h:outputText value="#{varInst.direccion}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Teléfono"/></f:facet>
+                        <h:outputText value="#{varInst.telefono}"/>
+                    </p:column>
+                    <p:column style="width: 64px;">
+                        <p:commandButton  image="ui-icon ui-icon-pencil"/>
+                        <p:commandButton  image="ui-icon-trash" 
+                                          oncomplete="confirmation.show()" 
+                                          update="confirm" 
+                                          process="@this">  
+                            <f:setPropertyActionListener value="#{varInst}" target="#{institucionesBean.selectedInst}" />
+                        </p:commandButton> 
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+        </p:panel>
+
+        <p:confirmDialog message="Desea eliminar el registro?" 
+                         width="400"   
+                         header="Confirm" 
+                         severity="alert" 
+                         widgetVar="confirmation" 
+                         modal="true">  
+            <p:outputPanel id="confirm">
+                <h:panelGrid>
+                    <h:outputText  value="#{institucionesBean.selectedInst.idInstitucion} #{institucionesBean.selectedInst.nombre}"/>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Si" 
+                                         update="dtInst msg"
+                                         action="#{institucionesBean.eliminar}" 
+                                         oncomplete="confirmation.hide(); confirmFunction(); dtInst.filter()" 
+                                         process="@this">
+                            <f:param name="idInst" 
+                                     value="#{institucionesBean.selectedInst.idInstitucion}"/>
+                        </p:commandButton>
+                        <p:commandButton value="No" 
+                                         onclick="confirmation.hide()" 
+                                         type="button" />    
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:confirmDialog> 
+
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfirm"
+                         oncomplete="dtInst.filter()" 
+                         update="dtInst msg"/>
+    </ui:define>
+</ui:composition>

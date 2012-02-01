@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <f:view contentType="text/html">
+
+        <h:head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <title><h:outputText value="SILAC Módulo #{usuarioBean.selectedMenu.value} - "/><ui:insert name="titulo">Administración</ui:insert></title>
+            <h:outputStylesheet library="css" name="style.css" />
+            <h:outputStylesheet library="css" name="tableLayout.css" />
+        </h:head>
+
+        <h:body>     
+            <h:form id="form" prependId="false">
+                <p:idleMonitor onactive="sessionTimeOutDialog.show();" timeout="#{session.maxInactiveInterval * 1000}" />
+                <p:dialog header="Sesión caducada" widgetVar="sessionTimeOutDialog" resizable="false" 
+                          modal="true" closable="false" width="400" visible="false">
+                    <h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:graphicImage value="#{resource['images:info.png']}" /> 
+                            <h:outputText style="line-height: 1.5;" value="#{session.maxInactiveInterval} La sesión ha caducado, por favor, pulse sobre el siguiente botón para volver a acceder a la aplicación" />
+                        </h:panelGrid>
+                        <p:commandButton id="confirmBackToLogin" immediate="true" action="#{usuarioBean.cerrarSesion}" value="Iniciar sesión" image="ui-icon-person"/>
+                    <!--onclick="window.location='{facesContext.externalContext.requestContextPath}/'"-->
+                    </h:panelGrid>
+                </p:dialog>
+                <div id="loading" style="position:fixed; left:0px; top:0px; z-index: 101;">
+                    <p:ajaxStatus style="width:16px;height:16px;">  
+                        <f:facet name="start"> 
+                            <p:panel style="width:150px; background: #FBEC88; border:solid 2px #FAD42E !important;">
+                                <h:panelGrid columns="2" style="width:100%;">
+                                    <h:graphicImage value="#{resource['images:ajax-loader.gif']}"/>
+                                    <h:outputText style="font-weight:bolder;" value="Cargando...."/>
+                                </h:panelGrid>
+                            </p:panel>
+                        </f:facet>  
+                        <f:facet name="complete">  
+                            <h:outputText value="" />  
+                        </f:facet>  
+                    </p:ajaxStatus> 
+                </div>
+                <table style="margin: 0 auto; height: 100%; width: 100%" cellspacing="0px">
+                    <tr>
+                        <td id="top" class="bglogin" colspan="2">
+                            <h:panelGrid cellpadding="0" cellspacing="0" columns="2" style="width:100%; min-width: 1024px"> 
+                                <h:graphicImage style="margin: 5px 5px 0px 5px" url="../resources/images/logoSilac.png"/>         
+                                <h:graphicImage style="position: absolute; right: 10px; top:5px" url="../resources/images/minerva.png"/>  
+                                <p:panel style="padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;">
+                                    <!-- menu principal-->
+                                    <h:panelGrid cellpadding="0" cellspacing="0" columns="2" style="width:100%;"> 
+                                        <p:menubar model="#{usuarioBean.modelMenuBar}" style="padding: 0px; border: 0px;"/>
+                                        <h:panelGrid style="width: 300px; position: absolute; right: 10px; top:116px" cellpadding="0" cellspacing="0" columns="4"> 
+                                            <h:outputText value="Usuario:"/>
+                                            <h:outputText value="#{usuarioBean.login}" style="font-weight: bold"/>
+                                            <h:outputText value=" |  "/>
+                                            <h:outputText value=" #{usuarioBean.stringAnioLaboral()}" style="font-weight: bold"/>
+                                        </h:panelGrid>  
+                                    </h:panelGrid>  
+                                </p:panel>
+                            </h:panelGrid>  
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id="left">
+                            <!-- menu lateral-->
+                            <p:menu model="#{usuarioBean.modelLateralMenu}"  style="width: 180px"/>  
+                            <p:separator/>
+                            <p:outputPanel id="pnlOrdenPendiente">
+                                <p:dataTable id="dtOrdenesPendientes"
+                                             rows="7" 
+                                             selectionMode="single" 
+                                             rowSelectListener="#{ordenBean.onRowSelect}"
+                                             selection="#{usuarioBean.selectedOrdenPendiente}" 
+                                             emptyMessage="No hay ordenes pendientes"
+                                             paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {NextPageLink}"
+                                             paginator="true" 
+                                             value="#{ordenBean.listaOrdenesPendientes}" 
+                                             var="varOrdenPendiente">  
+                                    <f:facet name="header">
+                                        <h:outputText value="Lista de ordenes pendientes de análisis (#{ordenBean.cantidadOrdenesPendientes})"/>
+                                    </f:facet>
+                                    <p:column>
+                                        #{varOrdenPendiente.examenOrden.numeroControl},  
+                                        #{varOrdenPendiente.paciente},
+                                        #{varOrdenPendiente.examen.codigoExamen} #{varOrdenPendiente.examen.nombreExamen}  
+                                    </p:column>
+                                </p:dataTable>   
+                                <p:poll  global="true"  interval="15" actionListener="#{ordenBean.cargarOrdenesPendientes()}" process="@this" update="dtOrdenesPendientes"/>
+                            </p:outputPanel>
+                            <p:separator/>
+                            <!--p:outputPanel id="pnlDonanteApto">
+                                <p:dataTable value="" 
+                                             var="donante" 
+                                             rows="7" 
+                                             selectionMode="single" 
+                                             emptyMessage="No hay ordenes pendientes"
+                                             paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {NextPageLink}"
+                                             paginator="true">
+                                    <f:facet name="header">Donantes aptos</f:facet>
+                                    <p:column>
+                                        <f:facet name="header">Nombre</f:facet>
+                                        <h:outputText value="Nombre del donante"/>
+                                    </p:column>
+                                    <p:column style="text-align: center;" >
+                                        <f:facet name="header">Edad</f:facet>
+                                        <h:outputText value="99"/>
+                                    </p:column>
+                                    <p:column style="text-align: center;" >
+                                        <f:facet name="header">Sexo</f:facet>
+                                        <h:outputText value="A"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:outputPanel-->
+                        </td>
+                        <td id="content">
+                            <ui:insert name="content">Content</ui:insert>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id="bottom" colspan="2">
+                            <p:panel>
+                                <center>
+                                    Derechos Reservados - 2011<br/>
+                                    Universidad de El Salvador y Hospital Nacional Santa Teresa
+                                    <br/>Powered by
+                                    <h:outputLink value="http://www.primefaces.org" target="blank" title="PrimeFaces HomePage">  
+                                        <h:outputText value="PrimeFaces"/>  
+                                    </h:outputLink> 
+                                </center>
+                            </p:panel>
+                        </td>
+                    </tr>
+                </table>
+            </h:form>        
+        </h:body>
+    </f:view>
+</html>

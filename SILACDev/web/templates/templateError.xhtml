@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.prime.com.tr/ui">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title><ui:insert name="titulo">SILAC - Inicio</ui:insert></title>
+        <h:outputStylesheet id="styleCss" library="css" name="style.css" />
+        <h:outputStylesheet id="layoutCss" library="css" name="cssLayout.css" />
+    </h:head>
+
+    <h:body>     
+        <h:form id="form" prependId="false">  
+            <p:idleMonitor onactive="sessionTimeOutDialog.show();" timeout="#{session.maxInactiveInterval * 1000}" />
+            <p:dialog header="Sesión caducada" widgetVar="sessionTimeOutDialog" resizable="false" 
+                      modal="true" closable="false" width="400" visible="false">
+                <h:panelGrid>
+                    <h:panelGrid columns="2">
+                        <h:graphicImage value="#{resource['images:info.png']}" /> 
+                        <h:outputText style="line-height: 1.5;" value="#{session.maxInactiveInterval} La sesión ha caducado, por favor, pulse sobre el siguiente botón para volver a acceder a la aplicación" />
+                    </h:panelGrid>
+                    <p:commandButton id="confirmBackToLogin" type="button" value="Iniciar sesión" image="ui-icon-person"
+                                     onclick="window.location='#{facesContext.externalContext.requestContextPath}/'" />
+                </h:panelGrid>
+            </p:dialog>
+            <div class="bglogin" id="top">
+                <h:panelGrid cellpadding="0" cellspacing="0" columns="2" style="width:100%; min-width: 1024px"> 
+                    <h:graphicImage style="margin: 5px 5px 0px 5px" url="../resources/images/logoSilac.png"/>         
+                    <h:graphicImage style="position: absolute; right: 10px; top:5px" url="../resources/images/minerva.png"/>  
+                </h:panelGrid>  
+            </div>        
+            <div id="content" class="index_center_content">
+                <ui:insert name="content">
+
+                </ui:insert>
+            </div>
+            <div id="bottom" style="font-size: 10px !important">
+                <p:panel>
+                    <center>
+                        Derechos Reservados - 2011<br/>
+                        Universidad de El Salvador y Hospital Nacional Santa Teresa
+                        <br/>Powered by
+                        <h:outputLink value="http://www.primefaces.org" target="blank" title="PrimeFaces HomePage">  
+                            <h:outputText value="PrimeFaces"/>  
+                        </h:outputLink> 
+                    </center>
+                </p:panel>
+            </div>
+        </h:form>        
+    </h:body>
+</html>

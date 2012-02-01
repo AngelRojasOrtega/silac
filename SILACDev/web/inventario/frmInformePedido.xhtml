@@ -1,0 +1,92 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Informe de Pedido
+    </ui:define>    
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfim.jq.click();
+}
+        </script>
+        <p:panel header="Informe de Pedido">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+            <h:panelGrid id="campos" style="width: 100%">
+                <p:fieldset legend="Mes">
+                    <h:panelGrid columns="3">
+                         <h:outputText value="Año:"/>
+                <p:spinner id="txtAnio" binding="#{txtAnio}" onchange="seleccionarMes()" value="#{informePedidoBean.selectedAnio}" size="30" stepFactor="1" min="2011" style="width: 200px"/>
+                <p:message for="txtAnio"/>
+                        <h:outputText value="Mes:"/>
+                        <h:selectOneMenu id="cboMes" onchange="seleccionarMes()" value="#{informePedidoBean.selectedMes}" binding="#{cboMes}" style="width: 200px">
+                            <f:selectItem itemLabel="-Seleccione un mes-" itemValue="#{null}"></f:selectItem>
+                            <f:selectItems value="#{informePedidoBean.listaMeses}" />
+                        </h:selectOneMenu>
+                        <p:message for="cboMes"/>                         
+                     
+                                             
+                    </h:panelGrid>
+                </p:fieldset>
+                <h:panelGrid style="width: 100%">
+                    <p:toolbar>  
+                        <p:toolbarGroup align="left">                                      
+
+                        </p:toolbarGroup>  
+                    </p:toolbar>
+                </h:panelGrid> 
+
+            </h:panelGrid>
+        </p:panel>
+
+        <p:dataTable id="dtPedido" rows="10" paginator="true" value="#{informePedidoBean.listaPedidos}" var="varPedido">
+            <f:facet name="header">  
+                Informe Costos
+            </f:facet> 
+            <p:column style="text-align:left">  
+                <f:facet name="header">  
+                    <h:outputText value="Categoria" />  
+                </f:facet>  
+                <h:outputText value="#{varPedido[0]}" />  
+            </p:column>
+            <p:column style="text-align:left">  
+                <f:facet name="header">  
+                    <h:outputText value="Artículo" />  
+                </f:facet>  
+                <h:outputText value="#{varPedido[1]}" />  
+            </p:column>
+            <p:column style="text-align:right">  
+                <f:facet name="header">  
+                    <h:outputText value="Fecha de Emisión" />  
+                </f:facet>  
+                <h:outputText value="#{varPedido[2]}" />  
+            </p:column>
+            <p:column style="text-align:right">  
+                <f:facet name="header">  
+                    <h:outputText value="Cunsumo" />  
+                </f:facet>  
+                <h:outputText value="#{varPedido[3]}" />  
+            </p:column>
+            <p:column style="text-align:right">  
+                <f:facet name="header">  
+                    <h:outputText value="Cantidad Solicitada" />  
+                </f:facet>  
+                <h:outputText value="#{varPedido[4]}" />  
+            </p:column>
+           
+           
+        </p:dataTable>
+        
+        <p:remoteCommand name="seleccionarMes" process="@this txtAnio cboMes" action="#{informePedidoBean.populateInformePedido()}" update="dtPedido">  
+                <f:setPropertyActionListener value="#{cboMes.value}" target="#{informePedidoBean.selectedMes}" /> 
+            </p:remoteCommand>
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfim" 
+                         update="dtSalida msg"/>
+    </ui:define>
+</ui:composition>
+
+

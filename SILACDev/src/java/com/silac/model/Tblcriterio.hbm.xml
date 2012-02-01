@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblcriterio" table="tblcriterio" catalog="dbsilac">
+        <id name="idCriterio" type="java.lang.Integer">
+            <column name="idCriterio" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblcuestionarioEvaluacion" class="com.silac.model.TblcuestionarioEvaluacion" fetch="select">
+            <column name="idCuestionario" not-null="true">
+                <comment>Identificador del cuestionario.</comment>
+            </column>
+        </many-to-one>
+        <property name="textoCriterio" type="string">
+            <column name="textoCriterio" length="65535" not-null="true">
+                <comment>Texto del criterio</comment>
+            </column>
+        </property>
+        <property name="tiempoExclusion" type="int">
+            <column name="tiempoExclusion" not-null="true">
+                <comment>Tiempo de exclusi&#243;n en caso que el donante no cumpla con el criterio.</comment>
+            </column>
+        </property>
+        <property name="periodoExclusion" type="string">
+            <column name="periodoExclusion" length="45" not-null="true" />
+        </property>
+        <property name="observaciones" type="string">
+            <column name="observaciones" length="65535">
+                <comment>Observaciones o comentarios sobre el criterio.</comment>
+            </column>
+        </property>
+        <set name="tblrespuestaCriterios" inverse="true">
+            <key>
+                <column name="idCriterio" not-null="true">
+                    <comment>Identificador del criterio.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.TblrespuestaCriterio" />
+        </set>
+    </class>
+</hibernate-mapping>

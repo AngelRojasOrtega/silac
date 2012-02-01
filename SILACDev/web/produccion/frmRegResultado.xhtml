@@ -1,0 +1,632 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../templates/template.xhtml">
+    <ui:define name="titulo">
+        Registrar Solicitud de Análisis
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript">
+function confirmFunction() {
+updateConfirm.jq.click();
+}
+function showDialog(args){
+if(args == 7){
+rechazarMuestra.show();
+}
+}
+        </script>
+        <p:panel id="pOrden" header="Registrar Resultados">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+            <p:fieldset legend="Buscar Paciente">
+                <h:panelGrid id="numExpediente" columns="3" columnClasses="alignTop,alignTop,alignTop"> 
+                    <h:outputText value="No. Expediente:"/>
+                    <p:autoComplete id="txtNumExpediente"
+                                    onkeyup="onKeyPress()"  
+                                    selectListener="#{resultadoExtendidoBean.onSelectNumExpediente}" 
+                                    onSelectUpdate="campos" 
+                                    completeMethod="#{autoCompleteBean.complete}" 
+                                    value="#{resultadoExtendidoBean.numExpediente}" 
+                                    required="#{param['requireGroup1'] == '1'}" 
+                                    requiredMessage="Requerido">
+                        <f:attribute name="field" value="numExpediente"/>
+                        <f:attribute name="table" value="tblpaciente"/>
+                    </p:autoComplete>
+                    <h:panelGrid style="text-align:left;" columns="3" columnClasses="alignTop,alignTop">
+                        <p:commandButton id="cmdBuscarPaciente"
+                                         value="Buscar" 
+                                         oncomplete="buscarPersona.show()" update="detallePersona"  
+                                         image="ui-icon ui-icon-search" />
+                        <p:commandButton id="cmdLimpiar" 
+                                         action="#{resultadoExtendidoBean.limpiar}"
+                                         value="Limpiar"
+                                         process="@this campos"
+                                         update="campos dtPersona detallePersona" 
+                                         image="ui-icon ui-icon-close"/>
+                        <p:message for="txtNumExpediente"/> 
+                    </h:panelGrid>
+                </h:panelGrid>     
+            </p:fieldset>
+            <h:panelGrid  id="campos" style="width: 100%">  
+                <p:fieldset legend="Datos del paciente">
+                    <h:panelGrid columns="3" columnClasses="alignTop,alignTop,alignTop"> 
+                        <h:outputText value="No. Cama:"/>
+                        <p:inputText id="txtNumCama" 
+                                     value="#{resultadoExtendidoBean.orden.numeroCama}" />
+                        <p:message for="txtNumCama"/> 
+                        <h:outputText value="Primer nombre:"/>                            
+                        <p:autoComplete id="txtPriNombre" 
+                                        value="#{resultadoExtendidoBean.persona.primerNombre}"
+                                        completeMethod="#{autoCompleteBean.complete}" 
+                                        required="#{param['requireGroup1'] == '1'}" 
+                                        requiredMessage="Requerido">
+                            <f:attribute name="field" value="primerNombre"/>
+                            <f:attribute name="table" value="tblpersona"/>
+                        </p:autoComplete>
+                        <p:message for="txtPriNombre"/> 
+                        <h:outputText value="Segundo nombre:"/>                            
+                        <p:autoComplete id="txtSegNombre"
+                                        completeMethod="#{autoCompleteBean.complete}"
+                                        value="#{resultadoExtendidoBean.persona.segundoNombre}">
+                            <f:attribute name="field" value="segundoNombre"/>
+                            <f:attribute name="table" value="tblpersona"/>
+                        </p:autoComplete>
+                        <p:message for="txtSegNombre"/> 
+                        <h:outputText value="Primer apellido:"/>                            
+                        <p:autoComplete id="txtPriApellido"
+                                        completeMethod="#{autoCompleteBean.complete}" 
+                                        value="#{resultadoExtendidoBean.persona.primerApellido}" 
+                                        required="#{param['requireGroup1'] == '1'}"
+                                        requiredMessage="Requerido">
+                            <f:attribute name="field" value="primerApellido"/>
+                            <f:attribute name="table" value="tblpersona"/>
+                        </p:autoComplete>
+                        <p:message for="txtPriApellido"/> 
+                        <h:outputText value="Segundo apellido:"/>                            
+                        <p:autoComplete id="txtSegApellido"
+                                        completeMethod="#{autoCompleteBean.complete}" 
+                                        value="#{resultadoExtendidoBean.persona.segundoApellido}">
+                            <f:attribute name="field" value="segundoApellido"/>
+                            <f:attribute name="table" value="tblpersona"/>
+                        </p:autoComplete>
+                        <p:message for="txtSegApellido"/> 
+                        <h:outputText value="Fecha Nacimiento:"/>
+                        <p:calendar id="txtFechaNac" 
+                                    locale="es"                                     
+                                    value="#{resultadoExtendidoBean.persona.fechaNacimiento}" 
+                                    disabled="#{resultadoExtendidoBean.cargarFechaNacimiento}" 
+                                    maxdate="#{resultadoExtendidoBean.hoy}"
+                                    required="#{param['requireGroup1'] == '1'}"
+                                    requiredMessage="Requerido" 
+                                    navigator="true" 
+                                    showOn="button">                       
+                        </p:calendar>
+                        <p:message for="txtFechaNac"/> 
+                        <h:outputText value="Sexo:" />     
+                        <h:selectOneRadio id="optSexo" 
+                                          disabled="#{resultadoExtendidoBean.cargarSexo}" 
+                                          value="#{resultadoExtendidoBean.persona.sexo}"
+                                          required="#{param['requireGroup1'] == '1'}"  requiredMessage="Requerido">
+                            <f:selectItems value="#{personasBean.cargarListaSexo()}" />
+                        </h:selectOneRadio>
+                        <p:message for="optSexo"/> 
+                        <h:outputText value="Departamento:"/>
+                        <h:selectOneMenu id="cboDepto" onchange="onSelectDepto()" 
+                                         required="#{param['requireGroup1'] == '1'}"  
+                                         requiredMessage="Requerido" 
+                                         value="#{resultadoExtendidoBean.selectedDepto}" 
+                                         style="width: 200px">
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                            <f:selectItems value="#{domicilioBean.cargarListaDeptos()}" />
+                        </h:selectOneMenu>
+                        <p:message for="cboDepto"/>
+                        <h:outputText value="Municipio:"/>
+                        <h:selectOneMenu id="cboMunicipio" 
+                                         required="#{param['requireGroup1'] == '1'}"
+                                         requiredMessage="Requerido" 
+                                         value="#{resultadoExtendidoBean.selectedMunicipio}" 
+                                         style="width: 200px">
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                            <f:selectItems value="#{resultadoExtendidoBean.listaMunicipios}" /> 
+                        </h:selectOneMenu>
+                        <p:message for="cboMunicipio"/>
+                        <h:outputText value="Incluir domicilio:"/>
+                        <h:selectBooleanCheckbox id="chkDomicilio" 
+                                                 onchange="onCheckDomicilio()"
+                                                 value="#{resultadoExtendidoBean.chkDomicilio}"/>
+                        <p:message for="chkDomicilio"/>
+                        <h:outputText value="Incluir datos laborales:"/>
+                        <h:selectBooleanCheckbox id="chkTrabajo" 
+                                                 onchange="onCheckTrabajo()"
+                                                 value="#{resultadoExtendidoBean.chkTrabajo}"/>
+                        <p:message for="chkTrabajo"/>
+                        <h:outputText value="Incluir identifciacion:"/>
+                        <h:selectBooleanCheckbox id="chkIdentificacion" 
+                                                 onchange="onCheckIdentificacion()"
+                                                 value="#{resultadoExtendidoBean.chkIdentificacion}"/>
+                        <p:message for="chkIdentificacion"/>
+                        <h:outputText value="Incluir motivo:"/>
+                        <h:selectBooleanCheckbox id="chkMotivo" 
+                                                 onchange="onCheckMotivo()"
+                                                 value="#{resultadoExtendidoBean.chkMotivo}"/>
+                        <p:message for="chkIdentificacion"/>
+                        <p:message for="chkMotivo"/>
+                    </h:panelGrid>
+                </p:fieldset>
+                <p:outputPanel id="camposDomicilio">
+                    <p:fieldset legend="Domicilio del paciente" 
+                                rendered="#{resultadoExtendidoBean.chkDomicilio}">
+                        <h:panelGrid columns="3" columnClasses="alignTop,alignTop,alignTop">
+                            <h:outputText value="Dirección:"/>                            
+                            <p:inputTextarea id="txtDireccionParticular"
+                                             rows="2"
+                                             cols="30"
+                                             value="#{resultadoExtendidoBean.domicilio.direccion}"
+                                             required="#{param['requireGroup1'] == '1'}" 
+                                             requiredMessage="Requerido" />
+                            <p:message for="txtDireccionParticular"/>
+                            <h:outputText value="Telefono particular:"/>                            
+                            <p:inputMask id="txtTelefonoParticular"
+                                         mask="9999-9999"
+                                         value="#{resultadoExtendidoBean.domicilio.telefonoParticular}"
+                                         size="30"/>
+                            <p:message for="txtTelefonoParticular"/>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </p:outputPanel>
+                <p:outputPanel id="camposTrabajo">
+                    <p:fieldset legend="Datos laborales del paciente"
+                                rendered="#{resultadoExtendidoBean.chkTrabajo}">
+                        <h:panelGrid columns="3" columnClasses="alignTop,alignTop,alignTop">
+                            <h:outputText value="Lugar de trabajo:"/>                            
+                            <p:autoComplete id="txtLugarTrabajo"
+                                            completeMethod="#{autoCompleteBean.complete}"
+                                            value="#{resultadoExtendidoBean.lugarTrabajo.lugarTrabajo}"
+                                            required="#{param['requireGroup1'] == '1'}" 
+                                            requiredMessage="Requerido"
+                                            size="30">
+                                <f:attribute name="field" value="lugarTrabajo"/>
+                                <f:attribute name="table" value="tbllugtrabajo"/>
+                            </p:autoComplete>
+                            <p:message for="txtLugarTrabajo"/>
+                            <h:outputText value="Dirección:"/>                            
+                            <p:inputTextarea id="txtDireccionTrabajo"
+                                             value="#{resultadoExtendidoBean.lugarTrabajo.direccionTrabajo}"
+                                             rows="2"
+                                             cols="30"
+                                             required="#{param['requireGroup1'] == '1'}" 
+                                             requiredMessage="Requerido"/>
+                            <p:message for="txtDireccionTrabajo"/>
+                            <h:outputText value="Telefono del trabajo:"/>                            
+                            <p:inputMask id="txtTelefonoTrabajo"
+                                         mask="9999-9999"
+                                         value="#{resultadoExtendidoBean.lugarTrabajo.telefonoTrabajo}" size="30"/>
+                            <p:message for="txtTelefonoTrabajo"/>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </p:outputPanel>
+                <p:outputPanel id="camposIdentificacion">
+                    <p:fieldset legend="Identificacion del paciente"
+                                rendered="#{resultadoExtendidoBean.chkIdentificacion}">
+                        <h:panelGrid columns="3" columnClasses="alignTop,alignTop,alignTop">
+                            <h:outputText value="Tipo doc. identidad:"/> 
+                            <h:selectOneMenu  id="cboTipo"
+                                              value="#{resultadoExtendidoBean.persona.tipoDocId}"
+                                              required="#{param['requireGroup1'] == '1'}"                                                  
+                                              requiredMessage="Requerido" style="width: 200px">
+                                <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="DUI" itemValue="DUI"/>
+                                <f:selectItem itemLabel="NIT o lincencia de conducir" itemValue="NIT o lincencia de conducir"/>
+                                <f:selectItem itemLabel="Pasaporte" itemValue="Pasaporte"/>
+                            </h:selectOneMenu>
+                            <p:message for="cboTipo"/> 
+                            <h:outputText value="Doc. Identidad:"/>
+                            <p:inputText id="txtDocId"
+                                         value="#{resultadoExtendidoBean.persona.docId}"
+                                         required="#{param['requireGroup1'] == '1'}"
+                                         requiredMessage="Requerido" size="30"/>
+                            <p:message for="txtDocId"/>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </p:outputPanel>
+                <p:outputPanel id="camposMotivo">
+                    <p:fieldset legend="Motivo del examen"
+                                rendered="#{resultadoExtendidoBean.chkMotivo}">
+                        <h:panelGrid columns="3" columnClasses="alignTop,alignTop,alignTop"> 
+                            <h:outputText value="Motivo del examen:"/>
+                            <p:inputText id="txtMotivo" 
+                                         value="#{resultadoExtendidoBean.solicitudvih.motivo}" 
+                                         required="#{param['requireGroup1'] == '1'}"
+                                         requiredMessage="Requerido"
+                                         size="30"/>
+                            <p:message for="txtMotivo"/>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </p:outputPanel>
+                <p:fieldset legend="Datos de la orden">
+                    <h:panelGrid columns="3" columnClasses="alignTop,alignTop,alignTop,alignTop,alignTop" >
+                        <h:outputText value="Modalidad:"/>     
+                        <h:selectOneMenu id="cboModalidad" 
+                                         value="#{resultadoExtendidoBean.selectedModalidad}" 
+                                         style="width: 200px" 
+                                         onchange="onSelectModalidad()"
+                                         required="#{param['requireGroup1'] == '1'}"
+                                         requiredMessage="Requerido">
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                            <f:selectItems value="#{modalidadesBean.cargarListaModalidades()}"/>
+                        </h:selectOneMenu>
+                        <p:message for="cboModalidad"/> 
+                        <h:outputText value="Tipo Servicio:"/>     
+                        <h:selectOneMenu id="cboTipoServicio" 
+                                         value="#{resultadoExtendidoBean.selectedTipoServicio}" 
+                                         style="width: 200px" 
+                                         onchange="onSelectTipoServicio()"
+                                         required="#{param['requireGroup1'] == '1'}"
+                                         requiredMessage="Requerido">
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                            <f:selectItems value="#{resultadoExtendidoBean.listaTipoServicio}"/>
+                        </h:selectOneMenu>
+                        <p:message for="cboTipoServicio"/> 
+                        <h:outputText value="Servicio:"/>     
+                        <h:selectOneMenu id="cboServicio" 
+                                         value="#{resultadoExtendidoBean.selectedServicio}" 
+                                         style="width: 200px"
+                                         required="#{param['requireGroup1'] == '1'}"
+                                         requiredMessage="Requerido">
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                            <f:selectItems value="#{resultadoExtendidoBean.listaServicio}"/>
+                        </h:selectOneMenu>
+                        <p:message for="cboServicio"/> 
+                        <h:outputText value="Especialidad:"/>
+                        <h:selectOneMenu id="cboEspecialdiad" 
+                                         value="#{resultadoExtendidoBean.selectedEspecialidad}" 
+                                         style="width: 200px"
+                                         required="#{param['requireGroup1'] == '1'}"
+                                         requiredMessage="Requerido">
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                            <f:selectItems value="#{especialidadesBean.cargarListaEspecialidades()}"/>
+                        </h:selectOneMenu>
+                        <p:message for="cboEspecialdiad"/> 
+                        <h:outputText value="Médico:"/>
+                        <h:selectOneMenu id="cboMedico"         
+                                         value="#{resultadoExtendidoBean.selectedMedico}" 
+                                         style="width: 200px"
+                                         required="#{param['requireGroup1'] == '1'}"
+                                         requiredMessage="Requerido">
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                            <f:selectItems value="#{medicosBean.cargarListaMedicos()}"/>
+                        </h:selectOneMenu>   
+                        <p:message for="cboMedico"/> 
+                        <h:outputText value="Observaciones:"/>
+                        <p:inputTextarea id="txtObservaciones"
+                                         value="#{resultadoExtendidoBean.orden.observacionesRecepcion}"
+                                         rows="4" cols="30"/>
+                        <p:message for="txtObservaciones"/>  
+                    </h:panelGrid>
+                </p:fieldset>
+                <p:fieldset legend="Examenes solicitados">
+                    <h:panelGrid columns="3">
+                        <h:outputText value="No. de Control:"/>
+                        <p:spinner id="txtNumControl" 
+                                   value="#{resultadoExtendidoBean.examenOrden.numeroControl}" 
+                                   required="#{param['requireGroup1'] == '1'}" 
+                                   requiredMessage="Requerido">
+                            <f:validator validatorId="numeroControlValidator"  disabled="#{param['requireGroup1'] != '1'}" />
+                            <f:attribute name="idSeccion" value="#{resultadoExtendidoBean.selectedSeccion}"/>
+                        </p:spinner>
+                        <p:message for="txtNumControl"/> 
+                        <h:outputText value="Sección:"/>
+                        <h:selectOneMenu id="cboSeccion"
+                                         value="#{resultadoExtendidoBean.selectedSeccion}" 
+                                         style="width: 200px"
+                                         onchange="onSelectSeccion()"
+                                         required="#{param['requireGroup1'] == '1'}"
+                                         requiredMessage="Requerido">
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                            <f:selectItems value="#{seccionesBean.cargarSecciones()}"/>
+                        </h:selectOneMenu>   
+                        <p:message for="cboSeccion"/> 
+                        <h:outputText value="Examen:"/>
+                        <h:selectOneMenu id="cboExamen" 
+                                         value="#{resultadoExtendidoBean.selectedExamen}" 
+                                         onchange="onSelectExamen()"
+                                         required="#{param['requireGroup1'] == '1'}"
+                                         requiredMessage="Requerido"
+                                         style="width: 200px">
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                            <f:selectItems value="#{resultadoExtendidoBean.listaExamenes}"/>
+                            <f:validator validatorId="listaParametrosValidator"  disabled="#{param['requireGroup1'] != '1'}" />
+                            <f:attribute name="lista" value="#{resultadoExtendidoBean.listaResultado}"/>
+                        </h:selectOneMenu>   
+                        <p:message  for="cboExamen"/> 
+
+                    </h:panelGrid>
+                    <style type="text/css">
+                        .ui-datatable-data table td{
+                            border : 0px !important;
+                        }
+                    </style>  
+                    <p:dataTable id="dtResultado"
+                                 rows="7"  
+                                 emptyMessage="No hay pruebas asignadas al examen"
+                                 value="#{resultadoExtendidoBean.listaResultado}" 
+                                 var="varResultado">  
+                        <f:facet name="header">
+                            <h:panelGrid style="width: 200px;" columnClasses="alignLeft,alignLeft,alignLeft" columns="3">
+                                <p:commandButton value="Agregar prueba" 
+                                                 action="#{resultadoExtendidoBean.agregarParametro}"
+                                                 oncomplete="agregarParametro.show()" update="dtParametro" 
+                                                 image="ui-icon-circle-plus"/>
+                                <h:outputText value=""/>
+                                <h:outputText value=""/>
+                            </h:panelGrid> 
+                        </f:facet>
+                        <p:column style="width:400px" headerText="Prueba">
+                            <h:outputText value="#{varResultado.parametro}"/>
+                        </p:column>
+                        <p:column headerText="Valor">
+                            <p:outputPanel rendered="#{varResultado.tipo == 'Logico'}">
+                                <h:panelGrid style="width:200px" columns="2">
+                                    <h:selectOneRadio id="optLogico" value="#{varResultado.logico}" 
+                                                      style=" width: 200px; border: none 0px !important;" 
+                                                      border="0"  
+                                                      required="#{param['requireGroup1'] == '1'}" 
+                                                      requiredMessage="Requerido"> 
+                                        <f:selectItem itemLabel="Positivo" itemValue="Positivo"/>
+                                        <f:selectItem itemLabel="Negativo" itemValue="Negativo"/>
+                                    </h:selectOneRadio>
+                                    <p:message for="optLogico" display="icon"/>  
+                                </h:panelGrid>
+                            </p:outputPanel>
+                            <p:outputPanel rendered="#{varResultado.tipo == 'Texto'}">
+                                <h:panelGrid style="width:200px" columns="2">
+                                    <p:autoComplete id="txtDescripcion" 
+                                                    completeMethod="#{autoCompleteBean.complete}" 
+                                                    required="#{param['requireGroup1'] == '1'}"
+                                                    value="#{varResultado.descripcion}" 
+                                                    requiredMessage="Requerido" size="30">
+                                        <f:attribute name="field" value="valor"/>
+                                        <f:attribute name="table" value="tblproduccion"/>
+                                    </p:autoComplete>
+                                    <p:message for="txtDescripcion" display="icon"/>
+                                </h:panelGrid>     
+                            </p:outputPanel>
+                            <p:outputPanel rendered="#{varResultado.tipo == 'Valor'}">
+                                <h:panelGrid  style="width:200px" columns="2">
+                                    <p:spinner id="txtValor" value="#{varResultado.valor}" 
+                                               stepFactor="0.000001" 
+                                               required="#{param['requireGroup1'] == '1'}" 
+                                               min="0"  
+                                               requiredMessage="Requerido"  size="30"/>
+                                    <p:message for="txtValor" display="icon"/>    
+                                </h:panelGrid>
+                            </p:outputPanel>
+                        </p:column>
+                        <p:column style="width:32px" headerText="Medida">
+                            <h:outputText value=""/>
+                        </p:column>      
+                        <p:column>
+                            <p:commandButton rendered="#{!varResultado.fijo}" 
+                                             title="Quitar de la lista" 
+                                             oncomplete="onRemoveParametro()"
+                                             update="dtResultado" 
+                                             process="@this"
+                                             image="i-icon ui-icon-trash">
+                                <f:setPropertyActionListener value="#{varResultado}" target="#{resultadoExtendidoBean.selectedResultado}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </p:fieldset> 
+                <h:panelGrid columns="3">
+                    <h:outputText value="Tecnico que realiza la prueba:"/>
+                    <h:selectOneMenu id="cboTecnico" 
+                                     onchange="onSelectResultado(); showDialog(this.value);"
+                                     required="#{param['requireGroup1'] == '1'}"  
+                                     requiredMessage="Requerido"
+                                     value="#{resultadoExtendidoBean.selectedTecnico}" style="width: 200px">
+                        <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                        <f:selectItems value="#{empleadosBean.cargarlistaTecnicos()}" />
+                    </h:selectOneMenu>
+                    <p:message for="cboTecnico"/>
+                    <h:outputText value="Resultado general:"/>
+                    <h:selectOneMenu id="cboResultado" 
+                                     onchange="onSelectResultado(); showDialog(this.value);"
+                                     required="#{param['requireGroup1'] == '1'}"  
+                                     requiredMessage="Requerido"
+                                     value="#{resultadoExtendidoBean.selectedTipoResultado}" style="width: 200px">
+                        <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                        <f:selectItems value="#{resultadoBean.cargarListaTipoResultado()}" />
+                    </h:selectOneMenu>
+                    <p:message for="cboResultado"/>
+                </h:panelGrid>
+            </h:panelGrid> 
+            <h:panelGrid style="width: 100%">
+                <p:toolbar> 
+                    <p:toolbarGroup align="left">  
+                        <p:commandButton value="Nuevo" 
+                                         process="@this" 
+                                         action="#{resultadoExtendidoBean.nuevo}"
+                                         title="Nuevo" 
+                                         update="campos dtResultado" 
+                                         image="ui-icon-document"/>  
+                        <p:commandButton value="Guardar" 
+                                         process="@this campos dtResultado" 
+                                         action="#{resultadoExtendidoBean.crear}" 
+                                         update="campos dtResultado msg"
+                                         oncomplete="confirmFunction();" 
+                                         title="Guardar" 
+                                         image="ui-icon-disk">
+                            <f:param name="requireGroup1" value="1"/>
+                        </p:commandButton>   
+                    </p:toolbarGroup>  
+                </p:toolbar> 
+            </h:panelGrid> 
+        </p:panel>
+        <p:dialog modal="true" 
+                  draggable="false" 
+                  header="Buscar persona" 
+                  width="550" 
+                  height="350"
+                  widgetVar="buscarPersona">  
+            <h:panelGrid id="detallePersona" columns="3" columnClasses="alignTop,alignTop,alignTop">
+                <h:panelGrid  columnClasses="alignTop">
+                    <h:outputText value="Nombre:"/>
+                    <p:inputText id="txtBuscarNombre" value="#{personasBean.buscarNombre}" size="20"/>
+                    <p:commandButton value="Buscar"
+                                     image="ui-icon ui-icon-search" 
+                                     process="@this detallePersona" 
+                                     action="#{resultadoExtendidoBean.buscar()}"
+                                     update="dtPersona">
+                        <f:param name="requireGroup2" value="1"/>
+                    </p:commandButton>
+                </h:panelGrid>
+                <h:panelGrid columnClasses="alignTop">
+                    <h:outputText value="Doc. Identidad:"/>
+                    <p:inputText id="txtBuscarDocId" value="#{personasBean.buscarDocId}" size="20"/>
+                </h:panelGrid>
+                <h:panelGrid columnClasses="alignTop">
+                    <h:outputText value="Num. Expediente:"/>
+                    <p:inputText id="txtBuscarExpediente" value="#{personasBean.buscarExpediente}" size="20"/>
+                </h:panelGrid>
+            </h:panelGrid>
+            <p:dataTable id="dtPersona" 
+                         var="varPersona" 
+                         value="#{resultadoExtendidoBean.listaPersonas}" 
+                         paginator="true" 
+                         selection="#{resultadoExtendidoBean.selectedPersona}" 
+                         rowSelectListener="#{resultadoExtendidoBean.onRowSelect}" 
+                         onRowSelectComplete="buscarPersona.hide()" 
+                         onRowSelectUpdate="msg campos"
+                         selectionMode="single" 
+                         rows="5"
+                         emptyMessage="No se encontraron registros">
+                <p:column headerText="Nombre">
+                    #{varPersona[0]}
+                </p:column>
+                <p:column headerText="Documento de indentidad">
+                    #{varPersona[1]}
+                </p:column>
+                <p:column headerText="Num. Expediente">
+                    #{varPersona[2]}
+                </p:column>
+            </p:dataTable>
+        </p:dialog>  
+        <p:dialog modal="true" 
+                  draggable="false" 
+                  header="Agregar parametro" 
+                  width="550" 
+                  height="250"
+                  widgetVar="agregarParametro">  
+            <p:dataTable id="dtParametro" 
+                         var="varParametro" 
+                         value="#{resultadoExtendidoBean.listaParametro}" 
+                         selection="#{resultadoExtendidoBean.selectedParametro}" 
+                         rowSelectListener="#{resultadoExtendidoBean.onRowSelectParametro}" 
+                         onRowSelectComplete="agregarParametro.hide()" 
+                         onRowSelectUpdate="msg dtResultado"
+                         selectionMode="single" 
+                         rows="10" 
+                         emptyMessage="No se encontraron registros">
+                <p:column headerText="Parametro">
+                    #{varParametro.nombreParametro}
+                </p:column>
+                <p:column headerText="Tipo">
+                    #{varParametro.tipoParametro}
+                </p:column>
+                <p:column headerText="Valor normal">
+                    #{varParametro.valorMinimo}
+                </p:column>
+            </p:dataTable>
+        </p:dialog>
+        <p:outputPanel id="rechazoDialog">
+            <p:dialog modal="true" 
+                      draggable="false" 
+                      header="Rechazar muestra" 
+                      width="450" 
+                      height="150"
+                      resizable="false" 
+                      widgetVar="rechazarMuestra"
+                      visible="#{not empty facesContext.maximumSeverity}">  
+                <p:messages globalOnly="true" id="msgReactivo"/>
+                <h:panelGrid id="detalleRechazo" columns="3" styleClass="alignTop,alignTop,alignTop" >
+                    <h:outputText value="Categoria:"/>
+                    <h:selectOneMenu style="width: 200px"  
+                                     id="cboMotivo" 
+                                     value="#{resultadoExtendidoBean.incidencia.motivo}" 
+                                     onchange="onSelectMotivo()" 
+                                     required="#{param['requireGroup3'] == '3'}" 
+                                     requiredMessage="Requerido">
+                        <f:selectItem itemLabel="Seleccione una opcion" itemValue="#{null}"/>
+                        <f:selectItem itemLabel="Muestra incompleta" itemValue="Muestra incompleta"/>
+                        <f:selectItem itemLabel="Muestra descompuesta" itemValue="Muestra descompuesta"/>
+                        <f:selectItem itemLabel="Muestra coagulada" itemValue="Muestra coagulada"/>
+                        <f:selectItem itemLabel="Muestra equivocada" itemValue="Muestra equivocada"/>
+                        <f:selectItem itemLabel="Otro" itemValue="Otro"/>
+                    </h:selectOneMenu>   
+                    <p:message for="cboMotivo"/>        
+                    <h:outputText value="Otro, Especifique:"
+                                  rendered="#{resultadoExtendidoBean.renderMotivo}"/>
+                    <p:inputTextarea id="txtMotivoRechazo" 
+                                     rows="2" 
+                                     autoResize="false"
+                                     value="#{resultadoExtendidoBean.incidencia.descripcion}"
+                                     required="#{param['requireGroup3'] == '3'}"
+                                     requiredMessage="Requerido"
+                                     rendered="#{resultadoExtendidoBean.renderMotivo}" 
+                                     cols="30"/>
+                    <p:message for="txtMotivoRechazo"
+                               rendered="#{resultadoExtendidoBean.renderMotivo}" /> 
+                    <p:commandButton value="Rechazar"
+                                     title="Rechazar muestra"
+                                     image="ui-icon ui-icon-cancel" 
+                                     process="@this detalleRechazo"
+                                     action="#{resultadoExtendidoBean.onClickCancel}" 
+                                     oncomplete="confirmFunction()"
+                                     update="dtExamen detalleRechazo rechazoDialog">
+                        <f:param name="requireGroup3" value="3"/>
+                    </p:commandButton>
+                    <p:commandButton value="Cerrar"
+                                     title="Cerrar"
+                                     image="ui-icon ui-icon-close" 
+                                     oncomplete="rechazarMuestra.hide()"/>
+                </h:panelGrid>
+            </p:dialog>  
+        </p:outputPanel>
+        <p:remoteCommand name="onKeyPress" process="@this txtNumExpediente" 
+                         update="campos msg" action="#{resultadoExtendidoBean.onKeyPress}"/>
+        <p:remoteCommand name="onSelectDepto" process="@this cboDepto" 
+                         update="cboMunicipio" action="#{resultadoExtendidoBean.onSelectDepto}"/>
+        <p:remoteCommand name="onCheckDomicilio" process="@this chkDomicilio" 
+                         update="camposDomicilio"/>
+        <p:remoteCommand name="onCheckTrabajo" process="@this chkTrabajo" 
+                         update="camposTrabajo"/>
+        <p:remoteCommand name="onSelectModalidad" process="@this cboModalidad" 
+                         update="cboTipoServicio cboServicio" action="#{resultadoExtendidoBean.onSelectModalidad}"/>
+        <p:remoteCommand name="onSelectTipoServicio" process="@this cboTipoServicio" 
+                         update="cboServicio" action="#{resultadoExtendidoBean.onSelectTipoServicio}"/>
+        <p:remoteCommand name="onSelectSeccion" process="@this cboSeccion" 
+                         update="cboExamen dtResultado" action="#{resultadoExtendidoBean.onSelectSeccion}"/>        
+        <p:remoteCommand name="onCheckDomicilio" process="@this chkDomicilio" 
+                         update="camposDomicilio"/> 
+        <p:remoteCommand name="onCheckTrabajo" process="@this chkTrabajo" 
+                         update="camposTrabajo"/> 
+        <p:remoteCommand name="onCheckIdentificacion" process="@this chkIdentificacion" 
+                         update="camposIdentificacion"/> 
+        <p:remoteCommand name="onCheckMotivo" process="@this chkMotivo" 
+                         update="camposMotivo"/> 
+        <p:remoteCommand name="onSelectMotivo" process="@this cboMotivo" 
+                         update="detalleRechazo" action="#{resultadoExtendidoBean.onSelectMotivo}"/>  
+        <p:remoteCommand name="onSelectExamen" process="@this cboExamen" 
+                         update="dtResultado" action="#{resultadoExtendidoBean.onSelectExamen}"/> 
+        <p:remoteCommand name="onRemoveParametro" process="@this" 
+                         update="dtResultado" action="#{resultadoExtendidoBean.removerParametro}"/> 
+        <p:remoteCommand name="onSelectResultado" process="@this cboResultado" 
+                         update="detalleRechazo" action="#{resultadoExtendidoBean.onSelectResultado}"/>  
+        <p:commandButton id="updateConfirm" 
+                         style="visibility: hidden"
+                         widgetVar="updateConfirm"
+                         update="msg"/>
+    </ui:define>
+</ui:composition>

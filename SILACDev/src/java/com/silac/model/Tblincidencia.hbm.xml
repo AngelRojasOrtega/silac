@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblincidencia" table="tblincidencia" catalog="dbsilac">
+        <id name="idIncidencia" type="java.lang.Long">
+            <column name="idIncidencia" />
+            <generator class="identity" />
+        </id>
+        <property name="fecha" type="timestamp">
+            <column name="fecha" length="19" not-null="true">
+                <comment>Fecha en que ocurrio la incidencia.</comment>
+            </column>
+        </property>
+        <property name="motivo" type="string">
+            <column name="motivo" length="65535" not-null="true" />
+        </property>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="65535">
+                <comment>Descripci&#243;n del suceso ocurrido.</comment>
+            </column>
+        </property>
+        <set name="tblresultados" inverse="true" table="tblresultado_incidencia">
+            <key>
+                <column name="idIncidencia" not-null="true">
+                    <comment>Identificador de la incidencia.</comment>
+                </column>
+            </key>
+            <many-to-many entity-name="com.silac.model.Tblresultado">
+                <column name="idResultado" not-null="true">
+                    <comment>Identificador del resultado.</comment>
+                </column>
+            </many-to-many>
+        </set>
+        <set name="tblexamenOrdens" inverse="false" table="tblorden_incidencia">
+            <key>
+                <column name="idIncidencia" not-null="true">
+                    <comment>Identificador de la incidencia.</comment>
+                </column>
+            </key>
+            <many-to-many entity-name="com.silac.model.TblexamenOrden">
+                <column name="idExamenOrden" not-null="true" />
+            </many-to-many>
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,128 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Registro de salidas de inventario
+    </ui:define>    
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfim.jq.click();
+}
+        </script>
+        <p:panel header="Control de Kardex">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+            <h:panelGrid id="campos" style="width: 100%">
+                <p:fieldset legend="Datos del artículo">
+                    <h:panelGrid columns="3">
+                        <h:outputText value="Categoria:"/>
+                        <h:selectOneMenu id="cboCategoria" 
+                                         style="width: 200px" 
+                                         onchange="onSelectCategoria()" 
+                                         value="#{kardexBean.selectedCategoria}">
+                            <f:selectItem itemLabel="Seleccione una categoria" itemValue="#{null}"/>
+                            <f:selectItems value="#{catalogoBean.cargarCategorias()}" />
+                        </h:selectOneMenu>   
+                        <p:message for="cboCategoria"/>
+                        <h:outputText value="Articulo:"/>
+                        <h:selectOneMenu style="width: 200px"  
+                                         id="cboArticulo"
+                                         onchange="seleccionarArticulo()" 
+                                         value="#{kardexBean.selectedArticulo}">
+                            <f:selectItem itemLabel="Seleccione un articulo" itemValue="#{null}"></f:selectItem>
+                            <f:selectItems value="#{kardexBean.listaArticulos}" />
+
+                        </h:selectOneMenu>   
+                        <p:message for="cboArticulo"/>                       
+                        <h:outputText value="Existencias:"/>
+                        <p:outputPanel id="opExistencias">
+                            <p:inputText id="txtExistencias" 
+                                         value="#{kardexBean.existencias}" 
+                                         readonly="true">                               
+                            </p:inputText> 
+                            <h:outputText value="#{kardexBean.existencias.equals('0.0')?'No hay existencias':''}" />
+                        </p:outputPanel>
+                        <p:message id="msgExistencias" for="txtExistencias"/>                       
+                    </h:panelGrid>
+                </p:fieldset>               
+
+            </h:panelGrid>
+        </p:panel>
+
+        <p:dataTable id="dtKardex" rows="10" paginator="true" value="#{kardexBean.listaMovimientos}" var="varMov">
+            <f:facet name="header">  
+                Movimientos
+            </f:facet> 
+            <p:column style="text-align:center">  
+                <f:facet name="header">  
+                    <h:outputText value="Fecha Movimiento" />  
+                </f:facet>  
+                <h:outputText value="#{varMov[0]}" />  
+            </p:column>
+            <p:column style="text-align:left">  
+                <f:facet name="header">  
+                    <h:outputText value="Concepto" />  
+                </f:facet>  
+                <h:outputText value="#{varMov[1]}" />  
+            </p:column>
+            <p:column style="text-align:left">  
+                <f:facet name="header">  
+                    <h:outputText value="Origen/Destino" />  
+                </f:facet>  
+                <h:outputText value="#{varMov[2]}" />  
+            </p:column>
+            <p:column style="text-align:center">  
+                <f:facet name="header">  
+                    <h:outputText value="Fecha de Vencimiento" />  
+                </f:facet>  
+                <h:outputText value="#{varMov[3]}" />  
+            </p:column>
+            <p:column style="text-align:right">  
+                <f:facet name="header">  
+                    <h:outputText value="Entrada" />  
+                </f:facet>  
+                <h:outputText value="#{varMov[4]}" />  
+            </p:column>
+            <p:column style="text-align:right">  
+                <f:facet name="header">  
+                    <h:outputText value="Precio Entrada ($USD)" />  
+                </f:facet>  
+                <h:outputText value="#{varMov[5]}" />  
+            </p:column>
+            <p:column style="text-align:right">  
+                <f:facet name="header">  
+                    <h:outputText value="Salida" />  
+                </f:facet>  
+                <h:outputText value="#{varMov[6]}" />  
+            </p:column>
+            <p:column style="text-align:right">  
+                <f:facet name="header">  
+                    <h:outputText value="Precio Salida ($USD)" />  
+                </f:facet>  
+                <h:outputText value="#{varMov[7]}" />  
+            </p:column>
+
+            <p:column style="text-align:right">  
+                <f:facet name="header">  
+                    <h:outputText value="Saldo ($USD)" />  
+                </f:facet>  
+                <h:outputText value="#{varMov[8]}" />  
+            </p:column>                   
+        </p:dataTable>
+
+        <p:remoteCommand name="seleccionarArticulo" process="@this cboArticulo" action="#{kardexBean.populateListaKardex()}" update="dtKardex campos">  
+
+        </p:remoteCommand>
+
+        <p:remoteCommand name="onSelectCategoria" process="@this cboCategoria" action="#{kardexBean.renderCboArticulo}" update="dtKardex campos">  
+
+        </p:remoteCommand>
+
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfim" 
+                         update="dtSalida msg"/>
+    </ui:define>
+</ui:composition>

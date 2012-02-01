@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblevaluaciondonante" table="tblevaluaciondonante" catalog="dbsilac">
+        <id name="idEvaluacionDonante" type="java.lang.Long">
+            <column name="idEvaluacionDonante" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblempleado" class="com.silac.model.Tblempleado" fetch="select">
+            <column name="codigoMarcacion" not-null="true" />
+        </many-to-one>
+        <many-to-one name="tbldonante" class="com.silac.model.Tbldonante" fetch="select">
+            <column name="idDonate" not-null="true">
+                <comment>Identificador del donante</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="tblpaciente" class="com.silac.model.Tblpaciente" fetch="select">
+            <column name="idPaciente" not-null="true">
+                <comment>Identificador del paciente.</comment>
+            </column>
+        </many-to-one>
+        <property name="fechaEvaluacion" type="timestamp">
+            <column name="fechaEvaluacion" length="19" not-null="true">
+                <comment>Lugar donde se realiza la evaluaci&#243;n.</comment>
+            </column>
+        </property>
+        <property name="lugarReferencia" type="string">
+            <column name="lugarReferencia" length="254">
+                <comment>Lugar que refiere al donante.</comment>
+            </column>
+        </property>
+        <property name="observaciones" type="string">
+            <column name="observaciones" length="65535">
+                <comment>Observaciones o comentarios sobre la evaluaci&#243;n.</comment>
+            </column>
+        </property>
+        <property name="resultado" type="string">
+            <column name="resultado" length="20" not-null="true" />
+        </property>
+        <set name="tblevaluacionfisicas" inverse="true">
+            <key>
+                <column name="idEvaluacionDonantes" not-null="true" unique="true">
+                    <comment>Identificador de la evaluaci&#243;n del donante.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblevaluacionfisica" />
+        </set>
+        <set name="tblantecedentesDonantes" inverse="true">
+            <key>
+                <column name="idEvaluacionDonantes" not-null="true" unique="true">
+                    <comment>Identificador de la evaluaci&#243;n del donante.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.TblantecedentesDonante" />
+        </set>
+        <set name="tblrespuestaCuestionarios" inverse="true">
+            <key>
+                <column name="idEvaluacionDonante" not-null="true">
+                    <comment>Identificador de la evaluaci&#243;n del donante.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.TblrespuestaCuestionario" />
+        </set>
+    </class>
+</hibernate-mapping>

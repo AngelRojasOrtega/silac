@@ -1,0 +1,133 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Secciones
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript">
+function confirmFunction() {
+updateConfirm.jq.click();
+}
+        </script>
+        <p:panel header="Secciones">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/> 
+            <h:panelGrid style="width:100%">
+                <h:panelGrid id="campos" columns="3">
+                    <h:outputText value="Código de Sección:"/> 
+                    <p:spinner value="#{seccionesBean.sec.codigoSeccion}" stepFactor="1" min="0" showOn="hover" 
+                               id="txtCodSeccion" 
+                               size="30" 
+                               required="true" 
+                               requiredMessage="requerido"/>
+                    <p:message for="txtCodSeccion"/>
+                    <h:outputText value="Nombre de Sección:"/> 
+                    <p:inputText value="#{seccionesBean.sec.nombreSeccion}" 
+                                 id="txtNomSeccion" 
+                                 size="30" 
+                                 required="true" 
+                                 requiredMessage="requerido"/>
+                    <p:message for="txtNomSeccion"/>
+                    <h:outputText value="Periodo reinicio para numero de control:"/>
+                    <h:selectOneMenu id="cboReinicio" value="#{seccionesBean.sec.reinicioNumeroControl}" 
+                                     style="width: 200px" 
+                                     required="true" 
+                                     requiredMessage="requerido">
+                        <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                        <f:selectItem itemLabel="Diario" itemValue="Diario"/>
+                        <f:selectItem itemLabel="Semanal" itemValue="Semanal"/>
+                        <f:selectItem itemLabel="Quincenal" itemValue="Quincenal"/>
+                        <f:selectItem itemLabel="Mensual" itemValue="Mensual"/>
+                        <f:selectItem itemLabel="Trimestral" itemValue="Trimestral"/>
+                        <f:selectItem itemLabel="Semestral" itemValue="Semestral"/>
+                        <f:selectItem itemLabel="Anual" itemValue="Anual"/>
+                    </h:selectOneMenu> 
+                    <p:message for="cboReinicio"/>
+                </h:panelGrid>   
+                <h:panelGrid style="width: 100%">
+                    <p:toolbar>
+                        <p:toolbarGroup align="left">  
+                            <p:commandButton value="Nuevo"
+                                             immediate="true"
+                                             title="Nuevo"
+                                             process="@this"
+                                             action="#{seccionesBean.nuevo}"                                                  
+                                             update="campos dtSeccion"
+                                             image="ui-icon-document"/>                                    
+                            <p:commandButton value="Guardar" 
+                                             process="@this campos" 
+                                             action="#{seccionesBean.crear}" 
+                                             oncomplete="confirmFunction()" 
+                                             update="dtSeccion campos msg" 
+                                             title="Guardar" 
+                                             image="ui-icon-disk">                                                                                       
+                            </p:commandButton> 
+                        </p:toolbarGroup>
+                    </p:toolbar>
+                </h:panelGrid>
+                <p:dataTable id="dtSeccion" 
+                             widgetVar="dtSeccion"                                        
+                             rows="10" 
+                             paginator="true" 
+                             var="sec" 
+                             value="#{seccionesBean.secs}">
+                    <f:facet name="header">  
+                        <h:panelGrid style="width: 200px;" columnClasses="alignLeft,alignLeft,alignLeft" columns="3">
+                            <h:outputText value="Buscar: " />  
+                            <p:inputText  id="globalFilter" onkeyup="dtSeccion.filter()" style="width:150px" />  
+                        </h:panelGrid> 
+                    </f:facet>  
+                    <p:column filterBy="#{sec.codigoSeccion}" headerText="Código" style="text-align: center; width: 60px">
+                        <h:outputText value="#{sec.codigoSeccion}"/>
+                    </p:column>
+                    <p:column filterBy="#{sec.nombreSeccion}" headerText="Nombre Sección">
+                        <h:outputText value="#{sec.nombreSeccion}"/>
+                    </p:column> 
+                    <p:column style="width: 64px;">  
+                        <f:facet name="header"/>
+                        <p:commandButton  image="ui-icon ui-icon-pencil"/>
+                        <p:commandButton  image="ui-icon-trash" 
+                                          oncomplete="confirmation.show()" 
+                                          update="confirm" 
+                                          process="@this">  
+                            <f:setPropertyActionListener value="#{sec}" target="#{seccionesBean.selectedSeccion}" />
+                        </p:commandButton>  
+                    </p:column> 
+                </p:dataTable>
+
+            </h:panelGrid>
+        </p:panel>
+        <p:confirmDialog message="Desea eliminar el registro?" 
+                         width="400"   
+                         header="Confirm" 
+                         severity="alert" 
+                         widgetVar="confirmation" 
+                         modal="true">  
+            <p:outputPanel id="confirm">
+                <h:panelGrid>
+                    <h:outputText  value="#{seccionesBean.selectedSeccion.idSeccionLaboratorio} #{seccionesBean.selectedSeccion.nombreSeccion}"/>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Si" 
+                                         update="dtSeccion msg"
+                                         action="#{seccionesBean.eliminar}" 
+                                         oncomplete="confirmation.hide(); confirmFunction(); dtSeccion.filter()" 
+                                         process="@this">
+                            <f:param name="idSeccion" 
+                                     value="#{seccionesBean.selectedSeccion.idSeccionLaboratorio}"/>
+                        </p:commandButton>
+                        <p:commandButton value="No" 
+                                         onclick="confirmation.hide()" 
+                                         type="button" />    
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:confirmDialog>  
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfirm"
+                         oncomplete="dtSeccion.filter()" 
+                         update="dtSeccion msg"/>
+    </ui:define>
+</ui:composition>

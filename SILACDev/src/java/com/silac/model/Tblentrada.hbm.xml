@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblentrada" table="tblentrada" catalog="dbsilac">
+        <id name="idEntrada" type="java.lang.Long">
+            <column name="idEntrada" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblprocedenciaarticulo" class="com.silac.model.Tblprocedenciaarticulo" fetch="select">
+            <column name="idProcedencia" not-null="true">
+                <comment>Identificador lugar procedencia.</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="tblmovimiento" class="com.silac.model.Tblmovimiento" fetch="select">
+            <column name="idMovimiento" not-null="true">
+                <comment>Identificador del movimiento.</comment>
+            </column>
+        </many-to-one>
+        <property name="numeroVale" type="int">
+            <column name="numeroVale" not-null="true">
+                <comment>N&#250;mero del vale donde se detalla el articulo recibido.</comment>
+            </column>
+        </property>
+        <property name="numeroLote" type="java.lang.Integer">
+            <column name="numeroLote">
+                <comment>N&#250;mero de lote de donde proviene el articulo.</comment>
+            </column>
+        </property>
+        <property name="fechaVencimiento" type="date">
+            <column name="fechaVencimiento" length="10">
+                <comment>Fechad de caducidad del producto.</comment>
+            </column>
+        </property>
+        <property name="cantidad" type="double">
+            <column name="cantidad" precision="22" scale="0" not-null="true">
+                <comment>Cantidad de articulos recibidas.</comment>
+            </column>
+        </property>
+        <property name="precio" type="double">
+            <column name="precio" precision="22" scale="0" not-null="true">
+                <comment>Precio unitario del articulo.</comment>
+            </column>
+        </property>
+        <property name="fechaRecepcion" type="date">
+            <column name="fechaRecepcion" length="10" not-null="true" />
+        </property>
+        <property name="existencia" type="double">
+            <column name="existencia" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="vencimientoMaximo" type="date">
+            <column name="vencimientoMaximo" length="10" />
+        </property>
+        <set name="tblsalidas" inverse="true">
+            <key>
+                <column name="idEntrada" not-null="true">
+                    <comment>Identificador de la entrada.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblsalida" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,141 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="./../templates/template.xhtml">
+
+    <ui:define name="titulo">
+        Asignar Sección 
+    </ui:define>
+
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+       function confirmFunction() {
+updateConfim.jq.click();
+}
+        </script>
+        <p:panel header="Asignar Sección">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+            <p:outputPanel id="informacion">
+                            <p:outputPanel rendered="#{empty asignarSeccionBean.listaEmpleados?true:false}">
+                <div class="ui-messages ui-widget">
+                <div class="ui-messages-info ui-corner-all">
+                        <span class="ui-messages-info-icon"/>
+                        <ul>
+                            <li>
+                                <span class="ui-messages-info-summary">Información:</span>
+                                <span class="ui-messages-info-detail"><h:outputText value="No hay planificación para este dia. Haga click"  /> <a href="frmPlanificacion.xhtml">AQUI </a> <h:outputText value="para agregar una nueva planificación"  />
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    </div>
+                                                </p:outputPanel>
+                </p:outputPanel>
+            <h:panelGrid id="campos">
+                <p:fieldset legend="Asignación de Secciones">                   
+                    <h:panelGrid columns="3">                        
+                        <h:outputText value="Fecha de Planificación:"/>
+                        <p:calendar id="txtFecPlani" binding="#{txtFecPlani}"
+                                    locale="es"
+                                    onSelectUpdate="cboEmpleado campos informacion dtAsignar msg"
+                                    selectListener="#{asignarSeccionBean.handleDateSelect}"                             
+                                    readOnlyInputText="true"
+                                    value="#{asignarSeccionBean.fecha}"
+                                    required="#{param['requireGroup1'] == '1'}"
+                                    requiredMessage="Requerido" navigator="true" showOn="button" />
+                        <p:message for="txtFecPlani"/> 
+
+
+                        <h:outputText value="Empleado:" style="width: 200px; height:200px "/>
+                        <h:selectManyMenu   id="cboEmpleado" 
+                                            style="width: 200px; height:200px"
+                                            value="#{asignarSeccionBean.selectedEmpleado}"
+                                            required="#{param['requireGroup1'] == '1'}" 
+                                            requiredMessage="Requerido">
+                            <f:selectItem itemLabel="-Seleccione un empleado-" itemValue="#{null}"/>
+                            <f:selectItems value="#{asignarSeccionBean.listaEmpleados}"/>
+                        </h:selectManyMenu>
+                        <p:message for="cboEmpleado"/>  
+
+                    </h:panelGrid>
+                </p:fieldset>
+                <p:fieldset legend="Secciones">
+                    <h:panelGrid columns="2" columnClasses="alignTop,alignTop">
+                        <p:pickList id="cboSeccion" value="#{asignarSeccionBean.listaSecciones}"  
+                                    var="sec" 
+                                    required="#{param['requireGroup1'] == '1'}" 
+                                    requiredMessage="Requerido"   
+                                    addLabel="Asignar" addAllLabel="Asignar todas"
+                                    removeLabel="Quitar" removeAllLabel="Quitar todos" 
+                                    itemLabel="#{sec.nombreSeccion}"  
+                                    itemValue="#{sec}"
+                                    converter="seccionesPickListConverter">
+                            <f:facet name="sourceCaption">Secciones Disponibles</f:facet>  
+                            <f:facet name="targetCaption">Secciones Asignadas</f:facet>  
+                        </p:pickList>
+                        <p:message for="cboSeccion"/>
+                    </h:panelGrid>
+                </p:fieldset> 
+            </h:panelGrid> 
+            <h:panelGrid style="width: 100%">
+                <p:toolbar>  
+                    <p:toolbarGroup align="left">  
+                        <p:commandButton value="Nuevo" 
+                                         title="Nuevo" 
+                                         image="ui-icon-document"
+                                         action="#{asignarSeccionBean.nuevo}" 
+                                         process="@this" immediate="true"
+                                         update="campos"/>    
+                        <p:commandButton value="Guardar" 
+                                         action="#{asignarSeccionBean.crear}" 
+                                         update="dtAsignar campos msg" 
+                                         title="Guardar" 
+                                         process="@this campos"
+                                         image="ui-icon-disk">
+                            <f:param name="requireGroup1" value="1"/>
+                        </p:commandButton>  
+                    </p:toolbarGroup>  
+                </p:toolbar> 
+            </h:panelGrid>  
+
+            <p:dataTable id="dtAsignar" 
+                         style="overflow:scroll; height:350px" 
+                         var="varSeccionesAsignadas" 
+                         value="#{asignarSeccionBean.listaAsignadas}" 
+                         widgetVar="dtAsignar">
+                <f:facet name="header">  
+                    <h:panelGrid style="width: 200px;" columns="2">
+                        <h:outputText value="Buscar: " />  
+                        <p:inputText id="globalFilter" onkeyup="dtAsignar.filter()" style="width:150px" />
+                    </h:panelGrid> 
+                </f:facet> 
+                <p:column filterBy="#{varSeccionesAsignadas.nombre}">
+                    <f:facet name="header">
+                        <h:outputText value="Empleado"/>
+                    </f:facet>
+                    <h:outputText value="#{varSeccionesAsignadas.nombre}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Secciones asignadas"/>
+                    </f:facet>
+                    <p:dataList style="border-style:none !important;" value="#{varSeccionesAsignadas.secAsignada}" var="secAsig" itemType="disc">  
+                        #{secAsig}
+                    </p:dataList>  
+                </p:column>
+                <p:column style="width: 64px;">
+                    <f:facet name="header" id=""><h:outputText value=""/></f:facet>
+                    <p:commandButton  image="ui-icon ui-icon-pencil"/>
+                    <p:commandButton  image="ui-icon ui-icon-trash"/>
+                </p:column>
+            </p:dataTable>                            
+
+        </p:panel>
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfim" 
+                         update="msg campos"/>
+
+    </ui:define>
+</ui:composition>

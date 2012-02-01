@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblprivilegio" table="tblprivilegio" catalog="dbsilac">
+        <id name="idPrivilegio" type="java.lang.Short">
+            <column name="idPrivilegio" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblrol" class="com.silac.model.Tblrol" fetch="select">
+            <column name="idRol" not-null="true">
+                <comment>Identificador del rol.</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="tblobjeto" class="com.silac.model.Tblobjeto" fetch="select">
+            <column name="idObjeto" not-null="true">
+                <comment>Identificador del objeto.</comment>
+            </column>
+        </many-to-one>
+        <property name="permiso" type="boolean">
+            <column name="permiso" not-null="true">
+                <comment>Indica si el usuario tiene acceso al objeto.</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

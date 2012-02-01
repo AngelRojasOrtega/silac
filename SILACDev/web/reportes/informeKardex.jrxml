@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="informeKardex" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<parameter name="codigo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT * from ((SELECT
+     
+     tblmovimiento.`fecha` AS tblmovimiento_fecha,
+     tblmovimiento.`concepto` AS tblmovimiento_concepto,
+     tblprocedenciaarticulo.`lugarProcedencia` AS procedencia_destino,
+     tblentrada.`numeroLote` AS tblentrada_numeroLote,
+     tblentrada.`fechaVencimiento` AS tblentrada_fechaVencimiento,
+     tblentrada.`cantidad` AS tblentrada_cantidad,
+     tblentrada.`precio` AS tblentrada_precio,
+     " " as cantidadSalida,
+     " " as precioSalida,
+     tblarticulo.`codigoArticulo` AS tblarticulo_codigoArticulo,
+     tblarticulo.`nombreArticulo` AS tblarticulo_nombreArticulo,
+     tblarticulo.`presentacion` AS tblarticulo_presentacion,
+     tblunidadmedida.`unidadMedida` AS tblunidadmedida_unidadMedida,
+     tblentrada.`idMovimiento` AS tblentrada_idMovimiento,
+     tblentrada.`idEntrada` AS tblentrada_idEntrada,
+tblarticulo.`existencias` AS existencias,
+DATE_FORMAT(tblmovimiento.`fecha`,'%d/%m/%Y') as fecha,
+IFNULL(DATE_FORMAT(tblentrada.`fechaVencimiento`,'%d/%m/%Y'),'') AS fechaVencimiento
+
+     FROM
+     `tblentrada` tblentrada INNER JOIN `tblmovimiento` tblmovimiento ON tblentrada.`idMovimiento` = tblmovimiento.`idMovimiento`
+     INNER JOIN `tblarticulo` tblarticulo ON tblmovimiento.`idArticulo` = tblarticulo.`idArticulo`
+     INNER JOIN `tblunidadmedida` tblunidadmedida ON tblarticulo.`unidadMinimoUso` = tblunidadmedida.`idUnidadMedida`
+     AND tblunidadmedida.`idUnidadMedida` = tblarticulo.`unidadMinimoCompra`
+     INNER JOIN `tblprocedenciaarticulo` tblprocedenciaarticulo ON tblentrada.`idProcedencia` = tblprocedenciaarticulo.`idProcedencia` group by tblentrada.`idEntrada`) UNION (SELECT
+     tblmovimiento.`fecha` AS tblmovimiento_fecha,
+     tblmovimiento.`concepto` AS tblmovimiento_concepto,
+      tblsalida.`destino` AS procedencia_destino,
+    " " as numLote,
+    " " as fechaVencimiento,
+    " " as cantidadSalida,
+    " " as precioSalida,
+    tblsalida.`cantidad` AS tblsalida_cantidad,
+    tblentrada.`precio` AS tblentrada_precio,
+     tblarticulo.`codigoArticulo` AS tblarticulo_codigoArticulo,
+     tblarticulo.`nombreArticulo` AS tblarticulo_nombreArticulo,
+     tblarticulo.`presentacion` AS tblarticulo_presentacion,
+     tblunidadmedida.`unidadMedida` AS tblunidadmedida_unidadMedida,
+     tblmovimiento.`idMovimiento` AS tblmovimiento_idMovimiento,
+     tblsalida.`idSalida` AS tblsalida_idSalida,
+     tblarticulo.`existencias` AS existencias,
+     DATE_FORMAT(tblmovimiento.`fecha`,'%d/%m/%Y') as fecha,
+ IFNULL(DATE_FORMAT(tblentrada.`fechaVencimiento`,'%d/%m/%Y'),'') AS fechaVencimiento
+FROM
+     `tblarticulo` tblarticulo INNER JOIN `tblmovimiento` tblmovimiento ON tblarticulo.`idArticulo` = tblmovimiento.`idArticulo`
+     INNER JOIN `tblsalida` tblsalida ON tblmovimiento.`idMovimiento` = tblsalida.`idMovimiento`
+     INNER JOIN `tblunidadmedida` tblunidadmedida ON tblarticulo.`unidadMinimoUso` = tblunidadmedida.`idUnidadMedida`
+     AND tblunidadmedida.`idUnidadMedida` = tblarticulo.`unidadMinimoCompra`,
+     `tblprocedenciaarticulo` tblprocedenciaarticulo,
+     `tblentrada` tblentrada group by tblsalida.`idSalida`)) movimientos
+
+WHERE (movimientos.tblarticulo_codigoArticulo) = $P{codigo}
+ORDER BY movimientos.tblmovimiento_fecha,tblarticulo_codigoArticulo]]>
+	</queryString>
+	<field name="tblmovimiento_fecha" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblmovimiento_concepto" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="procedencia_destino" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblentrada_numeroLote" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblentrada_fechaVencimiento" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblentrada_cantidad" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblentrada_precio" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cantidadSalida" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="precioSalida" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblarticulo_codigoArticulo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblarticulo_nombreArticulo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblarticulo_presentacion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblunidadmedida_unidadMedida" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblentrada_idMovimiento" class="java.math.BigInteger">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tblentrada_idEntrada" class="java.math.BigInteger">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="existencias" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fechaVencimiento" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<group name="tblarticulo_codigoArticulo">
+		<groupExpression><![CDATA[$F{tblarticulo_codigoArticulo}]]></groupExpression>
+		<groupHeader>
+			<band height="21" splitType="Stretch">
+				<textField isBlankWhenNull="false">
+					<reportElement mode="Opaque" x="138" y="0" width="614" height="21" forecolor="#FFFFFF" backcolor="#000000"/>
+					<box leftPadding="4"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{tblarticulo_codigoArticulo}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="0" width="139" height="21" forecolor="#FFFFFF" backcolor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[tblarticulo_codigoArticulo]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="1" splitType="Stretch"/>
+		</groupFooter>
+	</group>
+	<group name="tblarticulo_nombreArticulo">
+		<groupExpression><![CDATA[$F{tblarticulo_nombreArticulo}]]></groupExpression>
+		<groupHeader>
+			<band height="56" splitType="Stretch">
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="0" width="139" height="19" forecolor="#000000" backcolor="#CCCCFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[Nombre Artículo]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Opaque" x="138" y="0" width="614" height="19" forecolor="#000000" backcolor="#CCCCFF"/>
+					<box leftPadding="4"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{tblarticulo_nombreArticulo}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="36" width="139" height="19" forecolor="#000000" backcolor="#CCCCFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[Unidad Medida]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="18" width="139" height="19" forecolor="#000000" backcolor="#CCCCFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[Presentación]]></text>
+				</staticText>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement mode="Opaque" x="138" y="36" width="614" height="19" forecolor="#000000" backcolor="#CCCCFF"/>
+					<box leftPadding="4"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{tblunidadmedida_unidadMedida}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement mode="Opaque" x="138" y="18" width="614" height="19" forecolor="#000000" backcolor="#CCCCFF"/>
+					<box leftPadding="4"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{tblarticulo_presentacion}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band splitType="Stretch"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement x="164" y="23" width="424" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Hospital Nacional Santa Teresa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="164" y="39" width="424" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Ministerio de Salud Pública y Asistencia Social]]></text>
+			</staticText>
+			<elementGroup>
+				<elementGroup>
+					<image hAlign="Left" vAlign="Middle">
+						<reportElement x="0" y="1" width="101" height="58"/>
+						<imageExpression class="java.lang.String"><![CDATA["/images/minsal.jpg"]]></imageExpression>
+					</image>
+					<image hAlign="Right" vAlign="Middle">
+						<reportElement x="686" y="1" width="66" height="59"/>
+						<imageExpression class="java.lang.String"><![CDATA["/images/elSalvador.jpg"]]></imageExpression>
+					</image>
+				</elementGroup>
+			</elementGroup>
+			<line>
+				<reportElement x="0" y="0" width="752" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="164" y="7" width="424" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Control de Existencia de Medicamentos e Insumos Médicos]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="28" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="702" y="0" width="50" height="28" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Saldos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="208" y="0" width="119" height="28" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Procedencia/Destino]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="533" y="0" width="60" height="28" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Precio  Entrada]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="648" y="0" width="56" height="28" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Precio Salida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="386" y="0" width="75" height="28" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Fecha de Vencimiento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="326" y="0" width="61" height="28" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Número de lote]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="52" height="28" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="592" y="0" width="57" height="28" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Cantidad Salida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="51" y="0" width="157" height="28" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Concepto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="460" y="0" width="74" height="28" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="sansserif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Cantidad Entrada]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="57" y="0" width="151" height="15"/>
+				<box topPadding="0" leftPadding="3" rightPadding="0">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tblmovimiento_concepto}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="384" y="0" width="72" height="15"/>
+				<box topPadding="0" leftPadding="0" rightPadding="0">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{fechaVencimiento}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="456" y="0" width="76" height="15"/>
+				<box topPadding="0" leftPadding="0" rightPadding="0">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tblentrada_cantidad}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="532" y="0" width="60" height="15"/>
+				<box topPadding="0" leftPadding="0" rightPadding="0">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tblentrada_precio}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="592" y="0" width="56" height="15"/>
+				<box topPadding="0" leftPadding="0" rightPadding="0">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{cantidadSalida}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="648" y="0" width="54" height="15"/>
+				<box topPadding="0" leftPadding="0" rightPadding="0">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{precioSalida}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="208" y="0" width="119" height="15"/>
+				<box topPadding="0" leftPadding="3" rightPadding="0">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{procedencia_destino}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="57" height="15"/>
+				<box topPadding="0" leftPadding="1" rightPadding="1">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="327" y="0" width="57" height="15"/>
+				<box topPadding="0" leftPadding="0" rightPadding="0">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tblentrada_numeroLote}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="57" splitType="Stretch">
+			<textField pattern="EEEE dd MMMMM yyyy - hh:mm aaa" isBlankWhenNull="true">
+				<reportElement x="532" y="5" width="218" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<elementGroup>
+				<textField>
+					<reportElement x="308" y="0" width="80" height="20"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Report">
+					<reportElement x="388" y="0" width="40" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+			</elementGroup>
+			<line>
+				<reportElement x="0" y="0" width="752" height="1"/>
+			</line>
+			<image>
+				<reportElement x="0" y="2" width="101" height="32"/>
+				<imageExpression class="java.lang.String"><![CDATA["/images/logoSilac.png"]]></imageExpression>
+			</image>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

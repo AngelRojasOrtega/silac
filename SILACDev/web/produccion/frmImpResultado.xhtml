@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <body>
+
+        <ui:composition template="./../templates/template.xhtml">
+
+            <ui:define name="titulo">
+                Importar resultados desde equipo de análisis automatizado
+            </ui:define>
+
+            <ui:define name="content">
+                <p:panel header="Importar resultados desde equipo de análisis automatizado" >
+                    <h:panelGrid style="width: 100%">
+                        <h:panelGrid>
+                            <h:panelGrid columns="2" styleClass="alignTop,alignTop">
+                                <h:outputText value="Sección:"/>
+                                <h:selectOneMenu style="width: 200px" id="cboSeccion">
+                                    <f:selectItem itemLabel="-Seleccione una sección-" itemValue="1"></f:selectItem>
+                                </h:selectOneMenu>
+                                <h:outputText value="Equipo:"/>
+                                <h:selectOneMenu style="width: 200px" id="cboEquipo">
+                                    <f:selectItem itemLabel="-Seleccione un Equipo-" itemValue="1"></f:selectItem>
+                                </h:selectOneMenu>
+                            </h:panelGrid>
+                            <h:panelGrid columns="2"> 
+                                <p:commandButton value="Importar" type="button"  
+                                                 onclick="start();startButton1.disable()" widgetVar="startButton1"/>  
+                                <p:commandButton value="Configurar conexión" type="button"  
+                                                 onclick="cancel();startButton1.enable()" />  
+                            </h:panelGrid>
+                            <p:progressBar widgetVar="pbClient" style="width:300px"/>  
+                        </h:panelGrid> 
+                        <p:dataTable paginator="true" rows="10" var="resultado" value="">
+                            <f:facet name="header">
+                                <h:outputText value="Resultados importados" />
+                            </f:facet>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Vincular solicitud" />
+                                </f:facet>
+                                <h:selectOneMenu style="width: 200px" id="cboSolicitud">
+                                    <f:selectItem itemLabel="-Seleccione una solicitud-" itemValue="1"></f:selectItem>
+                                </h:selectOneMenu>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Paciente" />
+                                </f:facet>
+                                <h:outputText value="Nombre del paciente" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Examen" />
+                                </f:facet>
+                                <h:outputText value="Nombre del examen" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Fecha" />
+                                </f:facet>
+                                <h:outputText value="dd/mm/aaaa" />
+                            </p:column>
+                            <p:column style="width:32px">  
+                                <p:commandButton update="display" oncomplete="carDialog.show()"  
+                                                 image="ui-icon ui-icon-search">  
+                                    <f:setPropertyActionListener value="" target="" />  
+                                </p:commandButton> 
+                            </p:column> 
+                        </p:dataTable>
+                    </h:panelGrid>
+                </p:panel>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

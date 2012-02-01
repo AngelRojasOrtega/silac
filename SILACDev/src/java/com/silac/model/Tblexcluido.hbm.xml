@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblexcluido" table="tblexcluido" catalog="dbsilac">
+        <id name="idDonanteExcluido" type="java.lang.Long">
+            <column name="idDonanteExcluido" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tbldonante" class="com.silac.model.Tbldonante" fetch="select">
+            <column name="idDonate" not-null="true">
+                <comment>Identificador del donante</comment>
+            </column>
+        </many-to-one>
+        <property name="catExclusion" type="string">
+            <column name="catExclusion" length="25" not-null="true">
+                <comment>Categoria de la exclusi&#243;n, esta puede ser: Diferida o Permanente.</comment>
+            </column>
+        </property>
+        <property name="lugExclusion" type="string">
+            <column name="lugExclusion" length="254" not-null="true">
+                <comment>Lugar donde se realiza la exclusi&#243;n. Por defecto es el propio laboratorio.</comment>
+            </column>
+        </property>
+        <property name="fecExclusion" type="timestamp">
+            <column name="fecExclusion" length="19" not-null="true">
+                <comment>Fecha en la que se excluyo al donante.</comment>
+            </column>
+        </property>
+        <property name="tiempoExclusion" type="int">
+            <column name="tiempoExclusion" not-null="true">
+                <comment>Tiempo que durar&#225; la exclusi&#243;n, solo para los donantes Diferidos.</comment>
+            </column>
+        </property>
+        <property name="fecElegibilidad" type="timestamp">
+            <column name="fecElegibilidad" length="19" not-null="true">
+                <comment>Fecha en la que el donante puede ser elegible para donar.</comment>
+            </column>
+        </property>
+        <property name="motivoExclusion" type="string">
+            <column name="motivoExclusion" length="65535">
+                <comment>Motivo o raz&#243;n por la que se realiza la exclusi&#243;n.</comment>
+            </column>
+        </property>
+        <property name="periodoExclusion" type="string">
+            <column name="periodoExclusion" length="45" />
+        </property>
+    </class>
+</hibernate-mapping>

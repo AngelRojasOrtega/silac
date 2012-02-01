@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblobjeto" table="tblobjeto" catalog="dbsilac">
+        <id name="idObjeto" type="java.lang.Short">
+            <column name="idObjeto" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblobjeto" class="com.silac.model.Tblobjeto" fetch="select">
+            <column name="tbl_idObjeto">
+                <comment>Identificador del objeto padre.</comment>
+            </column>
+        </many-to-one>
+        <property name="tipoObjeto" type="string">
+            <column name="tipoObjeto" length="25" not-null="true">
+                <comment>Tipode Objeto, puede ser: Menu, Submenu, Boton, Pagina Web, etc.</comment>
+            </column>
+        </property>
+        <property name="nombreObjeto" type="string">
+            <column name="nombreObjeto" length="100" not-null="true">
+                <comment>Nombre del objeto.</comment>
+            </column>
+        </property>
+        <property name="grupo" type="string">
+            <column name="grupo" length="25" />
+        </property>
+        <set name="tblpaginas" inverse="true">
+            <key>
+                <column name="idObjeto" not-null="true">
+                    <comment>Identificador del objeto.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblpagina" />
+        </set>
+        <set name="tblprivilegios" inverse="true">
+            <key>
+                <column name="idObjeto" not-null="true">
+                    <comment>Identificador del objeto.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblprivilegio" />
+        </set>
+        <set name="tblobjetos" inverse="true">
+            <key>
+                <column name="tbl_idObjeto">
+                    <comment>Identificador del objeto padre.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblobjeto" />
+        </set>
+    </class>
+</hibernate-mapping>

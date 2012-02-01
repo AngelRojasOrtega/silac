@@ -1,0 +1,183 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Registro de salidas de inventario
+    </ui:define>    
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfim.jq.click();
+}
+        </script>
+        <p:panel header="Registro de salidas de inventario">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+            <h:panelGrid id="campos" style="width: 100%">
+                <p:fieldset legend="Datos del artículo">
+                    <h:panelGrid columns="4">
+                        <h:outputText value="Categoria:"/>
+                        <h:selectOneMenu style="width: 200px"  
+                                         id="cboCategoria" 
+                                         value="#{salidaBean.selectedCategoria}" 
+                                         onchange="onSelectCategoria()"
+                                         required="true" 
+                                         requiredMessage="requerido">
+                            <f:selectItem itemLabel="Seleccione una categoria" itemValue="#{null}"></f:selectItem>
+                            <f:selectItems value="#{catalogoBean.cargarCategorias()}" />
+                        </h:selectOneMenu>   
+                        <p:message for="cboCategoria"/>
+                        <h:outputText value=""/>
+                        <h:outputText value="Articulo:"/>
+                        <h:selectOneMenu style="width: 200px"  
+                                         id="cboArticulo" 
+                                         binding="#{cboArticulo}" 
+                                         value="#{salidaBean.selectedArticulo}"
+                                         onchange="onSelectArticulo()"
+                                         required="true" 
+                                         requiredMessage="requerido">
+                            <f:selectItem itemLabel="Seleccione un articulo" itemValue="#{null}"></f:selectItem>
+                            <f:selectItems  value="#{salidaBean.listaArticulos}" />
+                        </h:selectOneMenu>   
+                        <p:message for="cboArticulo"/>
+                        <p:commandButton image="ui-icon ui-icon-search" title="Consultar Existencias"
+                                         oncomplete="mostrarExistencias.show()" 
+                                         update="mostrar" 
+                                         process="@this cboArticulo" action="#{salidaBean.populateListaExistencias}">  
+
+                        </p:commandButton>
+                        <h:outputText value="Existencias:"/>
+                        <p:outputPanel id="opExistencias">
+                        <p:inputText id="txtExistencias" binding="#{txtExistencias}" required="false" value="#{salidaBean.existencias}" readonly="true" >                               
+                        </p:inputText> 
+                        <h:outputText value="#{salidaBean.existencias.equals('0.0')?'No hay existencias':''}" />
+                            </p:outputPanel>
+                        <p:message id="msgExistencias" for="txtExistencias"/>
+                        
+                        <h:outputText value=""/>
+                        <h:outputText value="Motivo de salida:"/>
+                        <h:selectOneMenu style="width: 200px"  
+                                         id="cboMotivo" 
+                                         value="#{salidaBean.selectedMotivo}"
+                                         required="true" 
+                                         requiredMessage="requerido">
+                            <f:selectItem itemLabel="Seleccione motivo de salida" itemValue="#{null}"></f:selectItem>
+                            <f:selectItem itemLabel="Uso cotidiano" itemValue="Uso cotidiano"/>
+                            <f:selectItem itemLabel="Descargo por vencimiento" itemValue="Descargo por vencimiento"/>
+                            <f:selectItem itemLabel="Descargo por devolución" itemValue="Descargo por devolución"/>
+                        </h:selectOneMenu>   
+                        <p:message for="cboMotivo"/>
+                        <h:outputText value=""/>
+                        <h:outputText value="Destino:"/>
+                        <h:selectOneMenu style="width: 200px"  id="cboDestino" value="#{salidaBean.selectedDestino}" required="true" requiredMessage="requerido">
+                            <f:selectItem itemLabel="Seleccione un destino" itemValue="#{null}"></f:selectItem>
+                            <f:selectItems value="#{seccionesBean.cargarSecciones()}" />
+                        </h:selectOneMenu>   
+                        <p:message for="cboDestino"/>
+                        <h:outputText value=""/>
+                        <h:outputText value="Cantidad Requerida:"/>
+                        <p:spinner id="txtCantidad" value="#{salidaBean.verificar}" min="0" stepFactor="0.0001" required="true" requiredMessage="requerido">
+                            <f:validator validatorId="existenciaValidator"  />
+                            <f:attribute name="existencias" value="#{txtExistencias.value}"/>
+                        </p:spinner>                                
+                        <p:message for="txtCantidad"/>
+                        <h:outputText value=""/>
+                        <h:outputText value="Fecha de Entrega:"/>
+                        <p:calendar id="txtFecRecepcion"
+                                    locale="es"
+                                    value="#{salidaBean.movimiento.fecha}" 
+                                    navigator="true" 
+                                    showOn="button" 
+                                    required="true" 
+                                    requiredMessage="requerido"/>                                
+                        <p:message for="txtFecRecepcion"/>
+                        <h:outputText value=""/>
+                        <h:outputText value="Concepto:"/>
+                        <p:inputTextarea id="txtConcepto" value="#{salidaBean.movimiento.concepto}" required="true" requiredMessage="requerido"/>                                
+                        <p:message for="txtConcepto"/>
+                        <h:outputText value=""/>
+                    </h:panelGrid>
+                </p:fieldset>
+                <h:panelGrid style="width: 100%">
+                    <p:toolbar>  
+                        <p:toolbarGroup align="left">                                      
+                            <p:commandButton value="Nuevo"
+                                             type="reset"
+                                             title="Nuevo" 
+                                             onclick="window.location.href=window.location.href"                                                  
+                                             image="ui-icon-document"/> 
+                            <p:commandButton value="Guardar" 
+                                             process="@this campos"
+                                             action="#{salidaBean.crear}" 
+                                             oncomplete="confirmFunction()" 
+                                             update="dtSalida campos msg" 
+                                             title="Guardar" 
+                                             image="ui-icon-disk">
+                            </p:commandButton>  
+                        </p:toolbarGroup>  
+                    </p:toolbar>
+                </h:panelGrid>                 
+            </h:panelGrid>
+        </p:panel>
+        <p:dialog 
+            width="700"   
+            header="Existencias disponibles" 
+            widgetVar="mostrarExistencias" 
+            modal="true">  
+            <p:outputPanel id="mostrar">
+                <p:dataTable rows="10" paginator="true" value="#{salidaBean.listaExistencias}" var="varExi">
+
+                    <p:column style="text-align:center">  
+                        <f:facet name="header">  
+                            <h:outputText value="Fecha de entrada" />  
+                        </f:facet>  
+                        <h:outputText value="#{varExi.entrada.fechaRecepcion}" />  
+                    </p:column>
+
+                    <p:column style="text-align:center">  
+                        <f:facet name="header">  
+                            <h:outputText value="Fecha de Vencimiento" />  
+                        </f:facet>  
+                        <h:outputText value="#{varExi.entrada.fechaVencimiento}" />  
+                    </p:column>
+
+                    <p:column style="text-align:center">  
+                        <f:facet name="header">  
+                            <h:outputText value="Fecha de Registro" />  
+                        </f:facet>  
+                        <h:outputText value="#{varExi.fecha}" />  
+                    </p:column>
+
+                    <p:column style="text-align:center">  
+                        <f:facet name="header">  
+                            <h:outputText value="Nombre" />  
+                        </f:facet>  
+                        <h:outputText value="#{varExi.entrada.idEntrada} #{varExi.articulo.nombreArticulo}" />  
+                    </p:column>
+
+                    <p:column style="text-align:center">  
+                        <f:facet name="header">  
+                            <h:outputText value="Existencias" />  
+                        </f:facet>  
+                        <h:outputText value="#{varExi.entrada.existencia}" />  
+                    </p:column>
+
+                    <p:column style="text-align:center">  
+                        <f:facet name="header">  
+                            <h:outputText value="Estado" />  
+                        </f:facet>  
+                        <h:outputText style="font-weight:bolder; color:#{varExi.determinarEstado()=='Caducado'?'red':(varExi.determinarEstado()=='Por Caducar'?'orange':'green')}" value="#{varExi.determinarEstado()}" />  
+                    </p:column>
+
+                </p:dataTable> 
+            </p:outputPanel>
+        </p:dialog>
+        <p:remoteCommand name="onSelectArticulo" process="@this cboArticulo" action="#{salidaBean.renderTxtExistencias}" update="opExistencias msgExistencias" />
+        <p:remoteCommand name="onSelectCategoria" process="@this cboCategoria" action="#{salidaBean.renderCboArticulo}" update="cboArticulo" />
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfim" 
+                         update="dtSalida msg"/>
+    </ui:define>
+</ui:composition>

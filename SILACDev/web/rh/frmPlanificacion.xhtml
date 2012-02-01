@@ -1,0 +1,172 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../templates/template.xhtml">
+    <ui:define name="titulo">
+        Planificación de Trabajo
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript">
+function showPlanDialog(d, e, h, m, hd, md, id, n) {
+planDialog.show();
+document.getElementById("txtDia").value = d;
+document.getElementById("txtEmpleado").value = e;
+document.getElementById("txtHora").value = h;
+document.getElementById("txtMin").value = m;
+document.getElementById("txtHd").value = hd;
+document.getElementById("txtMd").value = md;
+document.getElementById("txtIdPlan").value = id;
+document.getElementById("txtNombre").value = n;
+}
+        </script>
+        <p:panel header="Planificación mensual de trabajo">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+            <h:panelGrid columns="3" columnClasses="alignTop,alignTop,alignTop">
+                <h:outputText value="Año:"/>
+                <p:spinner id="txtAnio" binding="#{txtAnio}" onchange="seleccionarMes()" value="#{planificacionBean.selectedAnio}" size="30" stepFactor="1" min="2011" style="width: 200px"/>
+                <p:message for="txtAnio"/>
+                <h:outputText value="Mes:"/>
+                <h:selectOneMenu id="cboMes" onchange="seleccionarMes()" value="#{planificacionBean.selectedMes}" binding="#{cboMes}" style="width: 200px">
+                    <f:selectItem itemLabel="-Seleccione un mes-" itemValue="#{null}"></f:selectItem>
+                    <f:selectItems value="#{planificacionBean.listaMeses}" />
+                </h:selectOneMenu>
+                <p:message for="cboMes"/>                                                                         
+            </h:panelGrid>
+            <p:remoteCommand name="seleccionarMes" process="@this txtAnio cboMes" action="#{planificacionBean.onSelectMes}" update="opPlan carga">  
+                <f:setPropertyActionListener value="#{cboMes.value}" target="#{planificacionBean.selectedMes}" /> 
+            </p:remoteCommand>
+            <h:panelGrid id="carga" columns="2" columnClasses="alignTop">
+                <p:commandButton value="Establecer carga laborar" 
+                                 rendered="#{planificacionBean.renderAsignarCargaLaboral}" 
+                                 image="ui-icon-document"
+                                 update="detalleCarga" 
+                                 process="@this txtAnio cboMes" 
+                                 action="#{planificacionBean.cargarMes}"
+                                 onclick="cargaDialog.show()"/>
+                <h:outputText value="Carga laboral para el mes:" rendered="#{planificacionBean.renderMostrarCargaLaboral}" />
+                <h:outputText value="#{planificacionBean.horasAsignadas}  horas" style="font-weight: bolder;" 
+                              rendered="#{planificacionBean.renderMostrarCargaLaboral}"/>    
+            </h:panelGrid>
+            <p:dialog widgetVar="cargaDialog" 
+                      header="Carga laboral" 
+                      width="350" modal="true" 
+                      resizable="false">  
+                <h:panelGrid id="detalleCarga" columns="3">  
+                    <h:outputLabel for="lblPeriodo" value="Periodo:" /> 
+                    <h:outputText id="lblPeriodo" style="font-weight: bolder;" value="#{planificacionBean.mes}/#{planificacionBean.selectedAnio}"/>  
+                    <p:message for="lblPeriodo"/>  
+                    <h:outputLabel for="txtCarga" value="Horas mensuales:" /> 
+                    <p:spinner id="txtCarga" required="true" requiredMessage="" 
+                               stepFactor="1" min="0" size="5" max="200" 
+                               value="#{planificacionBean.cargaLaboral.horasAsignadas}"/>
+                    <p:message for="txtCarga"/>  
+                    <p:commandButton value="Guardar" 
+                                     image="ui-icon-disk" 
+                                     title="Guardar" process="@this detalleCarga txtAnio cboMes"
+                                     action="#{planificacionBean.asignarCarga}"
+                                     update="msg carga opPlan"
+                                     oncomplete="cargaDialog.hide();"/>  
+                </h:panelGrid>  
+            </p:dialog> 
+            <p:outputPanel id="opPlan" >      
+                <p:panel rendered="#{planificacionBean.renderDtPlan}" style="font-size: 16pt; font-weight:bolder;" >
+                    <center>
+                        Planificacion para el mes de #{planificacionBean.mes} de #{planificacionBean.selectedAnio}
+                    </center>
+                </p:panel>
+                <div style=" overflow:auto; width: 1024px; min-width: 1024px;">
+                    <p:dataTable  id="dtPlan"
+                                 style="width: 3000px; padding: 0px 0px 0px 0px; " 
+                                 rendered="#{planificacionBean.renderDtPlan}" 
+                                 emptyMessage="No hay datos que mostrar"  
+                                 var="varEmpleado" value="#{planificacionBean.planificacion}">  
+                        <p:column id="colNombre" style="width:150px" >  
+                            <f:facet name="header">  
+                                <h:outputText value="Empleado" />  
+                            </f:facet>  
+                            <h:outputText style="padding-left: 5px;" value="#{varEmpleado[0].nombre}" />  
+                        </p:column>
+                        <p:columns id="dynamicColumns" value="#{planificacionBean.columns}" var="column" columnIndexVar="colId">                                      
+                            <f:facet name="header">#{column}</f:facet> 
+                            <span class="cell" 
+                                  title="'#{colId+1}'/#{planificacionBean.mes}/#{planificacionBean.selectedAnio} #{varEmpleado[0].nombre}" 
+                                  onclick="showPlanDialog(#{colId+1}, #{varEmpleado[colId].codigoMarcacion}, #{varEmpleado[colId].h}, #{varEmpleado[colId].m}, #{varEmpleado[colId].hd}, #{varEmpleado[colId].md}, #{varEmpleado[colId].idPlan}, '#{varEmpleado[colId].nombre}'); mostrarDialogo()">
+                                <h:outputText value="E: #{varEmpleado[colId].horaEntrada}"/><br/>
+                                <h:outputText value="S: #{varEmpleado[colId].horaSalida}"/>              
+                            </span>
+                        </p:columns>
+                    </p:dataTable> 
+                </div>                 
+                <p:dialog widgetVar="planDialog" 
+                          header="Detalle del turno" 
+                          width="350" modal="true" 
+                          resizable="false">  
+                    <h:panelGrid id="detallePlan" columns="2">  
+                        <h:outputLabel for="lblNombre" value="Empleado: " />
+                        <h:outputText id="lblNombre" style="font-weight: bolder;" value="#{planificacionBean.nombre}"/>
+                        <h:outputLabel for="lblFecha" value="Fecha:" />  
+                        <h:outputText id="lblFecha" style="font-weight: bolder;" value="#{planificacionBean.fechaEntrada}"                                             />  
+                        <h:outputLabel for="txtHoraEntrada" value="Hora Entrada:" /> 
+                        <h:panelGrid columns="4">
+                            <p:spinner id="txtHoraEntrada" required="true" requiredMessage="" stepFactor="1" min="0" size="3" max="23" value="#{planificacionBean.horaEntrada}"/>
+                            <p:message for="txtHoraEntrada"/>  
+                            <p:spinner id="txtMinEntrada" required="true" requiredMessage="" stepFactor="1" min="0" size="3" max="59" value="#{planificacionBean.minEntrada}"/>  
+                            <p:message for="txtMinEntrada"/>  
+                        </h:panelGrid> 
+
+                        <h:outputLabel for="txtHorasTurno" value="Duracion jornada:" />  
+                        <h:panelGrid columns="4">
+                            <p:spinner id="txtHorasTurno" required="true" requiredMessage="" stepFactor="1" min="0" size="3" max="24"  value="#{planificacionBean.horasTurno}"/>
+                            <p:message for="txtHorasTurno"/> 
+                            <p:spinner id="txtMinsTurno" required="true" requiredMessage="" stepFactor="1" min="0" size="3" max="59"  value="#{planificacionBean.minsTurno}"/> 
+                            <p:message for="txtMinsTurno"/>  
+                        </h:panelGrid>   
+                        <p:commandButton value="Guardar" 
+                                         image="ui-icon-disk" 
+                                         title="Guardar" process="detallePlan"
+                                         action="#{planificacionBean.crear}"
+                                         update="dtPlan msg"
+                                         oncomplete="planDialog.hide();"/>  
+                        <p:commandButton value="Eliminar" 
+                                         image="ui-icon-trash" 
+                                         title="Eliminar" process="detallePlan"
+                                         action="#{planificacionBean.eliminar}"
+                                         update="dtPlan msg"
+                                         oncomplete="planDialog.hide();"/>  
+                    </h:panelGrid>  
+                </p:dialog>  
+            </p:outputPanel>
+            <p:outputPanel id="hdFields">
+                <h:inputHidden id="txtDia" binding="#{txtDia}" />
+                <h:inputHidden id="txtEmpleado" binding="#{txtEmpleado}" />
+                <h:inputHidden id="txtHora" binding="#{txtHora}" />
+                <h:inputHidden id="txtMin" binding="#{txtMin}" />
+                <h:inputHidden id="txtHd" binding="#{txtHd}" />
+                <h:inputHidden id="txtMd" binding="#{txtMd}" />
+                <h:inputHidden id="txtIdPlan" binding="#{txtIdPlan}" />
+                <h:inputHidden id="txtNombre" binding="#{txtNombre}" />
+            </p:outputPanel>
+            <p:remoteCommand name="mostrarDialogo" process="@this hdFields" action="#{planificacionBean.populateFechaEntrada}"                                                       
+                             update="detallePlan">  
+                <f:setPropertyActionListener value="#{txtDia.value}"   
+                                             target="#{planificacionBean.selectedDia}" /> 
+                <f:setPropertyActionListener value="#{txtEmpleado.value}"   
+                                             target="#{planificacionBean.selectedEmpleado}" />
+                <f:setPropertyActionListener value="#{txtHora.value}"   
+                                             target="#{planificacionBean.horaEntrada}" /> 
+                <f:setPropertyActionListener value="#{txtMin.value}"   
+                                             target="#{planificacionBean.minEntrada}" />
+                <f:setPropertyActionListener value="#{txtHd.value}"   
+                                             target="#{planificacionBean.horasTurno}" /> 
+                <f:setPropertyActionListener value="#{txtMd.value}"   
+                                             target="#{planificacionBean.minsTurno}" />
+                <f:setPropertyActionListener value="#{txtIdPlan.value}"   
+                                             target="#{planificacionBean.selectedPlan}" /> 
+                <f:setPropertyActionListener value="#{txtNombre.value}"   
+                                             target="#{planificacionBean.nombre}" /> 
+            </p:remoteCommand>
+        </p:panel>
+    </ui:define>
+</ui:composition>

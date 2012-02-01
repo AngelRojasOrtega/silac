@@ -1,0 +1,121 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="./../templates/template.xhtml">
+
+    <ui:define name="titulo">
+        Registro de Municipios
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfirm.jq.click();
+}
+        </script>
+        <p:panel header="Municipios">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+            <h:panelGrid id="campos" columns="3">
+
+                <h:outputText value="Departamento:"/>
+                <h:selectOneMenu id="cboDepto"
+                                 required="#{param['requireGroup1'] == '1'}"  requiredMessage="Requerido" value="#{municipioBean.selectedDepto}" style="width: 200px">
+                    <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                    <f:selectItems value="#{domicilioBean.cargarListaDeptos()}" />
+                </h:selectOneMenu>
+                <p:message for="cboDepto"/>
+
+                <h:outputText value="Municipio:"/>
+                <p:inputText id="txtMunicipio" required="#{param['requireGroup1'] == '1'}" requiredMessage="Requerido" value="#{municipioBean.municipio.nomMunicipio}" size="30"/>
+                <p:message for="txtMunicipio"/> 
+            </h:panelGrid>   
+            <h:panelGrid style="width: 100%">
+                <p:toolbar>  
+                    <p:toolbarGroup align="left">   
+                        <p:commandButton value="Nuevo"
+                                         immediate="true"
+                                         title="Nuevo"
+                                         process="@this"
+                                         action="#{municipioBean.nuevo}"                                                  
+                                         update="dtMunicipio campos"
+                                         image="ui-icon-document"/>
+                        <p:commandButton value="Guardar" 
+                                         process="@this campos" 
+                                         action="#{municipioBean.crear}" 
+                                         oncomplete="confirmFunction()" 
+                                         update="dtMunicipio campos msg" 
+                                         title="Guardar" 
+                                         image="ui-icon-disk">    
+                            <f:param name="requireGroup1" value="1"/>
+                        </p:commandButton> 
+                    </p:toolbarGroup>  
+                </p:toolbar> 
+            </h:panelGrid> 
+            <p:dataTable id="dtMunicipio" widgetVar="dtMunicipio" var="varMuni" rows="10" paginator="true" value="#{municipioBean.municipios}">
+                <f:facet name="header">                    
+                    <h:panelGrid style="width: 200px;" columns="3">
+                        <h:outputText value="Buscar: " />  
+                        <p:inputText  id="globalFilter" onkeyup="dtMunicipio.filter()" style="width:150px" />  
+                    </h:panelGrid>
+                </f:facet>
+                <p:column filterBy="#{varMuni[0].idMunicipio}" style="text-align: center; width: 32px">
+                    <f:facet name="header"><h:outputText value="Código"/></f:facet>
+                    <h:outputText value="#{varMuni[0].idMunicipio}"/>
+                </p:column>
+                <p:column filterBy="#{varMuni[0].nomMunicipio}">
+                    <f:facet name="header"><h:outputText value="Municipio"/></f:facet>
+                    <h:outputText value="#{varMuni[0].nomMunicipio}"/>
+                </p:column>
+                <p:column filterBy="#{varMuni[1].nomDepartamento}">
+                    <f:facet name="header"><h:outputText value="Departamento"/></f:facet>
+                    <h:outputText value="#{varMuni[1].nomDepartamento}"/>
+                </p:column>
+
+                <p:column style="width: 64px">
+
+                    <p:commandButton  image="ui-icon ui-icon-pencil"/>
+                    <p:commandButton  image="ui-icon ui-icon-trash"
+                                      oncomplete="confirmation.show()" 
+                                      update="confirm" 
+                                      process="@this">
+                        <f:setPropertyActionListener value="#{varMuni}" target="#{municipioBean.selectedMuni}" />
+                    </p:commandButton>
+
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+
+        <p:confirmDialog message="Desea eliminar el registro?" 
+                         width="400"   
+                         header="Confirm" 
+                         severity="alert" 
+                         widgetVar="confirmation" 
+                         modal="true">  
+            <p:outputPanel id="confirm">
+                <h:panelGrid>
+                    <h:outputText  value="#{municipioBean.selectedMuni[0].idMunicipio} #{municipioBean.selectedMuni[0].nomMunicipio}"/>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Si" 
+                                         update="dtMunicipio msg"
+                                         action="#{municipioBean.eliminar}" 
+                                         oncomplete="confirmation.hide(); confirmFunction()" 
+                                         process="@this">
+                            <f:param name="idMunicipio" 
+                                     value="#{municipioBean.selectedMuni[0].idMunicipio}"/>
+                        </p:commandButton>
+                        <p:commandButton value="No" 
+                                         onclick="confirmation.hide()" 
+                                         type="button" />    
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:confirmDialog> 
+        <p:commandButton style="visibility: hidden" 
+                         oncomplete="dtMunicipio.filter()" 
+                         widgetVar="updateConfirm" 
+                         update="dtMunicipio msg"/>
+    </ui:define>
+
+
+</ui:composition>

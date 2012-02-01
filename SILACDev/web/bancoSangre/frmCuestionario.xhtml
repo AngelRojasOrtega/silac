@@ -1,0 +1,273 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Configuración del sitio
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript">
+function confirmFunction() {
+updateConfirm.jq.click();
+}
+function showButtons(buttons){    
+   jQuery('#'+buttons).show();
+}
+function hideButtons(buttons){
+    jQuery('#'+buttons).hide();
+}
+        </script>
+        <p:panel header="Cuestionario para evaluación de donantes">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+            <h:panelGrid id="campos" columns="3">               
+                <h:outputText value="Pregunta *: "/>
+                <p:inputText id="txtPregunta"
+                             value="#{cuestionarioBean.cuestionario.pregunta}"
+                             size="60"
+                             required="true"
+                             requiredMessage="Requerido"/>
+                <p:message for="txtPregunta"/>
+                <h:outputText value=""/>
+                <h:selectOneRadio layout="pageDirection" 
+                                  value="#{cuestionarioBean.cuestionario.rechazarDonante}"
+                                  required="true"
+                                  requiredMessage="Requerido">
+                    <f:selectItem itemLabel="Rechazar donante cuando la respuesta sea afirmativa" itemValue="#{true}"/>
+                    <f:selectItem itemLabel="Rechazar donante cuando la respuesta sea negativa" itemValue="#{false}"/>
+                </h:selectOneRadio>
+                <p:message for="txtPregunta"/>
+                <h:outputText value=""/>     
+                <h:panelGrid columns="2">
+                    <h:selectBooleanCheckbox id="chkMujer"   
+                                             value="#{cuestionarioBean.cuestionario.donanteMujer}"
+                                             required="true"
+                                             requiredMessage="Requerido"/>
+                    <h:outputText value="Donante Mujer"/> 
+                </h:panelGrid>
+                <p:message for="chkMujer"/>
+            </h:panelGrid>
+            <h:panelGrid style="width: 100%">
+                <p:toolbar>
+                    <p:toolbarGroup align="left">  
+                        <p:commandButton value="Nuevo"
+                                         immediate="true"
+                                         title="Nuevo"
+                                         process="@this"
+                                         action="#{cuestionarioBean.nuevo}"                                                  
+                                         update="campos"
+                                         image="ui-icon-document"/>                                    
+                        <p:commandButton value="Guardar" 
+                                         image="ui-icon ui-icon-disk"                                   
+                                         title="Guardar" 
+                                         process="@this campos"
+                                         action="#{cuestionarioBean.crear}" 
+                                         update="campos dtCuestionario msg"
+                                         oncomplete="confirmFunction()"/>
+                    </p:toolbarGroup>
+                </p:toolbar>
+            </h:panelGrid>
+            <style type="text/css">
+                .ui-datatable-data table td{
+                    border : 0px !important;
+                }
+                .ui-datalist-content ul{
+                    border : 0px !important;
+                }
+                .columnCriterio{
+                    width: auto;
+                }
+                .columnAcciones{
+                    width:64px; 
+                }
+                .cell:hover{ background-color: #FBEC88;   
+                             height: 30px;
+                }
+                .cell{
+                    background-color:transparent;
+                    color:dimgray;
+                    height: 30px;
+                }
+            </style>
+            <p:dataTable id="dtCuestionario" 
+                         value="#{cuestionarioBean.listaCuestionario}" 
+                         var="varCuestionario">
+                <f:facet name="header">
+                    Cuestionario
+                </f:facet>
+                <p:column style="width: 32px; text-align: center;" styleClass="alignTop"  headerText="No.">
+                    #{varCuestionario.pregunta.numeroPregunta}
+                </p:column>
+                <p:column headerText="Pregunta">
+                    #{varCuestionario.pregunta.pregunta}
+                    <h:dataTable  id="dtCriterio" value="#{varCuestionario.listaCriterios}" var="varCriterio">
+                        <h:column>
+                            <span class="cell" onmouseout="hideButtons('buttons#{varCriterio.idCriterio}')" onmouseover="showButtons('buttons#{varCriterio.idCriterio}')">
+                                <h:panelGrid columnClasses="columnCriterio,columnAcciones" columns="2">
+                                    <h:outputText value="#{varCriterio.textoCriterio}"/>   
+                                    <p:outputPanel>
+                                        <span style="display: none;" id="buttons#{varCriterio.idCriterio}">
+                                            <h:panelGrid columns="2">          
+                                                <p:commandLink title="Editar" 
+                                                               styleClass="ui-icon ui-icon-pencil"
+                                                               process="@this" 
+                                                               immediate="true"
+                                                               action="#{cuestionarioBean.modificarCriterio}"
+                                                               update="detalleCriterio"
+                                                               oncomplete="agregarCriterio.show()">
+                                                    <f:setPropertyActionListener value="#{varCuestionario}" target="#{cuestionarioBean.selectedCuestionario}" />
+                                                    <f:setPropertyActionListener value="#{varCriterio}" target="#{cuestionarioBean.selectedCriterio}" />
+                                                </p:commandLink>
+                                                <p:commandLink title="Eliminar" 
+                                                               styleClass="ui-icon ui-icon-closethick" 
+                                                               process="@this" 
+                                                               action="#{cuestionarioBean.eliminarCriterio}"
+                                                               update="dtCuestionario">
+                                                    <f:setPropertyActionListener value="#{varCriterio}" target="#{cuestionarioBean.selectedCriterio}" />
+                                                </p:commandLink>
+                                            </h:panelGrid>
+                                        </span>
+                                    </p:outputPanel>
+                                </h:panelGrid>
+                            </span>
+                        </h:column>
+                    </h:dataTable>
+                </p:column>
+                <p:column style="width: 160px" styleClass="alignTop">
+                    <p:commandButton  title="Agregar criterio"
+                                      image="ui-icon ui-icon-circle-plus"
+                                      type="push" 
+                                      process="@this" 
+                                      immediate="true" 
+                                      oncomplete="agregarCriterio.show()" 
+                                      update="detalleCriterio">  
+                        <f:setPropertyActionListener value="#{varCuestionario}" target="#{cuestionarioBean.selectedCuestionario}" />
+                    </p:commandButton> 
+                    <p:commandButton title="Modificar"
+                                     process="@this"
+                                     update="campos"
+                                     action="#{cuestionarioBean.modificarPregunta}"
+                                     image="ui-icon ui-icon-pencil">
+                        <f:setPropertyActionListener value="#{varCuestionario}" target="#{cuestionarioBean.selectedCuestionario}" />
+                    </p:commandButton>
+                    <p:commandButton  title="Eliminar pregunta"
+                                      image="ui-icon-trash" 
+                                      oncomplete="confirmation.show()" 
+                                      update="confirm" 
+                                      process="@this">  
+                        <f:setPropertyActionListener value="#{varCuestionario}" target="#{cuestionarioBean.selectedCuestionario}" />
+                    </p:commandButton>  
+                    <p:commandButton title="Mover atras" 
+                                     image="ui-icon ui-icon-arrow-1-n"
+                                     process="@this dtCuestionario"
+                                     action="#{cuestionarioBean.bajar}" 
+                                     update="dtCuestionario msg"
+                                     oncomplete="confirmFunction()">
+                        <f:setPropertyActionListener value="#{varCuestionario}" target="#{cuestionarioBean.selectedCuestionario}"/>
+                    </p:commandButton>        
+                    <p:commandButton title="Mover adelante" 
+                                     image="ui-icon ui-icon-arrow-1-s"
+                                     process="@this dtCuestionario"
+                                     action="#{cuestionarioBean.subir}" 
+                                     update="dtCuestionario msg"
+                                     oncomplete="confirmFunction()">
+                        <f:setPropertyActionListener value="#{varCuestionario}" target="#{cuestionarioBean.selectedCuestionario}"/>
+                    </p:commandButton>
+
+                </p:column>
+            </p:dataTable>                
+        </p:panel>
+        <p:confirmDialog message="Desea eliminar el registro?" 
+                         width="400"   
+                         header="Confirm" 
+                         severity="alert" 
+                         widgetVar="confirmation" 
+                         modal="true">  
+            <p:outputPanel id="confirm">
+                <h:panelGrid>
+                    <h:outputText  value="Pregunta #{cuestionarioBean.selectedCuestionario.pregunta.pregunta}"/>
+                    <h:panelGrid columnClasses="a" columns="2">
+                        <p:commandButton value="Si" 
+                                         update="dtSeccion msg"
+                                         action="#{cuestionarioBean.eliminar}" 
+                                         oncomplete="confirmation.hide(); confirmFunction();" 
+                                         process="@this">
+                        </p:commandButton>
+                        <p:commandButton value="No" 
+                                         onclick="confirmation.hide()" 
+                                         type="button" />    
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:confirmDialog>  
+        <p:outputPanel id="criterioDialog">
+            <p:dialog modal="true" 
+                      draggable="false" 
+                      header="Agregar criterio" 
+                      width="475"  
+                      height="280"
+                      resizable="false" 
+                      widgetVar="agregarCriterio"
+                      visible="#{not empty facesContext.maximumSeverity}">
+                <p:messages globalOnly="true" id="msgReactivo"/>
+                <h:panelGrid id="detalleCriterio" columnClasses="alignTop,alignTop,alignTop" columns="3">
+                    <h:outputText value="Criterio:"/> 
+                    <p:inputTextarea id="txtCriterio" 
+                                     cols="30" 
+                                     autoResize="false"
+                                     rows="4" 
+                                     required="#{param['requireGroup3'] == '1'}"
+                                     value="#{cuestionarioBean.selectedCuestionario.criterio.textoCriterio}"
+                                     requiredMessage="requerido"/>
+                    <p:message for="txtCriterio"/>  
+                    <h:outputText value="Tiempo Exclusión:"/> 
+                    <p:spinner id="txtTiempoExclusion" 
+                               size="30" 
+                               stepFactor="1" 
+                               min="0"  
+                               required="#{param['requireGroup3'] == '1'}"
+                               value="#{cuestionarioBean.selectedCuestionario.criterio.tiempoExclusion}"
+                               requiredMessage="requerido"/>
+                    <p:message for="txtTiempoExclusion"/>
+                    <h:outputText value="Periodo Exclusión:"/> 
+                    <h:selectOneMenu id="cboPeriodoExclusion"
+                                     style="width: 200px" 
+                                     required="#{param['requireGroup3'] == '1'}"                                                      
+                                     requiredMessage="requerido"
+                                     value="#{cuestionarioBean.selectedCuestionario.criterio.periodoExclusion}">
+                        <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                        <f:selectItem itemLabel="Sin exclusión" itemValue="Sin exclusion"/>
+                        <f:selectItem itemLabel="Horas" itemValue="Horas"/>
+                        <f:selectItem itemLabel="Días" itemValue="Dias"/>
+                        <f:selectItem itemLabel="Semanas" itemValue="Semanas"/>
+                        <f:selectItem itemLabel="Meses" itemValue="Meses"/>
+                        <f:selectItem itemLabel="Años" itemValue="Anios"/>
+                        <f:selectItem itemLabel="Permanente" itemValue="Permanente"/>
+                    </h:selectOneMenu>
+                    <p:message for="cboPeriodoExclusion"/>  
+                    <h:outputText value="Observaciones:"/> 
+                    <p:inputTextarea id="txtObsCriterio" 
+                                     cols="30" 
+                                     rows="4" 
+                                     autoResize="false"
+                                     value="#{cuestionarioBean.selectedCuestionario.criterio.observaciones}"/>
+                    <p:message for="txtObsCriterio"/>  
+
+                    <p:commandButton value="Agregar"
+                                     image="ui-icon ui-icon-circle-plus" 
+                                     process="@this detalleCriterio" 
+                                     action="#{cuestionarioBean.agregarCriterio}" 
+                                     update="detalleCriterio dtCuestionario criterioDialog">
+                        <f:param name="requireGroup3" value="1"/>
+                    </p:commandButton>
+                </h:panelGrid>
+            </p:dialog>
+        </p:outputPanel>
+        <p:commandButton id="updateConfirm" 
+                         style="visibility: hidden" 
+                         widgetVar="updateConfirm"  
+                         update="dtCuestionario msg">
+        </p:commandButton>
+    </ui:define>
+</ui:composition>

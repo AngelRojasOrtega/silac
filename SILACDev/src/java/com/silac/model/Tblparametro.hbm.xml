@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblparametro" table="tblparametro" catalog="dbsilac">
+        <id name="idParametro" type="java.lang.Integer">
+            <column name="idParametro" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblexamen" class="com.silac.model.Tblexamen" fetch="select">
+            <column name="idExamen" not-null="true">
+                <comment>Identificador del examen.</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="tblunidadmedida" class="com.silac.model.Tblunidadmedida" fetch="select">
+            <column name="idUnidadMedida">
+                <comment>Identificador de la unidad de medida.</comment>
+            </column>
+        </many-to-one>
+        <property name="nombreParametro" type="string">
+            <column name="nombreParametro" length="60" not-null="true">
+                <comment>Nombre del parametro.</comment>
+            </column>
+        </property>
+        <property name="tipoParametro" type="string">
+            <column name="tipoParametro" length="15" not-null="true">
+                <comment>Tipo de parametro, puede ser (Valor, Logico o Descripci&#243;n textual)</comment>
+            </column>
+        </property>
+        <property name="valorMinimo" type="double">
+            <column name="valorMinimo" precision="22" scale="0" not-null="true">
+                <comment>Valor m&#237;nimo esperado en la prueba.</comment>
+            </column>
+        </property>
+        <property name="valorMaximo" type="double">
+            <column name="valorMaximo" precision="22" scale="0" not-null="true">
+                <comment>Valor m&#225;ximo esperado en la prueba.</comment>
+            </column>
+        </property>
+        <property name="valorNormal" type="double">
+            <column name="valorNormal" precision="22" scale="0" not-null="true">
+                <comment>Valor normal esperado en la prueba.</comment>
+            </column>
+        </property>
+        <property name="fijo" type="boolean">
+            <column name="fijo" not-null="true">
+                <comment>Indica si el parametro es fijo o variable para la prueba. Fijo indica que aparecera en la captura y en el resultado, variable indica que queda a
+                opci&#243;n del t&#233;cnico su inclusi&#243;n.</comment>
+            </column>
+        </property>
+        <set name="tblproduccions" inverse="true">
+            <key>
+                <column name="idParametro" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.Tblproduccion" />
+        </set>
+    </class>
+</hibernate-mapping>

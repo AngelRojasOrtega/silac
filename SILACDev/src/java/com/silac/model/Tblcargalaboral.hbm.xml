@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblcargalaboral" table="tblcargalaboral" catalog="dbsilac">
+        <id name="idCargaLaboral" type="java.lang.Long">
+            <column name="idCargaLaboral" />
+            <generator class="identity" />
+        </id>
+        <property name="horasAsignadas" type="short">
+            <column name="horasAsignadas" not-null="true">
+                <comment>Horas asignadas por el departamento de recursos humanos.</comment>
+            </column>
+        </property>
+        <property name="mes" type="short">
+            <column name="mes" not-null="true" />
+        </property>
+        <property name="anio" type="short">
+            <column name="anio" not-null="true" />
+        </property>
+        <set name="tblplanificaciontrabajos" inverse="true">
+            <key>
+                <column name="idCargaLaboral" not-null="true">
+                    <comment>Identificador de la carga laboral.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblplanificaciontrabajo" />
+        </set>
+    </class>
+</hibernate-mapping>

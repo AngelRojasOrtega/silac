@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblinstitucion" table="tblinstitucion" catalog="dbsilac">
+        <id name="idInstitucion" type="java.lang.Short">
+            <column name="idInstitucion" />
+            <generator class="identity" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="nombre" length="254" not-null="true">
+                <comment>Nombre de la instituci&#243;n.</comment>
+            </column>
+        </property>
+        <property name="telefono" type="string">
+            <column name="telefono" length="9">
+                <comment>Telefono de la instituci&#243;n.</comment>
+            </column>
+        </property>
+        <property name="direccion" type="string">
+            <column name="direccion" length="65535">
+                <comment>Direcci&#243;n de la instituci&#243;n.</comment>
+            </column>
+        </property>
+        <set name="tblcapacitacioncontinuas" inverse="true">
+            <key>
+                <column name="idInstitucion" not-null="true">
+                    <comment>Identificador de la instituci&#243;n.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblcapacitacioncontinua" />
+        </set>
+    </class>
+</hibernate-mapping>

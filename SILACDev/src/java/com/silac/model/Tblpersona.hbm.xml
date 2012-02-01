@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblpersona" table="tblpersona" catalog="dbsilac">
+        <id name="idPersona" type="java.lang.Long">
+            <column name="idPersona" />
+            <generator class="identity" />
+        </id>
+        <property name="primerNombre" type="string">
+            <column name="primerNombre" length="20" not-null="true" />
+        </property>
+        <property name="segundoNombre" type="string">
+            <column name="segundoNombre" length="20" />
+        </property>
+        <property name="primerApellido" type="string">
+            <column name="primerApellido" length="20" not-null="true" />
+        </property>
+        <property name="segundoApellido" type="string">
+            <column name="segundoApellido" length="20" />
+        </property>
+        <property name="fechaNacimiento" type="timestamp">
+            <column name="fechaNacimiento" length="19">
+                <comment>Fecha de nacimiento.</comment>
+            </column>
+        </property>
+        <property name="sexo" type="java.lang.Character">
+            <column name="sexo" length="1">
+                <comment>sexo de la persona.</comment>
+            </column>
+        </property>
+        <property name="tipoSangre" type="string">
+            <column name="tipoSangre" length="5">
+                <comment>Tipo de sangre de la persona.</comment>
+            </column>
+        </property>
+        <property name="tipoDocId" type="string">
+            <column name="tipoDocId" length="25">
+                <comment>Tipo de documento de identidad.</comment>
+            </column>
+        </property>
+        <property name="docId" type="string">
+            <column name="docId" length="30">
+                <comment>Numero del documento de identidad.</comment>
+            </column>
+        </property>
+        <property name="estadoCivil" type="string">
+            <column name="estadoCivil" length="25" />
+        </property>
+        <set name="tblentregaresultados" inverse="true">
+            <key>
+                <column name="idPersona" not-null="true">
+                    <comment>Identificador de la persona.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblentregaresultado" />
+        </set>
+        <set name="tblpacientes" inverse="true">
+            <key>
+                <column name="idPersona" not-null="true">
+                    <comment>Identificador de la persona.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblpaciente" />
+        </set>
+        <set name="tbllugtrabajos" inverse="true">
+            <key>
+                <column name="idPersona" not-null="true">
+                    <comment>Identificador de la persona.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tbllugtrabajo" />
+        </set>
+        <set name="tbldonantes" inverse="true">
+            <key>
+                <column name="idPersona" not-null="true">
+                    <comment>Identificador de la persona.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tbldonante" />
+        </set>
+        <set name="tblmedicos" inverse="true">
+            <key>
+                <column name="idPersona" not-null="true">
+                    <comment>Identificador de la persona.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblmedico" />
+        </set>
+        <set name="tbldomicilios" inverse="true">
+            <key>
+                <column name="idPersona" not-null="true">
+                    <comment>Identificador de la persona.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tbldomicilio" />
+        </set>
+        <set name="tbldirectors" inverse="true">
+            <key>
+                <column name="idPersona" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.Tbldirector" />
+        </set>
+        <set name="tblempleados" inverse="true">
+            <key>
+                <column name="idPersona" not-null="true" unique="true">
+                    <comment>Identificador de la persona.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblempleado" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblusuario" table="tblusuario" catalog="dbsilac">
+        <id name="idUsuario" type="java.lang.Short">
+            <column name="idUsuario" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblempleado" class="com.silac.model.Tblempleado" fetch="select">
+            <column name="codigoMarcacion" not-null="true" unique="true">
+                <comment>C&#243;digo asignado por el departamento de recursos humanos para identificar a los empleados.</comment>
+            </column>
+        </many-to-one>
+        <property name="login" type="string">
+            <column name="login" length="60" not-null="true" unique="true">
+                <comment>Nombre de inicio de sesi&#243;n del usuario.</comment>
+            </column>
+        </property>
+        <property name="pass" type="string">
+            <column name="pass" length="254" not-null="true">
+                <comment>Contrase&#241;a del usuario.</comment>
+            </column>
+        </property>
+        <property name="estado" type="string">
+            <column name="estado" length="10" not-null="true">
+                <comment>Estado del usuario en el sistema, puede ser activo o inactivo.</comment>
+            </column>
+        </property>
+        <set name="tblrols" inverse="false" table="tblusuario_rol">
+            <key>
+                <column name="idUsuario" not-null="true">
+                    <comment>Identificador del usuario.</comment>
+                </column>
+            </key>
+            <many-to-many entity-name="com.silac.model.Tblrol">
+                <column name="idRol" not-null="true">
+                    <comment>Identificador del rol.</comment>
+                </column>
+            </many-to-many>
+        </set>
+        <set name="tblbitacoras" inverse="true">
+            <key>
+                <column name="idUsuario" not-null="true">
+                    <comment>Identificador del usuario.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblbitacora" />
+        </set>
+    </class>
+</hibernate-mapping>

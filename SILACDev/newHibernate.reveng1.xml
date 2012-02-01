@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd">
+<hibernate-reverse-engineering>
+  <schema-selection match-catalog="dbsilac"/>
+  <table-filter match-name="tblcargalaboral"/>
+  <table-filter match-name="tblplanificaciontrabajo"/>
+  <table-filter match-name="tblcapacitacioncontinua"/>
+  <table-filter match-name="tblempleado_impartecapacitacion"/>
+  <table-filter match-name="tblempleado_recibecapacitacion"/>
+  <table-filter match-name="tblsolicitudcambioturno"/>
+  <table-filter match-name="tblcambioturno"/>
+  <table-filter match-name="tblpuesto"/>
+  <table-filter match-name="tblsueldoempleado"/>
+  <table-filter match-name="tblpuestoempleado"/>
+  <table-filter match-name="tblpermiso"/>
+</hibernate-reverse-engineering>

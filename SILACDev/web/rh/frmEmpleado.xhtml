@@ -1,0 +1,281 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Empleados
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript">
+function confirmFunction() {
+updateConfim.jq.click();
+}
+        </script>
+        <p:panel header="Registro de empleados">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/> 
+            <p:tabView>
+                <p:tab title="Registrar nuevo empleado">
+                    <h:panelGrid id="campos" style="width: 100%">
+                        <p:fieldset id="tabPersonal" legend="Datos Personales">
+                            <h:panelGrid columns="3">
+                                <h:outputText value="Primer Nombre:"/>
+                                <p:inputText id="txtPriNombre" 
+                                             value="#{empleadosBean.persona.primerNombre}" size="30" 
+                                             required="#{param['requireGroup1'] == '1'}"
+                                             requiredMessage="Requerido" />
+                                <p:message for="txtPriNombre"/>
+                                <h:outputText value="Segundo Nombre:"/>
+                                <p:inputText id="txtSegNombre" value="#{empleadosBean.persona.segundoNombre}" size="30"/>
+                                <p:message for="txtSegNombre"/>
+                                <h:outputText value="Primer Apellido:"/>
+                                <p:inputText id="txtPriApellido" value="#{empleadosBean.persona.primerApellido}" 
+                                             size="30" 
+                                             required="#{param['requireGroup1'] == '1'}" 
+                                             requiredMessage="Requerido" />
+                                <p:message for="txtPriApellido"/>
+                                <h:outputText value="Segundo Apellido:"/>
+                                <p:inputText id="txtSegApellido" value="#{empleadosBean.persona.segundoApellido}" size="30"/>
+                                <p:message for="txtSegApellido"/>  
+                                <h:outputText value="Fecha de nacimiento:"/>
+                                <p:calendar id="txtFecNac"
+                                            locale="es"
+                                            required="#{param['requireGroup1'] == '1'}" 
+                                            requiredMessage="Requerido" value="#{empleadosBean.persona.fechaNacimiento}" navigator="true" showOn="button" />
+                                <p:message for="txtFecNac"/>  
+                                <h:outputText value="Sexo:"/>     
+                                <h:selectOneRadio id="optSexo" value="#{empleadosBean.persona.sexo}" 
+                                                  required="#{param['requireGroup1'] == '1'}"  requiredMessage="Requerido">
+                                    <f:selectItems value="#{personasBean.cargarListaSexo()}" />
+                                </h:selectOneRadio>
+                                <p:message for="optSexo"/> 
+                                <h:outputText value="Departamento:"/>
+                                <h:selectOneMenu id="cboDepto" onchange="onSelectDepto()" 
+                                                 required="#{param['requireGroup1'] == '1'}"  
+                                                 requiredMessage="Requerido" 
+                                                 value="#{empleadosBean.selectedDepto}" 
+                                                 style="width: 200px">
+                                    <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                                    <f:selectItems value="#{domicilioBean.cargarListaDeptos()}" />
+                                </h:selectOneMenu>
+                                <p:message for="cboDepto"/>
+                                <h:outputText value="Municipio:"/>
+                                <h:selectOneMenu id="cboMunicipio" 
+                                                 required="#{param['requireGroup1'] == '1'}"
+                                                 requiredMessage="Requerido" 
+                                                 value="#{empleadosBean.selectedMunicipio}" 
+                                                 style="width: 200px">
+                                    <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                                    <f:selectItems value="#{empleadosBean.listaMunicipios}" /> 
+                                </h:selectOneMenu>
+                                <p:message for="cboMunicipio"/>
+                                <h:outputText value="Dirección:"/>
+                                <p:inputTextarea id="txtDir" 
+                                                 required="#{param['requireGroup1'] == '1'}"
+                                                 requiredMessage="Requerido" value="#{empleadosBean.domicilio.direccion}" cols="30" />
+                                <p:message for="txtDir"/>
+                                <h:outputText value="Teléfono particular:"/>
+                                <p:inputMask id="txtTelefono" value="#{empleadosBean.domicilio.telefonoParticular}"  mask="9999-9999" size="30" />
+                                <p:message for="txtTelefono"/>
+                                <h:outputText value="Tipo doc. identidad:"/> 
+                                <h:selectOneMenu  id="cboTipo" 
+                                                  required="#{param['requireGroup1'] == '1'}"                                                  requiredMessage="Requerido" style="width: 200px" value="#{empleadosBean.persona.tipoDocId}">
+                                    <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                                    <f:selectItem itemLabel="DUI" itemValue="DUI"/>
+                                    <f:selectItem itemLabel="NIT o lincencia de conducir" itemValue="NIT o lincencia de conducir"/>
+                                    <f:selectItem itemLabel="Pasaporte" itemValue="Pasaporte"/>
+                                </h:selectOneMenu>
+                                <p:message for="cboTipo"/> 
+                                <h:outputText value="Doc. Identidad:"/>
+                                <p:inputText id="txtDocId" 
+                                             required="#{param['requireGroup1'] == '1'}"
+                                             requiredMessage="Requerido" value="#{empleadosBean.persona.docId}"  size="30"/>
+                                <p:message for="txtDocId"/>
+                                <h:outputText value="AFP:"/>
+                                <p:inputText id="txtAfp" value="#{empleadosBean.empleado.nombreAfp}"  size="30"/>
+                                <p:message for="txtAfp"/> 
+                                <h:outputText value="NUP:"/>
+                                <p:spinner id="txtNup" value="#{empleadosBean.empleado.nup}" stepFactor="1" min="0"   size="30"/>
+                                <p:message for="txtNup"/> 
+                                <h:outputText value="ISSS:"/>
+                                <p:spinner id="txtIsss" value="#{empleadosBean.empleado.isss}" stepFactor="1" min="0"   size="30"/>
+                                <p:message for="txtIsss"/> 
+                            </h:panelGrid>
+                        </p:fieldset> 
+                        <p:fieldset legend="Datos Laborales">
+                            <h:panelGrid id="tabLaboral"  columns="3"> 
+                                <h:outputText value="Código marcación:"/>
+                                <p:spinner id="txtCodMarcacion" stepFactor="1" min="0"   
+                                           required="#{param['requireGroup1'] == '1'}"
+                                           requiredMessage="Requerido"  value="#{empleadosBean.empleado.codigoMarcacion}"  size="30"/>
+                                <p:message for="txtCodMarcacion"/> 
+                                <h:outputText value="Fecha de ingreso:"/>
+                                <p:calendar id="txtFecIngreso"
+                                            locale="es"
+                                            value="#{empleadosBean.empleado.fechaIngreso}" 
+                                            required="#{param['requireGroup1'] == '1'}"
+                                            requiredMessage="Requerido" navigator="true" showOn="button" />
+                                <p:message for="txtFecIngreso"/>  
+                                <h:outputText value="Puesto:"/>
+                                <h:selectOneMenu id="cboPuesto" binding="#{cboPuesto}" onchange="onSelectPuesto()" 
+                                                 required="#{param['requireGroup1'] == '1'}"
+                                                 requiredMessage="Requerido" value="#{empleadosBean.selectedPuesto}" style="width: 200px">
+                                    <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                                    <f:selectItems value="#{puestoBean.cargarListaPuestos()}"/>
+                                </h:selectOneMenu>
+                                <p:message for="cboPuesto"/> 
+                                <h:outputText value="Fecha de asignacion:"/>
+                                <p:calendar id="txtFecAsignacion"
+                                            locale="es"
+                                            required="#{param['requireGroup1'] == '1'}"
+                                            requiredMessage="Requerido"  value="#{empleadosBean.puestoEmpleado.fechaAsignacion}"  navigator="true" showOn="button" />
+                                <p:message for="txtFecAsignacion"/>  
+                                <h:outputText value="Unidad presupuestaria:"/>
+                                <p:inputText id="txtUnidad"  
+                                             required="#{param['requireGroup1'] == '1'}"
+                                             requiredMessage="Requerido"  value="#{empleadosBean.puestoEmpleado.unidadPresupuestaria}"  size="30"/>
+                                <p:message for="txtUnidad"/>  
+                                <h:outputText value="Partida:"/>
+                                <p:inputText id="txtPartida" 
+                                             required="#{param['requireGroup1'] == '1'}"
+                                             requiredMessage="Requerido"  value="#{empleadosBean.puestoEmpleado.partida}"  size="30"/>
+                                <p:message for="txtPartida"/> 
+                                <h:outputText value="Linea de trabajo:"/>
+                                <p:inputText id="txtLinea"  
+                                             required="#{param['requireGroup1'] == '1'}"
+                                             requiredMessage="Requerido"  value="#{empleadosBean.puestoEmpleado.lineaTrabajo}"  size="30"/>
+                                <p:message for="txtLinea"/>
+                                <h:outputText value="Asignar sueldo base:"/>
+                                <h:selectBooleanCheckbox id="chkTipoSueldo" onchange="onCheckTipoSueldo()" disabled="#{empleadosBean.disabledCheckTipoSueldo}" binding="#{chkSueldo}" value="#{empleadosBean.checkSueldo}"/>
+                                <h:outputText value=""/>
+                                <h:outputText value="Sueldo:"/>
+                                <p:outputPanel id="txtSueldo">
+                                    <p:spinner stepFactor="0.01" min="0"  readonly="#{chkSueldo.value}" requiredMessage="Requerido"  value="#{empleadosBean.sueldoEmpleado.sueldo}"  size="30">
+                                    </p:spinner>
+                                </p:outputPanel>
+
+                                <p:message for="txtSueldo"/> 
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <h:panelGrid style="width: 100%">
+                            <p:toolbar>  
+                                <p:toolbarGroup align="left">
+                                    <p:commandButton value="Nuevo" 
+                                                     process="@this"
+                                                     action="#{empleadosBean.nuevo()}"
+                                                     title="Nuevo" 
+                                                     image="ui-icon-document"/>  
+                                    <p:commandButton value="Guardar" 
+                                                     actionListener="#{empleadosBean.crear}"                                                             
+                                                     update="msg dtEmpleado campos" 
+                                                     title="Guardar" 
+                                                     image="ui-icon-disk">
+                                        <f:param name="requireGroup1" value="1"/>
+                                    </p:commandButton>  
+                                </p:toolbarGroup>  
+                            </p:toolbar> 
+                        </h:panelGrid>                        
+                    </h:panelGrid>
+                </p:tab>
+                <p:tab title="Consultar empleados">
+                    <p:dataTable id="dtEmpleado" var="varEmpleado" value="#{empleadosBean.empleados}" paginator="true" rows="10">
+                        <f:facet name="header">  
+                            Empleados Registrados 
+                        </f:facet> 
+                        <p:column style="text-align: center; width: 32px">  
+                            <f:facet name="header">  
+                                <h:outputText value="Código marcación" />  
+                            </f:facet>  
+                            <h:outputText value="#{varEmpleado[0].codigoMarcacion}" />  
+                        </p:column>  
+                        <p:column>  
+                            <f:facet name="header">  
+                                <h:outputText value="Empleado" />  
+                            </f:facet>  
+                            <h:outputText value="#{varEmpleado[1].primerNombre}
+                                          #{varEmpleado[1].segundoNombre} 
+                                          #{varEmpleado[1].primerApellido}
+                                          #{varEmpleado[1].segundoApellido}" />  
+                        </p:column>  
+                        <p:column>  
+                            <f:facet name="header">  
+                                <h:outputText value="Puesto" />  
+                            </f:facet>  
+                            <h:outputText value="#{varEmpleado[2].nombrePuesto}"/>  
+                        </p:column>  
+                        <p:column style="text-align: center">  
+                            <f:facet name="header">  
+                                <h:outputText value="Fecha de asignación"/>  
+                            </f:facet>  
+                            <h:outputText value="#{varEmpleado[3].fechaAsignacion}"/>  
+                        </p:column>
+                        <p:column style="text-align: center">  
+                            <f:facet name="header">  
+                                <h:outputText value="Sueldo" />  
+                            </f:facet>  
+                            <h:outputText value="#{varEmpleado[4].sueldo}"/>  
+                        </p:column>
+                        <p:column style="width: 64px;">  
+                            <p:commandButton update="display" 
+                                             title="Modificar"
+                                             oncomplete=""  
+                                             image="ui-icon ui-icon-pencil">  
+                                <f:setPropertyActionListener value=""  
+                                                             target="" />  
+                            </p:commandButton>
+                            <p:commandButton  image="ui-icon-trash" 
+                                              oncomplete="confirmation.show()" 
+                                              update="confirm" 
+                                              process="@this"
+                                              title="Eliminar">  
+                                <f:setPropertyActionListener value="#{varEmpleado}" target="#{empleadosBean.selectedEmpleado}" />
+                            </p:commandButton> 
+                        </p:column> 
+                    </p:dataTable>  
+                    <p:confirmDialog message="Desea eliminar el registro?" 
+                                     width="400"   
+                                     header="Confirm" 
+                                     severity="alert" 
+                                     widgetVar="confirmation" 
+                                     modal="true">  
+                        <p:outputPanel id="confirm">
+                            <h:panelGrid>
+                                <h:outputText  value="#{empleadosBean.selectedEmpleado[1].primerNombre}
+                                               #{empleadosBean.selectedEmpleado[1].segundoNombre} 
+                                               #{empleadosBean.selectedEmpleado[1].primerApellido}
+                                               #{empleadosBean.selectedEmpleado[1].segundoApellido}"/>
+                                <h:panelGrid columns="2">
+                                    <p:commandButton value="Si" 
+                                                     update="msg"
+                                                     action="#{empleadosBean.eliminar}" 
+                                                     oncomplete="confirmation.hide(); confirmFunction()" 
+                                                     process="@this">
+                                        <f:param name="idEmpleado" 
+                                                 value="#{empleadosBean.selectedEmpleado[0].codigoMarcacion}"/>
+                                    </p:commandButton>
+                                    <p:commandButton value="No" 
+                                                     onclick="confirmation.hide()" 
+                                                     type="button" />    
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </p:outputPanel>
+                    </p:confirmDialog>  
+                </p:tab>
+            </p:tabView>
+        </p:panel> 
+
+        <p:remoteCommand name="onSelectDepto" process="@this cboDepto" 
+                         update="cboMunicipio" action="#{empleadosBean.onSelectDepto}"/>
+        <p:remoteCommand name="onSelectPuesto" process="@this cboPuesto"
+                         action="#{empleadosBean.renderChkTipoSueldo}" update="chkTipoSueldo txtSueldo">
+            <f:setPropertyActionListener value="#{cboPuesto.value}" target="#{empleadosBean.selectedPuesto}" />  
+        </p:remoteCommand>
+        <p:remoteCommand name="onCheckTipoSueldo" process="@this  cboPuesto chkTipoSueldo" 
+                         update="txtSueldo" action="#{empleadosBean.renderTxtSueldo}"/>
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfim" 
+                         update="dtEmpleado msg">
+        </p:commandButton>
+    </ui:define>
+</ui:composition>

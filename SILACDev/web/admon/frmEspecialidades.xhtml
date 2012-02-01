@@ -1,0 +1,112 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../templates/template.xhtml">
+
+    <ui:define name="titulo">
+        Especialidades
+    </ui:define>
+
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfirm.jq.click();
+}
+        </script>
+        <p:panel header="Especialidades">
+            <p:growl  life="6000" id="msg" globalOnly="true" showDetail="true"/> 
+            <h:panelGrid style="width:100%">
+                <h:panelGrid id="campos"  columns="3">
+                    <h:outputText value="Código especialidad:"/>
+                    <p:spinner id="txtcodEspecialidad" size="25"
+                               value="#{especialidadesBean.especialidad.codigoEspecialidad}" stepFactor="1" min="0" showOn="hover" 
+                               required="true" requiredMessage="requerido"/>
+                    <p:message for="txtcodEspecialidad"/>
+                    <h:outputText value="Nombre especialidad:"/>
+                    <p:inputText id="txtnomEspecialidad" value="#{especialidadesBean.especialidad.nombreEspecialidad}" size="25" required="true" requiredMessage="requerido"/>
+                    <p:message for="txtnomEspecialidad"/>
+                </h:panelGrid>
+                <p:toolbar>  
+                    <p:toolbarGroup align="left">  
+                        <p:commandButton value="Nuevo"
+                                         immediate="true"
+                                         title="Nuevo"
+                                         process="@this"
+                                         action="#{especialidadesBean.nuevo}"                                                  
+                                         update="campos dtEspecialidad"
+                                         image="ui-icon-document"/>                                    
+                        <p:commandButton value="Guardar" 
+                                         process="@this campos" 
+                                         action="#{especialidadesBean.crear}" 
+                                         oncomplete="confirmFunction()" 
+                                         update="dtEspecialidad campos msg" 
+                                         title="Guardar" 
+                                         image="ui-icon-disk">                                                                                       
+                        </p:commandButton>   
+                    </p:toolbarGroup>  
+                </p:toolbar>
+                <p:dataTable id="dtEspecialidad" 
+                             widgetVar="dtEspecialidad" 
+                             rows="10"  
+                             paginator="true"  
+                             var="varEsp"
+                             value="#{especialidadesBean.especialidades}">
+                    <f:facet name="header">  
+                        <h:panelGrid style="width: 200px;" columns="3">
+                            <h:outputText value="Buscar: " />  
+                            <p:inputText  id="globalFilter" onkeyup="dtEspecialidad.filter()" style="width:150px" />  
+                        </h:panelGrid> 
+                    </f:facet>  
+                    <p:column filterBy="#{varEsp.codigoEspecialidad}" headerText="Código" style="text-align: center; width: 60px">
+                        <h:outputText value="#{varEsp.codigoEspecialidad}"/>
+                    </p:column> 
+                    <p:column filterBy="#{varEsp.nombreEspecialidad}" headerText="Nombre Especialidad">
+                        <h:outputText value="#{varEsp.nombreEspecialidad}"/>
+                    </p:column> 
+                    <p:column style="width: 64px;">  
+                        <f:facet name="header"/>    
+                        <p:commandButton  image="ui-icon ui-icon-pencil"/>
+                        <p:commandButton  image="ui-icon-trash" 
+                                          oncomplete="confirmation.show()" 
+                                          update="confirm" 
+                                          process="@this">  
+                            <f:setPropertyActionListener value="#{varEsp}" target="#{especialidadesBean.selectedEspecialidad}" />
+                        </p:commandButton>  
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+        </p:panel>                
+        <p:confirmDialog message="Desea eliminar el registro?" 
+                         width="400"   
+                         header="Confirm" 
+                         severity="alert" 
+                         widgetVar="confirmation" 
+                         modal="true">  
+            <p:outputPanel id="confirm">
+                <h:panelGrid>
+                    <h:outputText  value="#{especialidadesBean.selectedEspecialidad.codigoEspecialidad} #{especialidadesBean.selectedEspecialidad.nombreEspecialidad}"/>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Si" 
+                                         update="dtEspecialidad msg"
+                                         action="#{especialidadesBean.eliminar}" 
+                                         oncomplete="confirmation.hide(); confirmFunction(); dtEspecialidad.filter()" 
+                                         process="@this">
+                            <f:param name="idEspecialidad" 
+                                     value="#{especialidadesBean.selectedEspecialidad.idEspecialidad}"/>
+                        </p:commandButton>
+                        <p:commandButton value="No" 
+                                         onclick="confirmation.hide()" 
+                                         type="button" />    
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:confirmDialog>  
+
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfirm"
+                         oncomplete="dtEspecialidad.filter()" 
+                         update="dtEspecialidad msg"/>
+    </ui:define>
+</ui:composition>

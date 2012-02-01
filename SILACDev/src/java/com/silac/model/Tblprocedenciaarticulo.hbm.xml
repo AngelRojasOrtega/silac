@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblprocedenciaarticulo" table="tblprocedenciaarticulo" catalog="dbsilac">
+        <id name="idProcedencia" type="java.lang.Short">
+            <column name="idProcedencia" />
+            <generator class="identity" />
+        </id>
+        <property name="lugarProcedencia" type="string">
+            <column name="lugarProcedencia" length="254" not-null="true">
+                <comment>Nombre del lugar de procedencia.</comment>
+            </column>
+        </property>
+        <set name="tblentradas" inverse="true">
+            <key>
+                <column name="idProcedencia" not-null="true">
+                    <comment>Identificador lugar procedencia.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblentrada" />
+        </set>
+    </class>
+</hibernate-mapping>

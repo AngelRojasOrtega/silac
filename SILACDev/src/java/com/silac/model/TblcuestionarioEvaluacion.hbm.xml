@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.TblcuestionarioEvaluacion" table="tblcuestionario_evaluacion" catalog="dbsilac">
+        <id name="idCuestionario" type="java.lang.Integer">
+            <column name="idCuestionario" />
+            <generator class="identity" />
+        </id>
+        <property name="pregunta" type="string">
+            <column name="pregunta" length="65535" not-null="true">
+                <comment>Texto de la prengunta.</comment>
+            </column>
+        </property>
+        <property name="numeroPregunta" type="int">
+            <column name="numeroPregunta" not-null="true">
+                <comment>Numero correlativo de la pregunta.</comment>
+            </column>
+        </property>
+        <property name="rechazarDonante" type="boolean">
+            <column name="rechazarDonante" not-null="true" />
+        </property>
+        <property name="donanteMujer" type="boolean">
+            <column name="donanteMujer" not-null="true" />
+        </property>
+        <set name="tblrespuestaCuestionarios" inverse="true">
+            <key>
+                <column name="idCuestionario" not-null="true">
+                    <comment>Identificador del cuestionario.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.TblrespuestaCuestionario" />
+        </set>
+        <set name="tblcriterios" inverse="true">
+            <key>
+                <column name="idCuestionario" not-null="true">
+                    <comment>Identificador del cuestionario.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblcriterio" />
+        </set>
+        <set name="tbldetalleCuestionarios" inverse="true">
+            <key>
+                <column name="idCuestionario" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.TbldetalleCuestionario" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblevaluacionfisica" table="tblevaluacionfisica" catalog="dbsilac">
+        <id name="idEvaluacionFisica" type="java.lang.Long">
+            <column name="idEvaluacionFisica" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblevaluaciondonante" class="com.silac.model.Tblevaluaciondonante" fetch="select">
+            <column name="idEvaluacionDonantes" not-null="true" unique="true">
+                <comment>Identificador de la evaluaci&#243;n del donante.</comment>
+            </column>
+        </many-to-one>
+        <property name="peso" type="double">
+            <column name="peso" precision="22" scale="0" not-null="true">
+                <comment>Peso del donante en kilogramos.</comment>
+            </column>
+        </property>
+        <property name="presionArterial" type="double">
+            <column name="presionArterial" precision="22" scale="0" not-null="true">
+                <comment>Presi&#243;n arterial del donante.</comment>
+            </column>
+        </property>
+        <property name="pulso" type="double">
+            <column name="pulso" precision="22" scale="0" not-null="true">
+                <comment>Pulso cardiaco del donante.</comment>
+            </column>
+        </property>
+        <property name="temperatura" type="double">
+            <column name="temperatura" precision="22" scale="0" not-null="true">
+                <comment>Temperatura corporal del donante.</comment>
+            </column>
+        </property>
+        <property name="hemograma" type="java.lang.Boolean">
+            <column name="hemograma">
+                <comment>Valor obtenido en el hemograma del donante.</comment>
+            </column>
+        </property>
+        <property name="hemoglobina" type="java.lang.Boolean">
+            <column name="hemoglobina">
+                <comment>Valor de hemoglobina del paciente, obtenido en los resultados.</comment>
+            </column>
+        </property>
+        <property name="hematocrito" type="double">
+            <column name="hematocrito" precision="22" scale="0" not-null="true">
+                <comment>Porcentaje de hematocrito obtenido en los resultados.</comment>
+            </column>
+        </property>
+        <property name="inspeccionBrazos" type="string">
+            <column name="inspeccionBrazos" length="65535" not-null="true">
+                <comment>Descripci&#243;n de estado de los brazos del paciente.</comment>
+            </column>
+        </property>
+        <property name="tomoAlimentos" type="java.lang.Boolean">
+            <column name="tomoAlimentos">
+                <comment>Indica si el donante ingerio alimentos antes de someterse al proceso de donaci&#243;n.</comment>
+            </column>
+        </property>
+        <property name="observaciones" type="string">
+            <column name="observaciones" length="65535">
+                <comment>Observaciones o comentarios sobre la evaluaci&#243;n f&#237;sica.</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tbldetallepedido" table="tbldetallepedido" catalog="dbsilac">
+        <id name="idDetallePedido" type="java.lang.Integer">
+            <column name="idDetallePedido" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblarticulo" class="com.silac.model.Tblarticulo" fetch="select">
+            <column name="idArticulo" not-null="true">
+                <comment>Identificador del articulo.</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="tblpedido" class="com.silac.model.Tblpedido" fetch="select">
+            <column name="idPedido" not-null="true">
+                <comment>Identificador del articulo.</comment>
+            </column>
+        </many-to-one>
+        <property name="consumoReal" type="double">
+            <column name="consumoReal" precision="22" scale="0" not-null="true">
+                <comment>Consumo real de materiales.</comment>
+            </column>
+        </property>
+        <property name="cantidadSolicitada" type="double">
+            <column name="cantidadSolicitada" precision="22" scale="0" not-null="true">
+                <comment>Cantidad solicitada de materiales.</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

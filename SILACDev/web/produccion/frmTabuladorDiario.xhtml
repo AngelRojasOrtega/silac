@@ -1,0 +1,170 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Informe de Pedido
+    </ui:define>    
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+              function openPopupFunction() {
+openPopup.jq.click();
+}
+
+function doPopup(source,title){
+popup=window.open (source, "popup", "height=600, width=900");
+popup=document.title = title;
+popup.focus();
+}
+
+function confirmFunction() {
+updateConfim.jq.click();
+}
+        </script>
+        <p:panel header="Tabulador Diario de Actividades de Laboratorio">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+            <h:panelGrid id="campos" style="width: 100%">
+                <p:fieldset legend="Consultar">
+                    <h:panelGrid columns="3">
+                        <h:outputText value="Modalidad:"/>     
+                        <h:selectOneMenu id="cboModalidad" 
+                                         value="#{tabuladorDiarioBean.selectedModalidad}"                                          
+                                         style="width: 200px"                                                  
+                                         required="#{param['requireGroup1'] == '1'}"
+                                         requiredMessage="Requerido">
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                            <f:selectItems value="#{modalidadesBean.cargarListaModalidades()}"/>
+                        </h:selectOneMenu>
+                        <p:message for="cboModalidad"/> 
+                        <h:outputText value="Sección:"/>
+                        <h:selectOneMenu id="cboSeccion"
+                                         value="#{tabuladorDiarioBean.selectedSeccion}"                                          
+                                         style="width: 200px"                                             
+                                         required="#{param['requireGroup1'] == '1'}"
+                                         requiredMessage="Requerido">
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                            <f:selectItems value="#{seccionesBean.cargarSecciones()}"/>
+                        </h:selectOneMenu> 
+                        <p:message for="cboSeccion"/>
+                        <h:outputText value="Fecha de tabulación:"/>
+                        <p:calendar id="txtFecTabulacion" 
+                                    locale="es"
+                                    navigator="true" 
+                                    readOnlyInputText="true" 
+                                    maxdate="#{tabuladorDiarioBean.hoy}" 
+                                    value="#{tabuladorDiarioBean.selectedFecha}"                                   
+                                    showOn="button" required="#{param['requireGroup1'] == '1'}"
+                                    requiredMessage="Requerido"/>                                
+                        <p:commandButton image="ui-icon ui-icon-search" value="Consultar" title="Actividades Diarias"
+                                         update="dtTabulador" 
+                                         process="@this cboModalidad cboSeccion txtFecTabulacion" action="#{tabuladorDiarioBean.populateTabuladorDiario}">  
+
+                        </p:commandButton>
+                        <h:outputText value="Exportar como:" />
+                        <h:selectOneMenu style="width: 200px" id="cboTipo" value="#{tabuladorDiarioBean.selectedTipo}" >
+                            <f:selectItem itemLabel="-Seleccione una opcipón-" itemValue="#{null}"/>
+                            <f:selectItem itemLabel="Documento PDF" itemValue="application/pdf"/>
+                            <f:selectItem itemLabel="Documento EXCEL" itemValue="application/vnd.ms-excel"/>
+                            <f:selectItem itemLabel="Documento HTML" itemValue="text/html"/>
+                        </h:selectOneMenu> 
+                        <p:commandButton type="push" 
+                                         value="Imprimir" 
+                                         oncomplete="openPopupFunction()" 
+                                         update="openPopup campos" 
+                                         action="#{tabuladorDiarioBean.imprimir}" 
+                                         title="Imprimir" 
+                                         image="ui-icon-arrowthickstop-1-s"/> 
+                    </h:panelGrid>
+
+                </p:fieldset>
+            </h:panelGrid>
+        </p:panel>
+
+        <p:dataTable id="dtTabulador" rows="10" paginator="true" value="#{tabuladorDiarioBean.listaTabulador}" var="varTabulador">
+            <f:facet name="header">  
+               Tabulador diario de actividades
+            </f:facet> 
+            <p:column style="text-align:left">  
+                <f:facet name="header">  
+                    <h:outputText value="No. Orden" />  
+                </f:facet>  
+                <h:outputText value="#{varTabulador[0]}" />  
+            </p:column>
+            <p:column style="text-align:left">  
+                <f:facet name="header">  
+                    <h:outputText value="Nombre del Paciente" />  
+                </f:facet>  
+                <h:outputText value="#{varTabulador[1]} #{varTabulador[2]} #{varTabulador[3]} #{varTabulador[4]}" />  
+            </p:column>
+            <p:column style="text-align:right">  
+                <f:facet name="header">  
+                    <h:outputText value="Edad" />  
+                </f:facet>  
+                <h:outputText value="#{varTabulador[5]}" />  
+            </p:column>
+            <p:column style="text-align:right">  
+                <f:facet name="header">  
+                    <h:outputText value="Sexo" />  
+                </f:facet>  
+                <h:outputText value="#{varTabulador[6]}" />  
+            </p:column>
+            <p:column style="text-align:right">  
+                <f:facet name="header">  
+                    <h:outputText value="Expediente" />  
+                </f:facet>  
+                <h:outputText value="#{varTabulador[7]}" />  
+            </p:column>
+            <p:column style="text-align:right">  
+                <f:facet name="header">  
+                    <h:outputText value="Fecha" />  
+                </f:facet>  
+                <h:outputText value="#{varTabulador[8]}" />  
+            </p:column>
+            <p:column style="text-align:right">  
+                <f:facet name="header">  
+                    <h:outputText value="Procedencia" />  
+                </f:facet>  
+                <h:outputText value="#{varTabulador[9]}" />  
+            </p:column>
+            <p:column style="text-align:right">  
+                <f:facet name="header">  
+                    <h:outputText value="Nombre Procedimiento" />  
+                </f:facet>  
+                <h:outputText value="#{varTabulador[10]}" />  
+            </p:column>
+            <p:column style="text-align:right">  
+                <f:facet name="header">  
+                    <h:outputText value="Código Procedimiento" />  
+                </f:facet>  
+                <h:outputText value="#{varTabulador[11]}" />  
+            </p:column>
+            <p:column style="text-align:right">  
+                <f:facet name="header">  
+                    <h:outputText value="Resultado" />  
+                </f:facet>  
+                <h:outputText value="#{varTabulador[12]}" />  
+            </p:column>
+            <p:column style="text-align:right">  
+                <f:facet name="header">  
+                    <h:outputText value="Tipo Resultado (Código)" />  
+                </f:facet>  
+                <h:outputText value="#{varTabulador[13]}" />  
+            </p:column>
+
+
+        </p:dataTable>
+
+
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfim" 
+                         update="dtSalida msg"/>
+
+        <p:commandButton id="openPopup" 
+                         style="visibility: hidden" 
+                         onclick="doPopup('#{tabuladorDiarioBean.url}', 'Actividades Diarias de Laboratorio')"
+                         widgetVar="openPopup"/>
+    </ui:define>
+</ui:composition>
+

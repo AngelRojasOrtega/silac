@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblbitacora" table="tblbitacora" catalog="dbsilac">
+        <id name="idBitacora" type="java.lang.Long">
+            <column name="idBitacora" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblusuario" class="com.silac.model.Tblusuario" fetch="select">
+            <column name="idUsuario" not-null="true">
+                <comment>Identificador del usuario.</comment>
+            </column>
+        </many-to-one>
+        <property name="tipoOperacion" type="string">
+            <column name="tipoOperacion" length="254" not-null="true">
+                <comment>Operaci&#243;n realizada por el usuario.</comment>
+            </column>
+        </property>
+        <property name="fecha" type="timestamp">
+            <column name="fecha" length="19" not-null="true">
+                <comment>Fecha en la que se realiz&#243; la operaci&#243;n.</comment>
+            </column>
+        </property>
+        <property name="hora" type="timestamp">
+            <column name="hora" length="19" not-null="true">
+                <comment>Hora en la que se realiz&#243; la operaci&#243;n.</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

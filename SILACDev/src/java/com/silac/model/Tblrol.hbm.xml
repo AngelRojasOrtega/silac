@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblrol" table="tblrol" catalog="dbsilac">
+        <id name="idRol" type="java.lang.Short">
+            <column name="idRol" />
+            <generator class="identity" />
+        </id>
+        <property name="nombreRol" type="string">
+            <column name="nombreRol" length="25" not-null="true" unique="true">
+                <comment>Nombre del rol.</comment>
+            </column>
+        </property>
+        <set name="tblusuarios" inverse="true" table="tblusuario_rol">
+            <key>
+                <column name="idRol" not-null="true">
+                    <comment>Identificador del rol.</comment>
+                </column>
+            </key>
+            <many-to-many entity-name="com.silac.model.Tblusuario">
+                <column name="idUsuario" not-null="true">
+                    <comment>Identificador del usuario.</comment>
+                </column>
+            </many-to-many>
+        </set>
+        <set name="tblprivilegios" inverse="true">
+            <key>
+                <column name="idRol" not-null="true">
+                    <comment>Identificador del rol.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblprivilegio" />
+        </set>
+    </class>
+</hibernate-mapping>

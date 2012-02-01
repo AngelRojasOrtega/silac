@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblclinicaexterna" table="tblclinicaexterna" catalog="dbsilac">
+        <id name="idClinicaExterna" type="java.lang.Short">
+            <column name="idClinicaExterna" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblservicio" class="com.silac.model.Tblservicio" fetch="select">
+            <column name="idServicio" not-null="true">
+                <comment>Identificador del servicio</comment>
+            </column>
+        </many-to-one>
+        <property name="tipoClinica" type="string">
+            <column name="tipoClinica" length="30" not-null="true">
+                <comment>Tipo de cl&#237;nica. Esta puede ser (Unidad de salud, Clinica Empresarial ISSS, Penal de maxima seguridad, otro)</comment>
+            </column>
+        </property>
+        <property name="nombreClinica" type="string">
+            <column name="nombreClinica" length="254" not-null="true">
+                <comment>Nombre de la clinica.</comment>
+            </column>
+        </property>
+        <property name="direccionClinica" type="string">
+            <column name="direccionClinica" length="65535">
+                <comment>Direcci&#243;n de la clinica.</comment>
+            </column>
+        </property>
+        <property name="telefonoClinica" type="string">
+            <column name="telefonoClinica" length="9">
+                <comment>Telefono de la clinica.</comment>
+            </column>
+        </property>
+        <property name="encargado" type="string">
+            <column name="encargado" length="60">
+                <comment>Persona de contacto de la clincia.</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

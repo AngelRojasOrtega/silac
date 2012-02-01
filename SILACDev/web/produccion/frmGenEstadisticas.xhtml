@@ -1,0 +1,77 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Generar informes estadísticos
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript">
+            function openPopupFunction() {
+openPopup.jq.click();
+}
+function doPopup(source,title){
+popup=window.open (source, "popup", "height=600, width=900");
+popup=document.title = title;
+popup.focus();
+}
+        </script>
+        <p:panel header="Generar informes estadísticos">
+            <h:panelGrid id="campos" style="width: 100%">
+                <h:panelGrid  columns="2" columnClasses="alignTop,alignTop">  
+                    <h:outputText value="Informe:" />
+                    <h:selectOneMenu style="width: 200px" id="cboInforme" value="#{informesBean.selectedInforme}">
+                        <f:selectItem itemLabel="-Seleccione un Informe-" itemValue="#{null}"/>
+                        <f:selectItem itemLabel="Informe Mensual de Laboratorio" itemValue="informeMensualLaboratorio"/>
+                        <f:selectItem itemLabel="Informe Mensual de Actividades de Laboratorio" itemValue="informeMenActividadesLaboratorio"/>
+                    </h:selectOneMenu> 
+                    <h:outputText value="Mes:" />
+                    <h:selectOneMenu id="cboMes" value="#{informesBean.selectedMes}" binding="#{cboMes}" style="width: 200px">
+                        <f:selectItem itemLabel="-Seleccione un mes-" itemValue="#{null}"></f:selectItem>
+                        <f:selectItems value="#{informesBean.listaMeses}" />
+                    </h:selectOneMenu>
+                    <h:outputText value="Año:" />
+                    <p:spinner id="txtAnio" min="2011" stepFactor="1" value="#{informesBean.anio}"/>  
+                    <h:outputText value="Exportar como:" />
+                    <h:selectOneMenu style="width: 200px" id="cboTipo" value="#{informesBean.selectedTipo}">
+                        <f:selectItem itemLabel="-Seleccione tipo de importe de Informe-" itemValue="#{null}"/>
+                        <f:selectItem itemLabel="Documento PDF" itemValue="application/pdf"/>
+                        <f:selectItem itemLabel="Documento WORD" itemValue="application/msword"/>
+                        <f:selectItem itemLabel="Documento EXCEL" itemValue="application/vnd.ms-excel"/>
+                    </h:selectOneMenu> 
+                    <h:outputText value="Modalidad:"/>     
+                    <h:selectOneMenu id="cboModalidad" 
+                                     value="#{informesBean.selectedModalidad}" 
+                                     style="width: 200px" 
+                                     requiredMessage="Requerido">
+                        <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                        <f:selectItems value="#{modalidadesBean.cargarListaModalidades()}"/>
+                    </h:selectOneMenu>
+                    <p:message for="cboModalidad"/> 
+                </h:panelGrid>
+
+                <h:panelGrid style="width: 100%" >
+                    <p:toolbar>  
+                        <p:toolbarGroup align="left">  
+                            <p:commandButton type="push" value="Vista Preliminar" title="Vista Preliminar" image="ui-icon-search" />    
+                            <p:commandButton type="push" 
+                                             value="Imprimir" 
+                                             oncomplete="openPopupFunction()" 
+                                             update="openPopup campos" 
+                                             action="#{informesBean.onSelectInforme}" 
+                                             title="Imprimir" 
+                                             image="ui-icon-print"/> 
+                        </p:toolbarGroup>  
+                    </p:toolbar> 
+                </h:panelGrid>
+            </h:panelGrid>
+        </p:panel>
+        <p:commandButton id="openPopup" 
+                         style="visibility: hidden" 
+                         onclick="doPopup('#{informesBean.url}', 'Informes Estadisticos')"
+                         widgetVar="openPopup"/>
+    </ui:define>
+</ui:composition>

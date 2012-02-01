@@ -1,0 +1,148 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Cuentas de usuarios
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript">
+function confirmFunction() {
+updateConfim.jq.click();
+}
+        </script>
+        <p:panel header="Cuentas de usuarios">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/> 
+            <p:tabView>
+                <p:tab title="Registrar usuarios">
+                    <h:panelGrid id="campos"  columnClasses="alignTop,alignTop"  style="width: 100%">
+                        <p:fieldset legend="Datos del usuario">
+                            <h:panelGrid columns="3">
+                                <h:outputText value="Empleado:"/>
+                                <h:selectOneMenu id="cboEmpleado" value="#{cuentaUsuarioBean.selectedEmpleado}" style="width: 175px" required="true" requiredMessage="requerido">
+                                    <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                                    <f:selectItems value="#{empleadosBean.listaEmpleados()}" />  
+                                </h:selectOneMenu>
+                                <p:message for="cboEmpleado"/>
+                                <h:outputText value="Nombre de Usuario:"/> 
+                                <p:inputText id="txtNomUsuario" value="#{cuentaUsuarioBean.usuario.login}" size="20" required="true" requiredMessage="requerido"/>  
+                                <p:message for="txtNomUsuario"/>
+                                <h:outputText value="Contraseña:"/>                                
+                                <p:password id="txtPass" binding="#{txtpass}"  
+                                            value="#{cuentaUsuarioBean.usuario.pass}" 
+                                            promptLabel="Por favor escriba una contraseña" 
+                                            weakLabel="Débil" goodLabel="Buena" strongLabel="Fuerte"  
+                                            feedback="true" minLength="8" size="20" 
+                                            required="true" requiredMessage="requerido">
+                                    <f:validateLength for="txtPass" minimum="8"/>
+                                </p:password>  
+                                <p:message for="txtPass"/>
+                                <h:outputText value="Verificar contraseña:"/> 
+                                <p:password  id="txtVerificar" value="#{cuentaUsuarioBean.verificar}" 
+                                             promptLabel="Por favor repita la contraseña"
+                                             weakLabel="Débil" goodLabel="Buena" strongLabel="Fuerte"
+                                             feedback="true" minLength="8" size="20" 
+                                             required="true" requiredMessage="requerido">
+                                    <f:validator  validatorId="passwordValidator"/>
+                                    <f:attribute name="pass" value="#{txtpass.value}"/>
+                                </p:password>  
+                                <p:message for="txtVerificar"/>
+                                <p:ajaxStatus style="width:16px;height:16px;">  
+                                    <f:facet name="start">  
+                                        <h:graphicImage value="#{resource['images:ajax-loader.gif']}" />  
+                                    </f:facet>  
+
+                                    <f:facet name="complete">  
+                                        <h:outputText value="" />  
+                                    </f:facet>  
+                                </p:ajaxStatus> 
+                            </h:panelGrid> 
+                        </p:fieldset>
+                        <p:fieldset legend="Permisos">
+                            <h:panelGrid columns="2" columnClasses="alignTop,alignTop">
+                                <p:pickList id="cboRoles" value="#{cuentaUsuarioBean.listaRoles}"  
+                                            var="rol" required="true" 
+                                            requiredMessage="Requrido"                                        
+                                            itemLabel="#{rol}"  
+                                            itemValue="#{rol}">
+                                    <f:facet name="sourceCaption">Roles disponibles</f:facet>  
+                                    <f:facet name="targetCaption">Roles asignados</f:facet>  
+                                </p:pickList>
+                                <p:message for="cboRoles"/>
+                            </h:panelGrid>
+                        </p:fieldset>                     
+                    </h:panelGrid>
+                    <h:panelGrid style="width:100%">
+                        <p:toolbar>  
+                            <p:toolbarGroup align="left">  
+                                <p:commandButton value="Nuevo"
+                                                 immediate="true"
+                                                 title="Nuevo"
+                                                 process="@this"
+                                                 action="#{cuentaUsuarioBean.nuevo}"                                                  
+                                                 update="campos"
+                                                 image="ui-icon-document"/>                                    
+                                <p:commandButton value="Guardar" 
+                                                 action="#{cuentaUsuarioBean.crear}" 
+                                                 oncomplete="confirmFunction()" 
+                                                 update="dtUsuario campos msg" 
+                                                 title="Guardar" 
+                                                 image="ui-icon-disk">                                                                                       
+                                </p:commandButton> 
+                            </p:toolbarGroup>  
+                        </p:toolbar> 
+                    </h:panelGrid>                            
+                </p:tab>
+                <p:tab title="Consultar usuarios">
+                    <style type="text/css">
+                        .ui-datalist-content ul{
+                            border : 0px !important;
+                        }
+                    </style>
+                    <p:dataTable id="dtUsuario" 
+                                 style="overflow:scroll; height:350px" 
+                                     var="varUsuarios" 
+                                     value="#{cuentaUsuarioBean.listaUsuarios}" 
+                                     widgetVar="dtUsuario">
+                                     <f:facet name="header">  
+                                         <h:panelGrid style="width: 200px;" columns="2">
+                                             <h:outputText value="Buscar: " />  
+                                             <p:inputText id="globalFilter" onkeyup="dtUsuario.filter()" style="width:150px" />  
+                                             </h:panelGrid> 
+                                         </f:facet> 
+                                         <p:column filterBy="#{varUsuarios.nombre}">
+                                             <f:facet name="header">
+                                                 <h:outputText value="Empleado"/>
+                                             </f:facet>
+                                             <h:outputText value="#{varUsuarios.nombre}"/>
+                                         </p:column>
+                                         <p:column filterBy="#{varUsuarios.usuario.login}" >
+                                             <f:facet  name="header">
+                                                 <h:outputText value="Usuario"/>
+                                             </f:facet>
+                                             <h:outputText value="#{varUsuarios.usuario.login}"/>
+                                         </p:column>
+                                         <p:column>
+                                             <f:facet name="header">
+                                                 <h:outputText value="Roles asignados"/>
+                                             </f:facet>
+                                             <p:dataList style="border-style:none !important;" value="#{varUsuarios.rol.toArray()}" var="rol" itemType="disc">  
+                                                 #{rol}
+                                             </p:dataList>  
+                                         </p:column>
+                                         <p:column style="width: 64px;">
+                                             <f:facet name="header" id=""><h:outputText value=""/></f:facet>
+                                             <p:commandButton  image="ui-icon ui-icon-pencil"/>
+                                             <p:commandButton  image="ui-icon ui-icon-trash"/>
+                                         </p:column>
+                                     </p:dataTable>                            
+                                 </p:tab>
+                    </p:tabView>
+                </p:panel>
+                <p:commandButton style="visibility: hidden" 
+                                 widgetVar="updateConfim" 
+                                 update="dtUsuario msg"/>
+            </ui:define>
+        </ui:composition>

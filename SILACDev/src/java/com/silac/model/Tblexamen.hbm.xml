@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblexamen" table="tblexamen" catalog="dbsilac">
+        <id name="idExamen" type="java.lang.Long">
+            <column name="idExamen" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblseccion" class="com.silac.model.Tblseccion" fetch="select">
+            <column name="idSeccionLaboratorio" not-null="true">
+                <comment>Identificador de la secci&#243;n.</comment>
+            </column>
+        </many-to-one>
+        <property name="codigoExamen" type="string">
+            <column name="codigoExamen" length="4" not-null="true" unique="true">
+                <comment>C&#243;digo del examen.</comment>
+            </column>
+        </property>
+        <property name="nombreExamen" type="string">
+            <column name="nombreExamen" length="120" not-null="true">
+                <comment>Nombre del examen.</comment>
+            </column>
+        </property>
+        <set name="tblexamenOrdens" inverse="true">
+            <key>
+                <column name="idExamen" not-null="true">
+                    <comment>Identificador del examen.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.TblexamenOrden" />
+        </set>
+        <set name="tblparametros" inverse="true">
+            <key>
+                <column name="idExamen" not-null="true">
+                    <comment>Identificador del examen.</comment>
+                </column>
+            </key>
+            <one-to-many class="com.silac.model.Tblparametro" />
+        </set>
+        <set name="tblexamenarticulos" inverse="true">
+            <key>
+                <column name="idExamen" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.Tblexamenarticulo" />
+        </set>
+    </class>
+</hibernate-mapping>

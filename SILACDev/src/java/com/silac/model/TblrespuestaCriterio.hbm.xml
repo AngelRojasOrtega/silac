@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.TblrespuestaCriterio" table="tblrespuesta_criterio" catalog="dbsilac">
+        <id name="idRespuestaCriterio" type="java.lang.Long">
+            <column name="idRespuestaCriterio" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tblrespuestaCuestionario" class="com.silac.model.TblrespuestaCuestionario" fetch="select">
+            <column name="idRespuesta" not-null="true">
+                <comment>Identificador de la respuesta.</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="tblcriterio" class="com.silac.model.Tblcriterio" fetch="select">
+            <column name="idCriterio" not-null="true">
+                <comment>Identificador del criterio.</comment>
+            </column>
+        </many-to-one>
+        <property name="respuesta" type="java.lang.Boolean">
+            <column name="respuesta">
+                <comment>Indica si el donante respondi&#243; afirmativa o negativamente.</comment>
+            </column>
+        </property>
+        <property name="observacion" type="string">
+            <column name="observacion" length="65535">
+                <comment>Texto explicativo de la respuesta del donante.</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

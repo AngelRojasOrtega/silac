@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <body>
+        <ui:composition template="./../templates/template.xhtml">
+            <ui:define name="titulo">
+                Confirmación de resultados
+            </ui:define>
+            <ui:define name="content">
+                <p:panel header="Confirmación de resultados">
+                    <h:panelGrid style="width: 100%">
+                        <p:dataTable rows="10" paginator="true" value="" var="articulo">
+                            <f:facet name="header">  
+                                Resultados pendientes de confirmar
+                            </f:facet> 
+                            <p:column style="text-align:center">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Fecha de envio" />  
+                                </f:facet>  
+                                <h:outputText value="dd/mm/aaaa" />  
+                            </p:column>
+                            <p:column style="text-align:center">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Paciente" />  
+                                </f:facet>  
+                                <h:outputText value="Nombre del paciente" />  
+                            </p:column>
+                            <p:column style="text-align:center">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Examen" />  
+                                </f:facet>  
+                                <h:outputText value="Nombre del examen" />  
+                            </p:column>
+                            <p:column style="text-align:center">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Laboratorio" />  
+                                </f:facet>  
+                                <h:outputText value="Nombre del laboratorio" />  
+                            </p:column>
+                            <p:column style="width:32px">   
+                                <p:commandButton image="ui-icon ui-icon-disk" onclick="confirmar.show();"/> 
+                            </p:column> 
+                        </p:dataTable>
+                    </h:panelGrid>
+                    <p:dialog closeOnEscape="true" modal="true" draggable="false" header="Confirmación resultados" resizable="false" width="370" height="350" widgetVar="confirmar">
+                        <h:panelGrid>
+                            <p:fieldset legend="Datos del examen">
+                                <h:panelGrid>
+                                    <h:outputText value="Fecha envio: dd/mm/aaaa"/>
+                                    <h:outputText value="Paciente: Nombre del paciente"/>
+                                    <h:outputText value="Examen: Nombre del examen"/>
+                                    <h:outputText value="Laboratorio: Nombre del laboratorio"/>
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:fieldset legend="Resultados">
+                                <h:panelGrid columns="2">
+                                    <h:outputText value="Fecha de recepción:"/>
+                                    <p:calendar id="txtFecRecepcion" locale="es" navigator="true" showOn="button"/>
+                                    <h:outputText value="Resultado:"/>
+                                    <p:inputText id="txtResultado"/>
+                                    <h:outputText value="Observación:"/>
+                                    <p:inputTextarea id="txtObservación"/>
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:toolbar>  
+                                <p:toolbarGroup align="left">  
+                                    <p:commandButton type="push" value="Guardar" title="Guardar" image="ui-icon-disk"/>
+                                    <p:commandButton type="push" value="Cancelar" title="Cancelar" image="ui-icon-cancel" onclick="confirmar.hide();" />   
+                                </p:toolbarGroup>  
+                            </p:toolbar> 
+                        </h:panelGrid>
+                    </p:dialog>
+                </p:panel> 
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

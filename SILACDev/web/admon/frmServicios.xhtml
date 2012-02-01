@@ -1,0 +1,159 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Servicios
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfirm.jq.click();
+}
+        </script>
+        <p:panel header="Servicios">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+            <h:panelGrid id="campos" style="width:100%">
+                <p:fieldset legend="Datos del servicio">
+                    <h:panelGrid columns="3">
+                        <h:outputText value="Modalidad:"/>     
+                        <h:selectOneMenu id="cboModalidad" 
+                                         value="#{serviciosBean.selectedModalidad}" 
+                                         style="width: 200px" 
+                                         onchange="onSelectModalidad()"
+                                         required="#{param['requireGroup1'] == '1'}"
+                                         requiredMessage="Requerido">
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                            <f:selectItems value="#{modalidadesBean.cargarListaModalidades()}"/>
+                        </h:selectOneMenu>
+                        <p:message for="cboModalidad"/> 
+                        <h:outputText value="Tipo Servicio:"/>
+                        <h:selectOneMenu id="cboTipoServicio" 
+                                         style="width: 200px" 
+                                         value="#{serviciosBean.selectedTipoServicio}" 
+                                         required="#{param['requireGroup1'] == '1'}" 
+                                         requiredMessage="requerido">
+                            <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                            <f:selectItems value="#{serviciosBean.listaTipoServicio}" />
+                        </h:selectOneMenu>
+                        <p:message for="cboTipoServicio"/>  
+                        <h:outputText value="Código del Servicio:"/> 
+
+                        <p:spinner id="txtCodServicio" size="30"
+                                   value="#{serviciosBean.servicio.codigoServicio}" 
+                                   stepFactor="1" min="0" showOn="hover" 
+                                   required="#{param['requireGroup1'] == '1'}" 
+                                   requiredMessage="requerido"/>
+                        <p:message for="txtCodServicio"/>
+                        <h:outputText value="Nombre del Servicio:"/> 
+                        <p:inputText id="txtNomServicio" 
+                                     size="30" 
+                                     value="#{serviciosBean.servicio.nombreServicio}" 
+                                     required="#{param['requireGroup1'] == '1'}" 
+                                     requiredMessage="requerido"/>
+                        <p:message for="txtNomServicio"/>  
+                        <h:outputText value="Clinica Externa"/>
+                        <h:selectBooleanCheckbox id="chkClinica" onchange="onCheckClinica()" value="#{serviciosBean.chkClinica}"/>
+                    </h:panelGrid>
+                </p:fieldset>
+                <p:outputPanel id="camposClinica" >
+                    <p:fieldset legend="Clinicas Externas" rendered="#{serviciosBean.chkClinica}">  
+                        <h:panelGrid columns="3">
+                            <h:outputText value="Tipo:"/> 
+                            <h:selectOneMenu id="cboTipoClinica" 
+                                             style="width: 200px" 
+                                             value="#{serviciosBean.clinica.tipoClinica}" 
+                                             required="#{param['requireGroup1'] == '1'}" 
+                                             requiredMessage="requerido">
+                                <f:selectItem itemLabel="-Seleccione una opción-" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="Unidad de Salud" itemValue="Unidad de Salud"/>
+                                <f:selectItem itemLabel="Clinica Empresarial" itemValue="Clinica Empresarial"/>
+                                <f:selectItem itemLabel="Penitenciaria" itemValue="Penitenciaria"/>
+                            </h:selectOneMenu>
+                            <p:message for="cboTipoClinica"/> 
+                            <h:outputText value="Nombre de la Clínica:"/> 
+                            <p:inputText id="txtNomClinica" size="30" 
+                                         value="#{serviciosBean.clinica.nombreClinica}" 
+                                         required="#{param['requireGroup1'] == '1'}" 
+                                         requiredMessage="requerido"/>
+                            <p:message for="txtNomClinica"/> 
+                            <h:outputText value="Dirección:"/> 
+                            <p:inputText id="txtDireccion" 
+                                         size="30" 
+                                         value="#{serviciosBean.clinica.direccionClinica}" 
+                                         required="#{param['requireGroup1'] == '1'}" 
+                                         requiredMessage="requerido"/>
+                            <p:message for="txtDireccion"/> 
+                            <h:outputText value="Teléfono:"/> 
+                            <p:inputText id="txtTelefono" 
+                                         size="30" 
+                                         value="#{serviciosBean.clinica.telefonoClinica}"/>
+                            <p:message for="txtTelefono"/>
+                            <h:outputText value="Encargado:"/> 
+                            <p:inputText id="txtEncargado" size="30"  value="#{serviciosBean.clinica.encargado}" 
+                                         required="#{param['requireGroup1'] == '1'}" 
+                                         requiredMessage="requerido"/>
+                            <p:message for="txtEncargado"/>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </p:outputPanel>
+            </h:panelGrid>
+            <h:panelGrid style="width: 100%">
+                <p:toolbar>  
+                    <p:toolbarGroup align="left">  
+                        <p:commandButton value="Nuevo"
+                                         immediate="true"
+                                         title="Nuevo"
+                                         process="@this"
+                                         action="#{serviciosBean.nuevo}"                                                  
+                                         update="dtServicio campos"
+                                         image="ui-icon-document"/>                                  
+                        <p:commandButton value="Guardar" 
+                                         process="@this campos" 
+                                         action="#{serviciosBean.crear}" 
+                                         update="dtServicio campos msg" 
+                                         title="Guardar" 
+                                         image="ui-icon-disk">  
+                            <f:param name="requireGroup1" value="1"/>
+                        </p:commandButton>   
+                    </p:toolbarGroup>  
+                </p:toolbar> 
+            </h:panelGrid>
+            <p:dataTable id="dtServicio" 
+                         widgetVar="dtServicio" 
+                         var="varServicio" 
+                         rows="10" 
+                         paginator="true" 
+                         value="#{serviciosBean.servicios}">
+                <f:facet name="header">  
+                    <h:panelGrid style="width: 200px;" columns="3">
+                        <h:outputText value="Buscar: " />  
+                        <p:inputText  id="globalFilter" onkeyup="dtServicio.filter()" style="width:150px" />  
+                    </h:panelGrid> 
+                </f:facet>  
+                <p:column filterBy="#{varServicio.codigoServicio}" style="text-align: center; width: 32px">
+                    <f:facet  name="header"><h:outputText value="Código"/></f:facet>
+                    <h:outputText value="#{varServicio.codigoServicio}"/>
+                </p:column>
+                <p:column filterBy="#{varServicio.nombreServicio}">
+                    <f:facet name="header"><h:outputText value="Servicio"/></f:facet>
+                    <h:outputText value="#{varServicio.nombreServicio}"/>
+                </p:column>
+                <p:column style="width: 64px;">
+                    <f:facet name="header" id=""><h:outputText value=""/></f:facet>
+                    <p:commandButton  image="ui-icon ui-icon-pencil"/>
+                    <p:commandButton  image="ui-icon ui-icon-trash"/>
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+        <p:remoteCommand name="onCheckClinica" process="@this chkClinica" update="camposClinica"/>
+        <p:remoteCommand name="onSelectModalidad" process="@this cboModalidad" 
+                         update="cboTipoServicio" action="#{serviciosBean.onSelectModalidad}"/>
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfirm" 
+                         oncomplete="dtServicio.filter()" 
+                         update="dtServicio msg"/>
+    </ui:define>
+</ui:composition>

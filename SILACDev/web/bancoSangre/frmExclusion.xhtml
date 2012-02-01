@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <body>
+        <ui:composition template="./../templates/template.xhtml">
+            <ui:define name="titulo">
+                Exclusión de donantes
+            </ui:define>
+            <ui:define name="content">
+                <p:panel header="Exclusión de donantes">
+                    <h:panelGrid style="width: 100%">
+                        <p:fieldset legend="Donantes">
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Donantes disponibles:"/>
+                                <h:selectOneMenu style="width: 200px"  id="cboTransfusion">
+                                    <f:selectItem itemLabel="-Seleccione una opción-" itemValue="1"></f:selectItem>
+                                </h:selectOneMenu> 
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <p:fieldset legend="Datos de la exclusión">
+                            <h:panelGrid columns="2">                                
+                                <h:outputText value="Categoría exclusión:"/>
+                                <h:selectOneMenu style="width: 200px"  id="cboCatExclusión">
+                                    <f:selectItem itemLabel="-Seleccione un servicio-" itemValue="1"></f:selectItem>
+                                </h:selectOneMenu> 
+                                <h:outputText value="Fecha de exclusión:"/>
+                                <p:calendar id="txtFecExclusión" locale="es" navigator="true" showOn="button" />
+                                <h:outputText value="Lugar de la exclusión:"/>
+                                <p:inputText id="txtLugExclusion"/>      
+                                <h:outputText value="Tiempo de la exclusión:"/>
+                                <p:inputText id="txtTiempoExclusion"/> 
+                                <h:outputText value="Fecha de elegibilidad:"/>
+                                <p:calendar id="txtFecElegibilidad" locale="es" navigator="true" showOn="button" />
+                                <h:outputText value="Motivo de exclusión:"/>
+                                <p:inputTextarea id="txtMotivo"/>  
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <p:fieldset legend="Datos de auto-exclusión">
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Donante auto-excluido:"/>
+                                <h:selectManyCheckbox id="chkAuto" value="">
+                                    <f:selectItem itemLabel="" itemValue="auto" />
+                                </h:selectManyCheckbox> 
+                                <h:outputText value="Confirmación:"/>
+                                <h:selectManyCheckbox id="chkConfirmacion" value="">
+                                    <f:selectItem itemLabel="" itemValue="confirmacion" />
+                                </h:selectManyCheckbox> 
+                                <h:outputText value="Número de bolsa:"/>
+                                <h:panelGrid columns="2">
+                                    <p:inputText id="txtNumBolsa"/> 
+                                    <p:commandButton type="push" value="Buscar" title="Guardar" image="ui-icon-search"/>  
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <p:dataTable rows="10" paginator="true" value="" var="excluido">
+                            <f:facet name="header">  
+                                Donantes excluidos
+                            </f:facet> 
+                            <p:column style="text-align:center">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Nombre" />  
+                                </f:facet>  
+                                <h:outputText value="Nombre del donante" />  
+                            </p:column>
+                            <p:column style="text-align:center">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Categoría" />  
+                                </f:facet>  
+                                <h:outputText value="Categoría de la exclusión" />  
+                            </p:column>
+                            <p:column style="text-align:center">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Fecha de exclusión" />  
+                                </f:facet>  
+                                <h:outputText value="dd/mm/aaaa" />  
+                            </p:column>
+                            <p:column style="text-align:center">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Tiempo de exclusión" />  
+                                </f:facet>  
+                                <h:outputText value="999" />  
+                            </p:column>         
+                            <p:column style="text-align:center">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Fecha de elegibilidad" />  
+                                </f:facet>  
+                                <h:outputText value="dd/mm/aaaa" />  
+                            </p:column>
+                            <p:column style="text-align:center">  
+                                <f:facet name="header">  
+                                    <h:outputText value="Motivo" />  
+                                </f:facet>  
+                                <h:outputText value="Motivo de exclusión" />  
+                            </p:column>
+                            <p:column style="width:64px">   
+                                <p:commandButton image="ui-icon ui-icon-pencil"/> 
+                                <p:commandButton image="ui-icon ui-icon-trash"/> 
+                            </p:column> 
+                        </p:dataTable>
+                    </h:panelGrid>
+                    <h:panelGrid style="width: 100%">
+                        <p:toolbar>  
+                            <p:toolbarGroup align="left">  
+                                <p:commandButton type="push" value="Nuevo" title="Nuevo" image="ui-icon-document" /> 
+                                <p:commandButton type="push" value="Guardar" title="Guardar" image="ui-icon-disk"/>  
+                            </p:toolbarGroup>  
+                        </p:toolbar>  
+                    </h:panelGrid>
+                </p:panel> 
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-29-2012 03:43:05 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.silac.model.Tblsolicitudcambioturno" table="tblsolicitudcambioturno" catalog="dbsilac">
+        <id name="idSolicitud" type="java.lang.Long">
+            <column name="idSolicitud" />
+            <generator class="identity" />
+        </id>
+        <property name="fechaSolicitud" type="timestamp">
+            <column name="fechaSolicitud" length="19" not-null="true">
+                <comment>Fecha en la que se realiz&#243; la solicitud.</comment>
+            </column>
+        </property>
+        <property name="motivo" type="string">
+            <column name="motivo" length="65535" not-null="true">
+                <comment>Motivo por el cual se solicita el cambio de turno.</comment>
+            </column>
+        </property>
+        <property name="tiempoSolicitado" type="int">
+            <column name="tiempoSolicitado" not-null="true">
+                <comment>Tiempo que el empleado solicita para realizar el cambio.</comment>
+            </column>
+        </property>
+        <property name="fechaSolicitada" type="timestamp">
+            <column name="fechaSolicitada" length="19" not-null="true">
+                <comment>Fecha solicitada por el empleado para ser intercambiada.</comment>
+            </column>
+        </property>
+        <property name="horaInicioSolicitada" type="timestamp">
+            <column name="horaInicioSolicitada" length="19">
+                <comment>Inicio de la jornada que desea intercambiar el empleado.</comment>
+            </column>
+        </property>
+        <property name="horaFinalSolicitada" type="timestamp">
+            <column name="horaFinalSolicitada" length="19">
+                <comment>Hora en que finaliza la jornada que desea intercambiar el empleado.</comment>
+            </column>
+        </property>
+        <property name="tiempoResposicion" type="int">
+            <column name="tiempoResposicion" not-null="true">
+                <comment>Tiempo que repondra el empleado por le cambio realizado.</comment>
+            </column>
+        </property>
+        <property name="fechaReposicion" type="timestamp">
+            <column name="fechaReposicion" length="19" not-null="true">
+                <comment>Fecha en la que se realizar&#225; la reposici&#243;n.</comment>
+            </column>
+        </property>
+        <property name="horaInicioReposicion" type="timestamp">
+            <column name="horaInicioReposicion" length="19">
+                <comment>Hora en que da inicio la jornada que ser&#225; repuesta.</comment>
+            </column>
+        </property>
+        <property name="horaFinalReposicion" type="timestamp">
+            <column name="horaFinalReposicion" length="19" not-null="true">
+                <comment>Hora en la que finaliza la jornada que ser&#225; repuesta.</comment>
+            </column>
+        </property>
+        <property name="servicioReposicion" type="string">
+            <column name="servicioReposicion" length="50" not-null="true">
+                <comment>Servicio o labor que repondr&#225; el empleado.</comment>
+            </column>
+        </property>
+        <set name="tblcambioturnos" inverse="true">
+            <key>
+                <column name="idSolicitud" not-null="true" />
+            </key>
+            <one-to-many class="com.silac.model.Tblcambioturno" />
+        </set>
+    </class>
+</hibernate-mapping>

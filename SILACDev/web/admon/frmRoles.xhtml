@@ -1,0 +1,147 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Permisos
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfim.jq.click();
+}
+        </script>
+        <p:panel header="Roles">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/> 
+            <h:panelGrid cellspacing="0" cellpadding="0" columns="2" columnClasses="alignTop,alignTop" style="width: 700px">
+                <h:panelGrid style="width: 375px">
+                    <p:fieldset>
+                        <h:panelGrid id="campos" columns="3" columnClasses="alignTop,alignTop,alignTop">  
+                            <h:outputText value="Nombre:"/> 
+                            <p:inputText id="txtRol" value="#{rolesBean.rol.nombreRol}" 
+                                         size="20" required="true" requiredMessage="requerido"/>
+                            <p:message for="txtRol"/>                               
+                            <p:commandButton value="Agregar"
+                                             action="#{rolesBean.crear}"
+                                             oncomplete="confirmFunction()" 
+                                             update="dtRol campos msg" 
+                                             title="Guardar" 
+                                             image="ui-icon ui-icon-circle-plus">                                                                                       
+                            </p:commandButton>  
+                        </h:panelGrid> 
+                    </p:fieldset>                            
+                    <p:dataTable id="dtRol" var="varRol"
+                                 rows="5" paginator="true" 
+                                 value="#{rolesBean.roles}"
+                                 style="width: 100%">
+                        <f:facet name="header">Roles</f:facet>
+                        <p:column style="text-align: center; width: 32px">
+                            <f:facet name="header"><h:outputText value="Id"/></f:facet>
+                            <h:outputText value="#{varRol.idRol}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header"><h:outputText value="Rol"/></f:facet>
+                            <h:outputText value="#{varRol.nombreRol}"/>
+                        </p:column>
+                        <p:column style="width: 64px">
+                            <p:commandButton  image="ui-icon-trash" 
+                                              oncomplete="confirmation.show()" 
+                                              update="confirm" 
+                                              process="@this">  
+                                <f:setPropertyActionListener value="#{varRol}" target="#{rolesBean.selectedRol}" />
+                            </p:commandButton> 
+                            <p:commandButton  image="ui-icon-search" 
+                                              oncomplete="" 
+                                              action="#{rolesBean.onRowSelect}"
+                                              update="msg dtObj rPanel" 
+                                              process="@this">  
+                                <f:setPropertyActionListener value="#{varRol}" target="#{rolesBean.selectedRol}" />
+                            </p:commandButton> 
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGrid>
+                <h:panelGrid id="rPanel" style="width: 350px">
+                    <p:fieldset id="info"  rendered="#{rolesBean.renderInfo}">
+                        <h:panelGrid columns="2" captionClass="alingTop,alingTop">
+                            <h:graphicImage value="#{resource['images:info.png']}" /> 
+                            <h:outputText value="Seleccione un Rol en el panel izquierdo 
+                                          para modificar sus privilegios."/>
+                        </h:panelGrid>                                
+                    </p:fieldset>
+                    <p:fieldset rendered="#{rolesBean.renderDtObj}">
+                        <h:outputText style="font-weight: bold;" value ="Rol selecionado: "/>
+                        <h:outputText style="font-size:large; font-weight: bold;" value ="#{rolesBean.selectedRol.nombreRol}"/>
+                    </p:fieldset>
+                    <p:treeTable id="dtObj" style="width:100%" 
+                                 rendered="#{rolesBean.renderDtObj}"
+                                 value="#{rolesBean.root}" 
+                                 var="varObjeto">  
+                        <p:column>  
+                            <f:facet name="header">  
+                                Objeto  
+                            </f:facet>  
+                            <h:outputText value="#{varObjeto.objeto.nombreObjeto}" />  
+                        </p:column> 
+                        <p:column style="text-align: center;">
+                            <f:facet name="header">
+                                <h:outputText value="Habilitar"/>
+                            </f:facet> 
+                            <h:selectBooleanCheckbox value="#{varObjeto.permiso}"/> 
+                        </p:column>
+                    </p:treeTable> 
+                </h:panelGrid>
+            </h:panelGrid>
+            <h:panelGrid style="width: 100%">
+                <p:toolbar>  
+                    <p:toolbarGroup align="left">  
+                        <p:commandButton value="Nuevo"
+                                         type="reset"
+                                         title="Nuevo" 
+                                         onclick="window.location.href=window.location.href"                                                  
+                                         image="ui-icon-document"/>    
+                        <p:commandButton value="Guardar" 
+                                         action="#{rolesBean.asignarPermiso}" 
+                                         oncomplete="confirmFunction()" 
+                                         update="dtObj dtRol msg" 
+                                         title="Guardar" process="@this,dtObj"                                              
+                                         image="ui-icon-disk"> 
+                        </p:commandButton> 
+
+                    </p:toolbarGroup>  
+                </p:toolbar> 
+            </h:panelGrid>
+        </p:panel>
+
+        <p:confirmDialog message="Desea eliminar el registro?" 
+                         width="400"   
+                         header="Confirm" 
+                         severity="alert" 
+                         widgetVar="confirmation" 
+                         modal="true">  
+            <p:outputPanel id="confirm">
+                <h:panelGrid>
+                    <h:outputText  value="#{rolesBean.selectedRol.idRol} #{rolesBean.selectedRol.nombreRol}"/>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Si" 
+                                         update="msg rPanel"
+                                         action="#{rolesBean.eliminar}" 
+                                         oncomplete="confirmation.hide(); confirmFunction()" 
+                                         process="@this">
+                            <f:param name="idRol" 
+                                     value="#{rolesBean.selectedRol.idRol}"/>
+                        </p:commandButton>
+                        <p:commandButton value="No" 
+                                         onclick="confirmation.hide()" 
+                                         type="button" />    
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:confirmDialog>  
+
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfim" 
+                         update="dtRol dtObj msg"/>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,105 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="./../templates/template.xhtml">
+
+    <ui:define name="titulo">
+        Registro de Departamentos
+    </ui:define>
+    <ui:define name="content">
+        <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfirm.jq.click();
+}
+        </script>
+        <p:panel header="Departamento">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+            <h:panelGrid id="campos" columns="3">
+                <h:outputText value="Departamento:"/>
+                <p:inputText id="txtDepto" required="#{param['requireGroup1'] == '1'}" requiredMessage="Requerido" value="#{departamentoBean.departamento.nomDepartamento}" size="30"/>
+                <p:message for="txtDepto"/> 
+            </h:panelGrid>   
+            <h:panelGrid style="width: 100%">
+                <p:toolbar>  
+                    <p:toolbarGroup align="left">   
+                        <p:commandButton value="Nuevo"
+                                         immediate="true"
+                                         title="Nuevo"
+                                         process="@this"
+                                         action="#{departamentoBean.nuevo}"                                                  
+                                         update="dtDepto campos"
+                                         image="ui-icon-document"/>
+                        <p:commandButton value="Guardar" 
+                                         process="@this campos" 
+                                         action="#{departamentoBean.crear}" 
+                                         oncomplete="confirmFunction()" 
+                                         update="dtDepto campos msg" 
+                                         title="Guardar" 
+                                         image="ui-icon-disk">    
+                            <f:param name="requireGroup1" value="1"></f:param>
+                        </p:commandButton> 
+                    </p:toolbarGroup>  
+                </p:toolbar> 
+            </h:panelGrid> 
+            <p:dataTable id="dtDepto" widgetVar="dtDepto" var="varDeptos" rows="10" paginator="true" value="#{departamentoBean.deptos}">
+                <f:facet name="header">
+                    <h:panelGrid style="width: 200px;" columns="3">
+                        <h:outputText value="Buscar: " />  
+                        <p:inputText  id="globalFilter" onkeyup="dtDeptos.filter()" style="width:150px" />  
+                    </h:panelGrid>
+                </f:facet>
+                <p:column filterBy="#{varDeptos.idDepartamento}" style="text-align: center; width: 32px">
+                    <f:facet name="header"><h:outputText value="Código"/></f:facet>
+                    <h:outputText value="#{varDeptos.idDepartamento}"/>
+                </p:column>
+                <p:column filterBy="#{varDeptos.nomDepartamento}">
+                    <f:facet name="header"><h:outputText value="Departamento"/></f:facet>
+                    <h:outputText value="#{varDeptos.nomDepartamento}"/>
+                </p:column>
+                <p:column style="width: 64px">
+                    <p:commandButton  image="ui-icon ui-icon-pencil"/>
+                    <p:commandButton  image="ui-icon ui-icon-trash"
+                                      oncomplete="confirmation.show()" 
+                                      update="confirm" 
+                                      process="@this">
+                        <f:setPropertyActionListener value="#{varDeptos}" target="#{departamentoBean.selectedDepto}" />
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+        <p:confirmDialog message="Desea eliminar el registro?" 
+                         width="400"   
+                         header="Confirm" 
+                         severity="alert" 
+                         widgetVar="confirmation" 
+                         modal="true">  
+            <p:outputPanel id="confirm">
+                <h:panelGrid>
+                    <h:outputText  value="#{departamentoBean.selectedDepto.idDepartamento} #{departamentoBean.selectedDepto.nomDepartamento}"/>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Si" 
+                                         update="dtDepto msg"
+                                         action="#{departamentoBean.eliminar}" 
+                                         oncomplete="confirmation.hide(); confirmFunction()" 
+                                         process="@this">
+                            <f:param name="idDepartamento" 
+                                     value="#{departamentoBean.selectedDepto.idDepartamento}"/>
+                        </p:commandButton>
+                        <p:commandButton value="No" 
+                                         onclick="confirmation.hide()" 
+                                         type="button" />    
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:confirmDialog> 
+        <p:commandButton style="visibility: hidden" 
+                         oncomplete="dtDepto.filter()" 
+                         widgetVar="updateConfirm" 
+                         update="dtDepto msg"/>
+
+    </ui:define>
+
+
+</ui:composition>

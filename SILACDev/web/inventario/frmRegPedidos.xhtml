@@ -1,0 +1,182 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="./../templates/template.xhtml">
+    <ui:define name="titulo">
+        Pedidos
+    </ui:define>
+    <ui:define name="content">
+         <script type="text/javascript" language="javascript" >
+function confirmFunction() {
+updateConfim.jq.click();
+}
+        </script>
+        <p:panel header="Pedidos">
+            <p:growl life="6000" id="msg" globalOnly="true" showDetail="true"/>
+            <h:panelGrid  style="width: 100%">
+                <h:panelGrid id="campos" columns="3">
+                    <h:outputText value="Fecha de emisión:"/>
+                    <p:calendar id="txtFecEmision"
+                                locale="es"
+                                navigator="true"
+                                readOnlyInputText="true" 
+                                mindate="#{pedidoBean.hoy}" maxdate="#{pedidoBean.hoy}" 
+                                value="#{pedidoBean.hoy}"
+                                showOn="button" required="#{param['requireGroup1'] == '1'}"
+                                requiredMessage="Requerido"/>                                
+                    <p:message for="txtFecEmision"/>
+                </h:panelGrid>
+
+                <p:fieldset legend="Consumo Real">
+                    <h:panelGrid id="camposConsumo" columns="3">
+                        <h:outputText value="Desde:"/>
+                        <p:calendar id="txtFecDesde"
+                                    locale="es"
+                                    onSelectUpdate="opFecha msg"
+                                    selectListener="#{pedidoBean.handleDateSelect}" 
+                                    onSelectProcess="@this txtFecHasta" readOnlyInputText="true"                                    
+                                    navigator="true"  maxdate="#{pedidoBean.hoy}" 
+                                    value="#{pedidoBean.desde}"
+                                    showOn="button" required="#{param['requireGroup1'] == '1'}"
+                                    requiredMessage="Requerido"/>                                
+                        <p:message for="txtFecDesde"/>
+                        <h:outputText value="Hasta:"/>
+                        <p:outputPanel id="opFecha">
+                            <p:calendar id="txtFecHasta"
+                                        locale="es"
+                                        readOnlyInputText="true" 
+                                        onSelectUpdate="msg"
+                                        selectListener="#{pedidoBean.handleDateSelectHasta}" 
+                                        mindate="#{pedidoBean.minDate}" navigator="true"                                         
+                                        maxdate="#{pedidoBean.hoy}"  showOn="button" 
+                                        value="#{pedidoBean.hasta}"
+                                        required="#{param['requireGroup1'] == '1'}"
+                                        requiredMessage="Requerido"/>                                
+                        </p:outputPanel>
+                        <p:message for="txtFecHasta"/>
+                        <h:outputText value="Cosumo real:"/>
+                        <p:inputText id="txtConsumoReal" binding="#{txtConsumoReal}" required="true" value="#{pedidoBean.consumo}" readonly="true"/>                                
+                        <p:message id="msgConsumoReal" for="txtConsumoReal"/>
+                        <h:outputText value="Salidas registradas:"/>
+                        <p:inputText id="txtSalidasRegistradas" binding="#{txtSalidasRegistradas}" required="true" value="#{pedidoBean.salidas}" readonly="true"/>                                
+                        <p:message id="msgSalidasRegistradas" for="txtSalidasRegistradas"/>
+
+                    </h:panelGrid> 
+                </p:fieldset>
+
+                <p:fieldset legend="Datos del artículo">
+                    <h:panelGrid id="camposPedido" columns="3">
+                        <h:outputText value="Categoria:"/>
+                        <h:selectOneMenu style="width: 200px"  id="cboCategoria" value="#{pedidoBean.selectedCategoria}" required="false" requiredMessage="requerido">
+                            <f:selectItem itemLabel="Seleccione una categoria" itemValue="#{null}"></f:selectItem>
+                            <f:selectItems value="#{catalogoBean.cargarCategorias()}" />
+                            <f:ajax execute="@this" listener="#{pedidoBean.renderCboArticulo}" render="cboArticulo" />
+                        </h:selectOneMenu>   
+                        <p:message for="cboCategoria"/>
+                        <h:outputText value="Articulo:"/>
+                        <h:selectOneMenu style="width: 200px"  id="cboArticulo" 
+                                         binding="#{cboArticulo}" 
+                                         value="#{pedidoBean.selectedArticulo}" required="#{param['requireGroup2'] == '2'}"
+                                         requiredMessage="requerido">
+                            <f:selectItem itemLabel="Seleccione un articulo" itemValue="#{null}"></f:selectItem>
+                            <f:selectItems value="#{pedidoBean.listaArticulos}" />  
+                            
+                            <f:ajax execute="@this" listener="#{pedidoBean.renderTxtExistencias}" render="txtExistencias msgExistencias" />
+                            <f:ajax execute="@this" listener="#{pedidoBean.renderTxtConsumoReal}" render="txtConsumoReal msgConsumoReal" />
+                            <f:ajax execute="@this" listener="#{pedidoBean.renderTxtSalidasRegistradas}" render="txtSalidasRegistradas msgSalidasRegistradas" />
+                            
+                        </h:selectOneMenu>   
+                        <p:message for="cboArticulo"/>
+                        <h:outputText value="Existencias:"/>
+                        <p:inputText id="txtExistencias" binding="#{txtExistencias}" required="false" value="#{pedidoBean.existencias}" readonly="true" >                               
+                        </p:inputText>                                
+                        <p:message id="msgExistencias" for="txtExistencias"/>
+                        <h:outputText value="Cantidad solicitada:"/>
+                        <p:inputText id="txtCantidad" value="#{pedidoBean.cantidad}" required="true"/>                                
+                        <p:message for="txtCantidad"/>
+                        <p:commandButton id="cmdAgregar" 
+                                         value="Agregar artículo" 
+                                         image="ui-icon ui-icon-circle-plus"
+                                         process="@this cboArticulo txtCantidad txtConsumoReal"
+                                         action="#{pedidoBean.asignarArticulo}"
+                                         update="dtPedido camposPedido">
+                            
+                        </p:commandButton>
+
+                    </h:panelGrid>
+
+                    <p:dataTable id="dtPedido" style="height: 200px; overflow: scroll;"
+                                 value="#{pedidoBean.listaArticulosPedidos}" 
+                                 var="varPedido">  
+                        <f:facet name="header">  
+                            Lista de articulos pedidos
+                        </f:facet> 
+                        <p:column style="text-align:center; width:32px">  
+                            <f:facet name="header">  
+                                <h:outputText value="Codigo" />  
+                            </f:facet>  
+                            <h:outputText value="#{varPedido.codigoArticulo}" />  
+                        </p:column>  
+                        <p:column>  
+                            <f:facet name="header">  
+                                <h:outputText value="Articulo" />  
+                            </f:facet>  
+                            <h:outputText value="#{varPedido.nombreArticulo}" />  
+                        </p:column>  
+                        <p:column style="text-align:center">  
+                            <f:facet name="header">  
+                                <h:outputText value="Cantidad Solicitada" />  
+                            </f:facet>  
+                            <h:outputText value="#{varPedido.cantidadSoli}" />  
+                        </p:column> 
+                        <p:column style="text-align:center">  
+                            <f:facet name="header">  
+                                <h:outputText value="Consumo Real" />  
+                            </f:facet>  
+                            <h:outputText value="#{varPedido.consumoReal}" />  
+                        </p:column> 
+                        <p:column style="width:96px">  
+
+                            <p:commandButton update="display" 
+                                             title="Eliminar de la lista" 
+
+                                             image="ui-icon ui-icon-trash">  
+                            </p:commandButton> 
+                        </p:column>  
+                    </p:dataTable>
+
+                    <h:panelGrid style="width: 100%">
+                        <p:toolbar>  
+                            <p:toolbarGroup align="left">  
+                                <p:commandButton value="Nuevo" 
+                                                 title="Nuevo" 
+                                                 process="@this"
+                                                 action="#{pedidoBean.nuevo}"
+                                                 update="campos camposConsumo camposPedido dtPedido"
+                                                 image="ui-icon-document" />    
+                                <p:commandButton type="push" value="Buscar" title="Buscar" image="ui-icon-search"/>    
+                                <p:commandButton type="push" value="Modificar" title="Modificar" image="ui-icon-pencil"/>  
+                                <p:commandButton value="Guardar" 
+                                                 process="@this campos"
+                                             action="#{pedidoBean.crear}" 
+                                             oncomplete="confirmFunction()" 
+                                             update="campos msg" 
+                                             title="Guardar" 
+                                             image="ui-icon-disk">
+                                    <f:param name="requireGroup1" value="1"/>
+                            </p:commandButton>  
+                            </p:toolbarGroup>  
+                        </p:toolbar>
+                    </h:panelGrid> 
+                </p:fieldset>
+
+                
+            </h:panelGrid>
+        </p:panel>
+        <p:commandButton style="visibility: hidden" 
+                         widgetVar="updateConfim" 
+                         update="msg"/>
+    </ui:define>
+</ui:composition>
